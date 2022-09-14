@@ -40,7 +40,7 @@ async function passportService(passport: PassportStatic) {
                 try {
                     const user: IUser | null = await prisma.users.findUnique({ where: { email: username } });
                     if (!user) {
-                        return done(null, false, { message: "not a registered account" });
+                        return done(null, false, { message: `${username} is not a registered account` });
                     }
                     const isMatch: boolean = await bcrypt.compare(password, user.password);
                     if (isMatch) {

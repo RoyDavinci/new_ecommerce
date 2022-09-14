@@ -5,6 +5,8 @@ import { makeid } from "../../common/generateString";
 import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { IUser } from "./user.interface";
 import { generateHash } from "../../common/generateHash";
+import { generateToken } from "../../common/generateToken";
+import config from "../../config";
 
 const prisma = new PrismaClient();
 
@@ -61,6 +63,8 @@ export const getSingleUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
+        const user = req.user;
+        return res.status(200).json({ user });
         const findUser = await prisma.users.findUnique({ where: { id: Number(id) } });
         if (!findUser) {
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "User does not exist" });
@@ -87,6 +91,16 @@ export const updateUser = async (req: Request, res: Response) => {
         }
         await prisma.users.update({ where: { id: Number(id) }, data: { first_name, last_name, email } });
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "user updated", user: { findUser } });
+    } catch (error) {
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error });
+    }
+};
+
+export const signIn = async (req: Request, res: Response) => {
+    const { id, email } = req.user as unknown as IUser;
+    try {
+        const additionInfo = await prisma.users.findUnique({ where: { id } });
+        return res.status(200).json({ success: true, token: generateToken({ id, email }), validity: config.server.tokenExpirationTime, data: { user: additionInfo } });
     } catch (error) {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error });
     }
