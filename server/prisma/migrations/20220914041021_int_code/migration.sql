@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "users" ALTER COLUMN "accountStatus" SET DEFAULT 1234567890;

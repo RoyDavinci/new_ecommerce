@@ -11,7 +11,7 @@ import config from "../../config";
 const prisma = new PrismaClient();
 
 export const createUser = async (req: Request, res: Response) => {
-    const { first_name, last_name, email, password } = req.body;
+    const { first_name, last_name, email, password, phone, username, address } = req.body;
     try {
         const getUser: IUser | null = await prisma.users.findUnique({
             where: {
@@ -23,7 +23,7 @@ export const createUser = async (req: Request, res: Response) => {
         }
         const voucher = makeid(10);
         const hashedPasssword = await generateHash(password);
-        const newUser: IUser = await prisma.users.create({ data: { first_name, last_name, email, password: hashedPasssword, voucher } });
+        const newUser: IUser = await prisma.users.create({ data: { first_name, last_name, email, password: hashedPasssword, voucher, phone, username, address } });
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "new user created", newUser });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -34,7 +34,7 @@ export const createUser = async (req: Request, res: Response) => {
             }
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e });
         }
-        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e });
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e, message: "an error occured on creating a user" });
     }
 };
 
@@ -61,15 +61,13 @@ export const getSingleUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { id } = req.user as unknown as IUser;
     try {
-        const user = req.user;
-        return res.status(200).json({ user });
-        const findUser = await prisma.users.findUnique({ where: { id: Number(id) } });
+        const findUser = await prisma.users.findUnique({ where: { id } });
         if (!findUser) {
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "User does not exist" });
         }
-        await prisma.users.delete({ where: { id: Number(id) } });
+        await prisma.users.delete({ where: { id } });
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "User deleted" });
     } catch (error) {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error });

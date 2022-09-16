@@ -8,6 +8,7 @@ import errorHandler from "./common/errorRequestHandler";
 import serviceNotFoundHandler from "./common/serviceNotFoundHandler";
 import sessionInstance from "./common/session";
 import passportService from "./common/passportService";
+import rateLimiter from "./common/rateLimiter";
 import dotenv from "dotenv";
 import apiv1router from "./routes/routes";
 import passport from "passport";
@@ -40,6 +41,7 @@ app.use("/api/v1", apiv1router);
 
 app.use(serviceNotFoundHandler);
 app.use(errorHandler);
+app.use(rateLimiter);
 
 const server: http.Server = http.createServer(app);
 
@@ -48,49 +50,3 @@ process.on("unhandledRejection", (reason, p) => logger.error("Unhandled Rejectio
 server.listen(port, () => {
     if (config.isDevelopment) logger.info(`server port: ${port}`);
 });
-
-server.on("error", onError);
-server.on("listening", onListening);
-
-function normalizePort(val: string) {
-    const port = parseInt(val, 10);
-    if (Number.isNaN(port)) {
-        return val;
-    }
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-    return false;
-}
-
-function onListening() {
-    const addr = server.address();
-    const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr?.port}`;
-    serverDebugger(`Listening on ${bind}`);
-}
-
-function onError(error: { syscall: string; code: string }) {
-    if (error.syscall !== "listen") {
-        throw error;
-    }
-    const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case "EACCES":
-            logger.error(`${bind} requires elevated privileges`);
-            process.exit(1);
-            break;
-        case "EADDRINUSE":
-            logger.error(`${bind} is already in use`);
-            process.exit(1);
-            break;
-        case "ELIFECYCLE":
-            logger.error(`${bind}this happened instaed`);
-            process.exit(1);
-            break;
-        default:
-            logger.info("this happend instaed");
-            throw error;
-    }
-}

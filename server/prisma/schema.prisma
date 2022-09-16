@@ -19,5 +19,161 @@ model users {
   last_name  String?
   password String
   voucher String
+  address String
   accountStatus Int @default(1234567890)
+  phone String 
+  username String 
+  sellers sellers?
+  orderId Orders?
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model Admin {
+  id Int @id @default(autoincrement())
+  name String
+  password String
+  email String
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model sellers {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  users users?   @relation(fields: [userId], references: [id])
+  businessName String?
+  businessType String
+  shopAddress String
+  phone String
+  image String
+  homeAddress String
+  phone1 String
+  products Product[]
+  orders Orders?
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  sellerId Int 
+  sellers sellers @relation(fields: [sellerId], references: [id])
+  name String?
+  images String[]
+  quantity Int
+  price Decimal
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id])
+  description String?
+  productRatings productRatings[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model productRatings {
+  id Int @id @default(autoincrement())
+  rating Int
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  products Product[]
+  subCategoryId Int @unique
+  subCategory SubCategory @relation(fields: [subCategoryId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model SubCategory {
+  id Int @id @default(autoincrement())
+  name String[]
+  Category Category?
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+model Orders {
+  id Int @id @default(autoincrement())
+  order_code String
+  product_detail Json
+  name String
+  email String
+  phone String
+  total_amount String
+  place String
+  userId Int @unique
+  users users? @relation(fields: [userId], references: [id])
+  merchantId Int @unique
+  sellers sellers @relation(fields: [merchantId], references: [id])
+  orderDetail orderDetails[]
+  status Status
+  payment_type String
+  quantity Int
+  address String
+  shippers Shippers?
+  transaction Transaction?
+  transaction_history Transaction_History?
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model orderDetails {
+  id Int @id @default(autoincrement())
+  orderId Int
+  orders Orders @relation(fields: [orderId], references: [id])
+  place String
+  email String
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model Transaction {
+  id Int @id @default(autoincrement())
+  orderId Int @unique
+  orders Orders @relation(fields: [orderId], references: [id])
+  phone String
+  email String
+  total_amount String
+  payment_type String
+  biller_Reference String
+  transaction_reference String
+  channel String?
+  status Status
+  product_name String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model Transaction_History{
+  id Int @id @default(autoincrement())
+  orderId Int @unique
+  orders Orders @relation(fields: [orderId], references: [id])
+  transaction_code String
+  status Status
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model Shippers {
+  id Int @id @default(autoincrement())
+  name String
+  places String[]
+  contact String
+  lagos Boolean
+  orderId Int @unique
+  orders Orders @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+enum Status{
+  pending
+  failed
+  processing
+  successful
 }

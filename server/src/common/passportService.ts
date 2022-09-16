@@ -2,7 +2,7 @@ import { PassportStatic } from "passport";
 import passportJWT from "passport-jwt";
 import passportLocal from "passport-local";
 import bcrypt from "bcrypt";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import config from "../config";
 import { IUser } from "../controllers/user/user.interface";
 
