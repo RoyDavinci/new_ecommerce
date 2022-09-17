@@ -4171,7 +4171,7 @@ readdirp@~3.6.0:
 
 redis-om@^0.3.6:
   version "0.3.6"
-  resolved "https://registry.npmjs.org/redis-om/-/redis-om-0.3.6.tgz"
+  resolved "https://registry.yarnpkg.com/redis-om/-/redis-om-0.3.6.tgz#5c2d9e57a614e2ae9c21b8ab1d22baa0b7c63fa6"
   integrity sha512-WRmrAm1n1EQIQbEwbfqpceuxHgr7LKOZ471c/KGxyOTVFFm53E0S7vFSZA7a1Jnga7aHTOYqLhhMWE0lKKdsNw==
   dependencies:
     redis "^4.0.4"

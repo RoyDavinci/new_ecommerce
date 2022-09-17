@@ -3,28 +3,17 @@ import { logger } from "../../common/logger";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { makeid } from "../../common/generateString";
 import HTTP_STATUS_CODE from "../../constant/httpCodes";
-import { IUser } from "./user.interface";
+import { IUser } from "./auth.interface";
 import { generateHash } from "../../common/generateHash";
 import { generateToken } from "../../common/generateToken";
 import config from "../../config";
+import connectRedisCache from "../../db/redis";
 
 const prisma = new PrismaClient();
 
 export const createUser = async (req: Request, res: Response) => {
-    const { first_name, last_name, email, password, phone, username, address } = req.body;
     try {
-        const getUser: IUser | null = await prisma.users.findUnique({
-            where: {
-                email,
-            },
-        });
-        if (getUser) {
-            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "User already exists" });
-        }
-        const voucher = makeid(10);
-        const hashedPasssword = await generateHash(password);
-        const newUser: IUser = await prisma.users.create({ data: { first_name, last_name, email, password: hashedPasssword, voucher, phone, username, address } });
-        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "new user created", newUser });
+        return res.status(200).json({ message: "started" });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             // The .code property can be accessed in a type-safe manner

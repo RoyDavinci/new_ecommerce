@@ -1,2 +1,2 @@
 export { healthRouter } from "./health/health.service";
-export { userRouter } from "./user/user.service";
+export { userRouter } from "./auth/user.service";

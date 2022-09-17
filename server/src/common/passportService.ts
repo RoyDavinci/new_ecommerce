@@ -4,7 +4,7 @@ import passportLocal from "passport-local";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 import config from "../config";
-import { IUser } from "../controllers/user/user.interface";
+import { IUser } from "../controllers/auth/auth.interface";
 
 const prisma = new PrismaClient();
 

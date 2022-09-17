@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import statusCodes from "../constant/httpCodes";
+import connectRedisCache, { searchBlaclklistedUsers } from "../db/redis";
 
 export const authenticateLocal = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -19,6 +20,10 @@ export const authenticateLocal = async (req: Request, res: Response, next: NextF
 
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) return next({ statusCode: statusCodes.PROXY_AUTHENTICATION_REQUIRED, message: "authorization needed" });
+    await connectRedisCache();
+    const token = req.headers.authorization.split(" ")[1];
+    const tokenBlackListCheck = await searchBlaclklistedUsers(token);
+    if (tokenBlackListCheck.length) return next({ statusCode: statusCodes.UNAUTHORIZED, message: `invalid credential` });
 
     return passport.authenticate("jwt", (error: Error, user, info) => {
         if (error) return next({ statusCode: statusCodes.FORBIDDEN, message: error.message });

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticateJWT, authenticateLocal } from "../../common/authenticate";
-import * as controller from "./user.controller";
+import * as controller from "./auth.controller";
 
 const userRouter: Router = Router();
 userRouter.post("/", controller.createUser);

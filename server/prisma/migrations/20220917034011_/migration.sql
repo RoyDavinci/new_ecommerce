@@ -8,11 +8,11 @@ CREATE TABLE "users" (
     "first_name" TEXT,
     "last_name" TEXT,
     "password" TEXT NOT NULL,
-    "voucher" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
+    "prospectId" TEXT NOT NULL,
+    "otp" INTEGER NOT NULL,
+    "adminId" INTEGER,
+    "subscriberId" INTEGER,
     "accountStatus" INTEGER NOT NULL DEFAULT 1234567890,
-    "phone" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
 
@@ -23,12 +23,23 @@ CREATE TABLE "users" (
 CREATE TABLE "Admin" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Subscribers" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "voucher" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+
+    CONSTRAINT "Subscribers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -180,6 +191,12 @@ CREATE TABLE "Shippers" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_adminId_key" ON "users"("adminId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_subscriberId_key" ON "users"("subscriberId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "sellers_userId_key" ON "sellers"("userId");
 
 -- CreateIndex
@@ -201,7 +218,13 @@ CREATE UNIQUE INDEX "Transaction_History_orderId_key" ON "Transaction_History"("
 CREATE UNIQUE INDEX "Shippers_orderId_key" ON "Shippers"("orderId");
 
 -- AddForeignKey
-ALTER TABLE "sellers" ADD CONSTRAINT "sellers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_subscriberId_fkey" FOREIGN KEY ("subscriberId") REFERENCES "Subscribers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "Admin"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "sellers" ADD CONSTRAINT "sellers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Subscribers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "sellers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -216,7 +239,7 @@ ALTER TABLE "productRatings" ADD CONSTRAINT "productRatings_productId_fkey" FORE
 ALTER TABLE "Category" ADD CONSTRAINT "Category_subCategoryId_fkey" FOREIGN KEY ("subCategoryId") REFERENCES "SubCategory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Orders" ADD CONSTRAINT "Orders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Orders" ADD CONSTRAINT "Orders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Subscribers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Orders" ADD CONSTRAINT "Orders_merchantId_fkey" FOREIGN KEY ("merchantId") REFERENCES "sellers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

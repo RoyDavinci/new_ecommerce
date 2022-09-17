@@ -16,7 +16,7 @@ if (error) {
 
 const config = {
     redis: {
-        REDIS: envVars.REDIS_URL,
+        REDIS: envVars.REDIS,
     },
 };
 

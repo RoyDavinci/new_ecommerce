@@ -18,13 +18,13 @@ model users {
   first_name  String?
   last_name  String?
   password String
-  voucher String
-  address String
+  prospectId String
+  otp Int
+  adminId Int? @unique
+  subscriberId Int? @unique
+  subscribers Subscribers?   @relation(fields: [subscriberId], references: [id])
+  admin Admin? @relation(fields: [adminId], references: [id])
   accountStatus Int @default(1234567890)
-  phone String 
-  username String 
-  sellers sellers?
-  orderId Orders?
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -32,16 +32,28 @@ model users {
 model Admin {
   id Int @id @default(autoincrement())
   name String
-  password String
   email String
+  users users?
   createdAt DateTime @default(now())
   updatedAt DateTime?
+}
+
+model Subscribers {
+  id Int @id @default(autoincrement())
+  users users?
+  email String
+  voucher String
+  address String
+  phone String 
+  username String 
+  sellers sellers?
+  orderId Orders?
 }
 
 model sellers {
   id Int @id @default(autoincrement())
   userId Int @unique
-  users users?   @relation(fields: [userId], references: [id])
+  subscribers Subscribers?   @relation(fields: [userId], references: [id])
   businessName String?
   businessType String
   shopAddress String
@@ -107,7 +119,7 @@ model Orders {
   total_amount String
   place String
   userId Int @unique
-  users users? @relation(fields: [userId], references: [id])
+  subscribers Subscribers? @relation(fields: [userId], references: [id])
   merchantId Int @unique
   sellers sellers @relation(fields: [merchantId], references: [id])
   orderDetail orderDetails[]
