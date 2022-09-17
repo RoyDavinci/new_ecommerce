@@ -7,13 +7,23 @@ import { IUser } from "./auth.interface";
 import { generateHash } from "../../common/generateHash";
 import { generateToken } from "../../common/generateToken";
 import config from "../../config";
-import connectRedisCache from "../../db/redis";
+import connectRedisCache, { createProspectiveUser } from "../../db/redis";
+import { generateOTP } from "../..//common/generateOtp";
 
 const prisma = new PrismaClient();
 
 export const createUser = async (req: Request, res: Response) => {
+    const { first_name, last_name, email, password, username, phone } = req.body;
+
     try {
-        return res.status(200).json({ message: "started" });
+        await connectRedisCache();
+
+        const checkEmail = await prisma.users.findUnique({ where: { email } });
+        if (checkEmail) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "user already exist" });
+        const { otp, ttl, createdAt } = await generateOTP();
+
+        const prospectId = await createProspectiveUser({ first_name, last_name, otp, ttl, createdAt, email, password, username, phone });
+        return res.status(200).json({ success: true, message: "kindly enter the OTP sent to your email", data: { ttl, createdAt, otp }, prospectId });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             // The .code property can be accessed in a type-safe manner

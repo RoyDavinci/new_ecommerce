@@ -28,12 +28,12 @@ async function connect() {
 
 export async function emailAlreadyExist(email: string) {
     const data = await connect();
-    const checkEmail = data.prospectiveUserRepository.search().where("email").equalTo(email).return.all();
-    return (await checkEmail).length;
+    const checkEmail = await data.prospectiveUserRepository.search().where("email").equalTo(email).return.all();
+    return checkEmail.length;
 }
 export async function createProspectiveUser(data: EntityData | undefined) {
     const datum = await connect();
-    const prospectiveUser = datum.prospectiveUserRepository.createEntity(data);
+    const prospectiveUser = await datum.prospectiveUserRepository.createAndSave(data);
     const id = await datum.prospectiveUserRepository.save(prospectiveUser);
     datum.client.execute(["EXPIRE", `ProspectiveUser:${id}`, config.server.OTP_TTL]);
     return id;
@@ -54,7 +54,7 @@ export async function fetchForgetPasswordRequest(id: string) {
 
 export async function blacklistUser(data: { token: string | undefined; reason: string; createdAt: string } | undefined) {
     const item = await connect();
-    const blacklistedUser = item.blacklistedUserRepository.createEntity(data as unknown as EntityData | undefined);
+    const blacklistedUser = await item.blacklistedUserRepository.createAndSave(data as unknown as EntityData | undefined);
     const id = await item.blacklistedUserRepository.save(blacklistedUser);
     item.client.execute(["EXPIRE", `BlacklistedUser:${id}`, 7 * 24 * 60 * 60]);
 }

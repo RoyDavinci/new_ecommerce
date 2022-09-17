@@ -33,7 +33,6 @@ app.use(compress());
 app.use(cors());
 
 app.use(sessionInstance);
-connectRedisCache();
 passportService(passport);
 app.use(passport.initialize());
 app.use(passport.session());

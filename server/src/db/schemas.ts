@@ -5,10 +5,13 @@ export class ProspectiveUser extends Entity {}
 export const prospectiveUserSchema = new Schema(
     ProspectiveUser,
     {
-        firstname: { type: "string" },
-        lastname: { type: "string" },
-        mobile: { type: "string" },
+        first_name: { type: "string" },
+        last_name: { type: "string" },
+        username: { type: "string" },
+        phone: { type: "string" },
         password: { type: "string" },
+        email: { type: "string" },
+        ttl: { type: "number" },
         otp: { type: "string" },
         createdAt: { type: "string" },
     },

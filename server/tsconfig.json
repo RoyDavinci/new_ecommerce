@@ -22,5 +22,5 @@
         "skipLibCheck": true
     },
     "exclude": ["node_modules", "dist", "coverage"],
-    "include": ["src/**/*", "src/*", "src/loaders/redis", "./src/common/session.ts", "src/common/logger.ts", "src/common/serviceNotFoundHandler.ts", "src/common/errorHandler.ts", "src/common/interfaces.ts"]
+    "include": ["src/**/*", "src/*", "src/loaders/redis", "./src/common/session.ts", "src/common/logger.ts", "src/common/serviceNotFoundHandler.ts", "src/common/errorHandler.ts", "src/common/interfaces.ts", "src/common/generateOtp.ts", "src/config"]
 }
