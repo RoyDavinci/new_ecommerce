@@ -12,18 +12,17 @@ import { generateToken } from "../../common/generateToken";
 import config from "../../config";
 import { RedisClient } from "../../db/class";
 import { generateOTP } from "../../common/generateOtp";
-import { adminForgetpassowrdHTML } from "../../common/adminNewPasswordHtml";
+import { adminNewPasswordHTML } from "../../common/adminNewPasswordHtml";
 import { admiNewPasswordLink } from "../../common/adminNewPasswordLink";
 import { adminNewPasswordConfirmationHTML } from "../../common/adminNewPAsswordConfirmationHTML";
 
 const prisma = new PrismaClient();
+const redisInstance: RedisClient = new RedisClient();
 
 export const createUser = async (req: Request, res: Response) => {
     const { first_name, last_name, email, password, username, phone, address } = req.body;
 
     try {
-        const redisInstance: RedisClient = new RedisClient();
-
         const checkEmail = await prisma.users.findUnique({ where: { email } });
 
         if (checkEmail) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "user already exist" });
@@ -50,7 +49,6 @@ export const confirmOtp = async (req: Request, res: Response, next: NextFunction
     const { otp, prospectId } = req.body;
 
     try {
-        const redisInstance: RedisClient = new RedisClient();
         const cachedUserInfo = await redisInstance.fetchProspectiveUser(prospectId);
         if (_.isEmpty(cachedUserInfo)) return next({ statusCode: 400, message: "invalid OTP" });
         const cachedCreatedAt = cachedUserInfo.createdAt as unknown as MomentInput;
@@ -63,13 +61,12 @@ export const confirmOtp = async (req: Request, res: Response, next: NextFunction
 
         const voucher = makeid(10);
 
-        const newUser = await prisma.users.create({ data: { first_name: cachedUserInfo.first_name, last_name: cachedUserInfo.last_name, password: hashedPasssword, email: cachedUserInfo.email } });
+        const newSubscriber = await prisma.subscribers.create({ data: { username: cachedUserInfo.username, phone: cachedUserInfo.phone, email: cachedUserInfo.email, voucher, role: "subscriber" } });
+        const newUser = await prisma.users.create({
+            data: { first_name: cachedUserInfo.first_name, last_name: cachedUserInfo.last_name, password: hashedPasssword, email: cachedUserInfo.email, subscriberId: newSubscriber.id, role: cachedUserInfo.role },
+        });
 
-        const newSubscriber = await prisma.subscribers.create({ data: { username: cachedUserInfo.username, phone: cachedUserInfo.phone, email: cachedUserInfo.email, voucher } });
-
-        newUser.subscriberId = newSubscriber.id;
-
-        const token = generateToken({ id: newUser.id, email: newUser.email });
+        const token = generateToken({ id: newUser.id, email: newUser.email, role: newUser.role });
 
         return res.status(200).json({ success: true, data: { user: newSubscriber }, token, validity: config.server.tokenExpirationTime });
     } catch (error) {
@@ -79,7 +76,7 @@ export const confirmOtp = async (req: Request, res: Response, next: NextFunction
 
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
-        const users = await prisma.subscribers.findMany();
+        const users = await prisma.users.findMany();
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ user: { users } });
     } catch (error) {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error });
@@ -138,16 +135,19 @@ export const signIn = async (req: Request, res: Response) => {
     try {
         let additionInfo;
         let email;
+        let role;
 
         if (adminId) {
             additionInfo = await prisma.admin.findUnique({ where: { id: adminId } });
             email = additionInfo?.email;
+            role = additionInfo?.role;
         }
         if (subscriberId) {
             additionInfo = await prisma.subscribers.findUnique({ where: { id: subscriberId } });
             email = additionInfo?.email;
+            role = additionInfo?.role;
         }
-        return res.status(200).json({ success: true, token: generateToken({ id, email }), validity: config.server.tokenExpirationTime, data: { user: additionInfo } });
+        return res.status(200).json({ success: true, token: generateToken({ id, email, adminId, subscriberId, role: role }), validity: config.server.tokenExpirationTime, data: { user: additionInfo } });
     } catch (error) {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error });
     }
@@ -155,7 +155,6 @@ export const signIn = async (req: Request, res: Response) => {
 
 export const signOut = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const redisInstance: RedisClient = new RedisClient();
         const data = {
             token: req.headers.authorization?.split(" ")[1],
             reason: "logout",
@@ -183,19 +182,19 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         const checkUser = await prisma.users.findUnique({ where: { email } });
         if (!checkUser) return res.status(400).json({ message: `user with ${email} does not exist` });
         const { adminId, subscriberId } = checkUser;
-        const redisInstance: RedisClient = new RedisClient();
+
         const { otp, ttl, createdAt } = await generateOTP();
 
         if (adminId) {
             const prospectId = await redisInstance.createForgetPasswordRequest({ userId: adminId, otp, ttl, createdAt, profileId: email });
             const token = generateToken({ id: adminId, email: checkUser.email });
-            await sendEmail(checkUser.email, config.server.NEW_PASSWORD_EMAIL_HEADER, adminForgetpassowrdHTML(admiNewPasswordLink(token, config.server.FORGET_PASSWORD_TOKEN_EXPIRATION)));
+            await sendEmail(checkUser.email, config.server.NEW_PASSWORD_EMAIL_HEADER, adminNewPasswordHTML(admiNewPasswordLink(token, config.server.FORGET_PASSWORD_TOKEN_EXPIRATION)));
             return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "Check your email for Link", data: { otp, ttl, createdAt, prospectId } });
         }
         if (subscriberId) {
             const prospectId = await redisInstance.createForgetPasswordRequest({ userId: subscriberId, otp, ttl, createdAt, profileId: email });
             const token = generateToken({ id: subscriberId, email: checkUser.email });
-            await sendEmail(checkUser.email, config.server.NEW_PASSWORD_EMAIL_HEADER, adminForgetpassowrdHTML(admiNewPasswordLink(token, config.server.FORGET_PASSWORD_TOKEN_EXPIRATION)));
+            await sendEmail(checkUser.email, config.server.NEW_PASSWORD_EMAIL_HEADER, adminNewPasswordHTML(admiNewPasswordLink(token, config.server.FORGET_PASSWORD_TOKEN_EXPIRATION)));
             return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "Check your email for Link", data: { otp, ttl, createdAt, prospectId } });
         }
     } catch (error) {
@@ -208,7 +207,6 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
     const { otp, prospectId } = req.body;
 
     try {
-        const redisInstance: RedisClient = new RedisClient();
         const cachedUserInfo = await redisInstance.fetchForgetPasswordRequest(prospectId);
         if (_.isEmpty(cachedUserInfo)) return next({ statusCode: 409, message: "OTP has expired" });
         await redisInstance.removeForgetPasswordRequest(prospectId);
@@ -233,7 +231,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
             reason: "utilized",
             createdAt: moment.utc().format(),
         };
-        const redisInstance: RedisClient = new RedisClient();
+
         await redisInstance.blacklistUser(data);
         const { id, subscriberId, adminId } = req.user as unknown as IUser;
         const user = await prisma.users.findUnique({ where: { id } });

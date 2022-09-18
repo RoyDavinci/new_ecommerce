@@ -1,12 +1,11 @@
 import { check, param, query } from "express-validator";
-import { validateEmail } from "../../common/validateEmail";
 import config from "../../config";
 import { validationErrorHandler } from "../../common/validationErrorHandler";
 
 export const validateSignupData = [
     check("first_name").stripLow().notEmpty().withMessage("firstname is required").bail().isString().withMessage("invalid firstname format").trim(),
     check("last_name").stripLow().optional({ nullable: false, checkFalsy: true }).isString().withMessage("invalid lastname").trim(),
-    check("phone").stripLow().notEmpty().withMessage("phone is required").bail().isMobilePhone(["en-NG"], { strictMode: true }).withMessage("invalid nigerian mobile").trim(),
+    check("phone").stripLow().notEmpty().withMessage("phone is required").bail().isMobilePhone(["en-NG"]).withMessage("invalid nigerian mobile").trim(),
     check("email").notEmpty().withMessage("email is required").bail().isEmail().withMessage("invalid email format").trim(),
     check("username").notEmpty().withMessage("username is required").bail().trim(),
     check("password").notEmpty().withMessage("password is required").bail().isLength({ min: 4, max: 50 }).withMessage("min: 4, max:50 password character"),
@@ -26,14 +25,7 @@ export const validateSigninData = [
     validationErrorHandler,
 ];
 
-export const validateForgetPasswordData = [
-    check("email").custom(({ req }) => {
-        if (!validateEmail(req.body.email)) throw new Error("invalid email");
-
-        return true;
-    }),
-    validationErrorHandler,
-];
+export const validateForgetPasswordData = [check("email").notEmpty().withMessage("email is needed").isEmail().withMessage("Invalid Email"), validationErrorHandler];
 
 export const validateResetPasswordData = [
     check("password").notEmpty().withMessage("password is required").bail().isLength({ min: 4, max: 50 }).withMessage("min: 4, max:50 password character"),

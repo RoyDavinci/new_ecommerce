@@ -15,6 +15,7 @@ export const prospectiveUserSchema = new Schema(
         email: { type: "string" },
         ttl: { type: "number" },
         otp: { type: "string" },
+        role: { type: "string" },
         createdAt: { type: "string" },
         address: { type: "string" },
     },

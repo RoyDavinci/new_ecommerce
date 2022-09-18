@@ -84,6 +84,14 @@ export class RedisClient {
         (await this.client).execute(["SET", "admins", rolesStrigified]);
         (await this.client).execute(["EXPIRE", "admins", config.server.RESOURCE_KEY_EXPIRATION]);
     }
+
+    async getAdmins() {
+        const rolesStrigified = await (await this.client).execute(["GET", "admins"]);
+        const datum = JSON.stringify(rolesStrigified);
+        const data = JSON.parse(datum);
+        return data;
+    }
+
     async setSubscribers(data: object[]) {
         const subscribersStrigified = JSON.stringify(data);
         (await this.client).execute(["SET", "subscribers", subscribersStrigified]);

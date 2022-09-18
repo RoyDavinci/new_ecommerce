@@ -18,6 +18,7 @@ model users {
   first_name  String?
   last_name  String?
   password String
+  role String
   adminId Int? @unique
   subscriberId Int? @unique
   subscribers Subscribers?   @relation(fields: [subscriberId], references: [id])
@@ -32,6 +33,7 @@ model Admin {
   name String
   email String
   users users?
+  role Role
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -43,6 +45,7 @@ model Subscribers {
   voucher String
   address String?
   phone String 
+  role String
   username String 
   sellers sellers?
   orderId Orders?
@@ -186,4 +189,9 @@ enum Status{
   failed
   processing
   successful
+}
+
+enum Role{
+  Super_Admin
+  Admin
 }

@@ -17,6 +17,7 @@ import http from "http";
 import debug from "debug";
 import { healthRouter } from "./controllers";
 import connectRedisCache from "./db/redis";
+import { createSuperUser } from "./serverSetup";
 
 const app: Express = express();
 
@@ -34,6 +35,7 @@ app.use(cors());
 
 app.use(sessionInstance);
 connectRedisCache();
+createSuperUser();
 passportService(passport);
 app.use(passport.initialize());
 app.use(passport.session());
