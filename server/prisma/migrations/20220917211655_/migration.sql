@@ -8,8 +8,6 @@ CREATE TABLE "users" (
     "first_name" TEXT,
     "last_name" TEXT,
     "password" TEXT NOT NULL,
-    "prospectId" TEXT NOT NULL,
-    "otp" INTEGER NOT NULL,
     "adminId" INTEGER,
     "subscriberId" INTEGER,
     "accountStatus" INTEGER NOT NULL DEFAULT 1234567890,
@@ -35,7 +33,7 @@ CREATE TABLE "Subscribers" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "voucher" TEXT NOT NULL,
-    "address" TEXT NOT NULL,
+    "address" TEXT,
     "phone" TEXT NOT NULL,
     "username" TEXT NOT NULL,
 

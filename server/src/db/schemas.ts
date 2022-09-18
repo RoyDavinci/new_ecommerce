@@ -1,6 +1,8 @@
 import { Entity, Schema } from "redis-om";
 
-export class ProspectiveUser extends Entity {}
+export class ProspectiveUser extends Entity {
+    [x: string]: any;
+}
 
 export const prospectiveUserSchema = new Schema(
     ProspectiveUser,
@@ -14,13 +16,16 @@ export const prospectiveUserSchema = new Schema(
         ttl: { type: "number" },
         otp: { type: "string" },
         createdAt: { type: "string" },
+        address: { type: "string" },
     },
     {
         dataStructure: "JSON",
     },
 );
 
-export class BlacklistedUser extends Entity {}
+export class BlacklistedUser extends Entity {
+    [x: string]: any;
+}
 
 export const blacklistedUserSchema = new Schema(
     BlacklistedUser,
@@ -34,7 +39,9 @@ export const blacklistedUserSchema = new Schema(
     },
 );
 
-export class ForgetPasswordRequest extends Entity {}
+export class ForgetPasswordRequest extends Entity {
+    [x: string]: any;
+}
 
 export const ForgetPasswordRequestSchema = new Schema(
     ForgetPasswordRequest,

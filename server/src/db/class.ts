@@ -1,4 +1,4 @@
-import { Client, Repository, EntityData } from "redis-om";
+import { Client, EntityData, Entity } from "redis-om";
 import config from "../config";
 import { logger } from "../common/logger";
 import { blacklistedUserSchema, prospectiveUserSchema, ForgetPasswordRequestSchema } from "./schemas";
@@ -16,12 +16,14 @@ export class RedisClient {
                 (await this.client).open(config.redis.REDIS);
             }
             logger.info("Connected to redis server");
-            (await this.prospectiveUserRepository).dropIndex();
-            (await this.prospectiveUserRepository).createIndex();
-            (await this.blacklistedUserRepository).dropIndex();
-            (await this.blacklistedUserRepository).createIndex();
-            (await this.ForgetPasswordRequestRepository).dropIndex();
-            (await this.ForgetPasswordRequestRepository).createIndex();
+            Promise.all([
+                (await this.prospectiveUserRepository).dropIndex(),
+                (await this.prospectiveUserRepository).createIndex(),
+                (await this.blacklistedUserRepository).dropIndex(),
+                (await this.blacklistedUserRepository).createIndex(),
+                (await this.ForgetPasswordRequestRepository).dropIndex(),
+                (await this.ForgetPasswordRequestRepository).createIndex(),
+            ]);
         } catch (error) {
             logger.info("failed Connecting to redis server");
             throw new Error(error as unknown as string | undefined);
@@ -40,13 +42,25 @@ export class RedisClient {
         return id;
     }
 
+    async fetchProspectiveUser(id: string) {
+        const entity = await (await this.prospectiveUserRepository).fetch(id);
+        return entity;
+    }
+
+    async createForgetPasswordRequest(data: EntityData | undefined) {
+        const forgetPasswordRequest = (await this.ForgetPasswordRequestRepository).createEntity(data);
+        const id = await (await this.ForgetPasswordRequestRepository).save(forgetPasswordRequest);
+        (await this.client).execute(["EXPIRE", `ForgetPasswordRequest:${id}`, config.server.OTP_TTL]);
+        return id;
+    }
+
     async removeForgetPasswordRequest(id: string) {
         return (await this.ForgetPasswordRequestRepository).remove(id);
     }
 
     async fetchForgetPasswordRequest(id: string) {
-        const { entityId } = await (await this.ForgetPasswordRequestRepository).fetch(id);
-        return entityId;
+        const entity = await (await this.ForgetPasswordRequestRepository).fetch(id);
+        return entity;
     }
 
     // blacklisted users logics and methods

@@ -5,19 +5,12 @@ export interface IUser {
     accountStatus: number;
     adminId: number | null;
     subscriberId: number | null;
-    prospectId: string;
-    otp: number;
-}
-
-export interface ISubscriber {
-    id: number;
-    email: string;
-    voucher: string;
-    username: string;
-    phone: string;
-    address: string;
 }
 export interface IAdmin {
-    name: number;
+    id: number;
     email: string;
+    voucher: string | null;
+    username: string | null;
+    phone: string | null;
+    address: string | null;
 }

@@ -3,7 +3,7 @@ import config from "../config";
 
 const transporter = nodemailer.createTransport({ ...config.mail });
 
-export const sendEmail = async (to: string, subject: string, body: string) =>
+export const sendEmail = async (to: string | undefined, subject: string, body: string) =>
     new Promise((resolve, reject) => {
         const mailOptions = {
             from: config.mail.auth.user,

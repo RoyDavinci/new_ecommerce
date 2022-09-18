@@ -9,5 +9,6 @@ userRouter.get("/:id", controller.getSingleUser);
 userRouter.delete("/delete", authenticateJWT, controller.deleteUser);
 userRouter.patch("/update", controller.updateUser);
 userRouter.post("/signin", authenticateLocal, controller.signIn);
+userRouter.post("/check-otp", controller.confirmOtp);
 
 export { userRouter };

@@ -33,6 +33,7 @@ app.use(compress());
 app.use(cors());
 
 app.use(sessionInstance);
+connectRedisCache();
 passportService(passport);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -49,7 +50,7 @@ const server: http.Server = http.createServer(app);
 process.on("unhandledRejection", (reason, p) => logger.error("Unhandled Rejection at: Promise ", p, reason));
 
 server.listen(port, () => {
-    if (config.isDevelopment) logger.info(`server port: ${port}`);
+    if (config.isDevelopment) logger.info(`server port: http://localhost:${port}`);
 });
 
 server.on("error", onError);

@@ -18,8 +18,6 @@ model users {
   first_name  String?
   last_name  String?
   password String
-  prospectId String
-  otp Int
   adminId Int? @unique
   subscriberId Int? @unique
   subscribers Subscribers?   @relation(fields: [subscriberId], references: [id])
@@ -43,7 +41,7 @@ model Subscribers {
   users users?
   email String
   voucher String
-  address String
+  address String?
   phone String 
   username String 
   sellers sellers?
