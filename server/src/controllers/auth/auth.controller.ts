@@ -97,34 +97,18 @@ export const getSingleUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-    const { id } = req.user as unknown as IUser;
+    const { adminId } = req.user as unknown as IUser;
+    const { userId } = req.params;
     try {
-        const findUser = await prisma.users.findUnique({ where: { id } });
-        if (!findUser) {
-            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "User does not exist" });
-        }
-        await prisma.users.delete({ where: { id } });
-        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "User deleted" });
-    } catch (error) {
-        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error });
-    }
-};
+        const findAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
+        if (!findAdmin) return res.status(400).json({ message: "admin not found" });
 
-export const updateUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { first_name, last_name, email, password } = req.body;
-    try {
-        const findUser = await prisma.users.findUnique({ where: { id: Number(id) } });
+        const findUser = await prisma.users.findUnique({ where: { id: Number(userId) } });
         if (!findUser) {
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "User does not exist" });
         }
-        if (password) {
-            const hashedPasssword = await generateHash(password);
-            await prisma.users.update({ where: { id: Number(id) }, data: { first_name, last_name, password: hashedPasssword, email } });
-            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "user updated", user: { findUser } });
-        }
-        await prisma.users.update({ where: { id: Number(id) }, data: { first_name, last_name, email } });
-        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "user updated", user: { findUser } });
+        await prisma.users.delete({ where: { id: Number(userId) } });
+        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "User deleted" });
     } catch (error) {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error });
     }

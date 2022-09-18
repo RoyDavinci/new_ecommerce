@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client";
-import HTTP_STATUS_CODE from "@src/constant/httpCodes";
+import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { NextFunction, Request, Response } from "express";
 import { generateHash } from "../../common/generateHash";
 import { generateToken } from "../../common/generateToken";
@@ -117,6 +117,34 @@ export const deleteAdmin = async (req: Request, res: Response, next: NextFunctio
     const { adminId, role } = req.user as unknown as IUser;
 
     try {
+        const findAdmin = await prisma.users.findUnique({ where: { adminId: Number(adminId) } });
+        const checkAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
+        if (!findAdmin && !checkAdmin) {
+            return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "admin not found" });
+        }
+        if (checkAdmin?.role && role === config.server.SUPER_ADMIN_ROLE) {
+            return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "Cannot delete super admin" });
+        }
+        try {
+            Promise.all([prisma.users.delete({ where: { adminId: Number(adminId) } }), await prisma.subscribers.delete({ where: { id: Number(adminId) } })]);
+        } catch (error) {
+            const IError = error as unknown as { message: string };
+            throw new Error(IError.message);
+        }
+    } catch (error) {
+        logger.error(error);
+        return next({ message: "error processing your data at this time" });
+    }
+};
+
+export const getSingleAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    const { adminId } = req.user as unknown as IUser;
+    try {
+        const findAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
+        if (!findAdmin) {
+            return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "Admin not found" });
+        }
+        return res.status(HTTP_STATUS_CODE.OK).json({ admin: { findAdmin } });
     } catch (error) {
         logger.error(error);
         return next({ message: "error processing your data at this time" });

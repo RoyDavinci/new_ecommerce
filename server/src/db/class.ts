@@ -97,6 +97,12 @@ export class RedisClient {
         (await this.client).execute(["SET", "subscribers", subscribersStrigified]);
         (await this.client).execute(["EXPIRE", "subscribers", config.server.RESOURCE_KEY_EXPIRATION]);
     }
+    async getSubscribers() {
+        const rolesStrigified = await (await this.client).execute(["GET", "subscribers"]);
+        const datum = JSON.stringify(rolesStrigified);
+        const data = JSON.parse(datum);
+        return data;
+    }
 }
 
 const RedisCloudInstance = (() => {

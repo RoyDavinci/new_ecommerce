@@ -98,7 +98,7 @@ model Category {
   description String
   products Product[]
   subCategoryId Int @unique
-  subCategory SubCategory @relation(fields: [subCategoryId], references: [id])
+  subCategory SubCategory? @relation(fields: [subCategoryId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }

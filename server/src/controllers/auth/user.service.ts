@@ -8,7 +8,6 @@ userRouter.post("/", middleware.validateSignupData, controller.createUser);
 userRouter.get("/", controller.getAllUsers);
 userRouter.get("/:id", controller.getSingleUser);
 userRouter.delete("/delete", authenticateJWT, controller.deleteUser);
-userRouter.patch("/update", controller.updateUser);
 userRouter.post("/signin", middleware.validateSigninData, authenticateLocal, controller.signIn);
 userRouter.post("/check-otp", middleware.validateOTPData, controller.confirmOtp);
 userRouter.post("/forgot-password", middleware.validateForgetPasswordData, controller.forgotPassword);
