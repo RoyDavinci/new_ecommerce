@@ -1,13 +1,11 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { generateHash } from "../common/generateHash";
-import { Request, Response } from "express";
 import config from "../config";
 import { logger } from "../common/logger";
 import { sendEmail } from "../common/sendMail";
 import { adminNewPasswordHTML } from "../common/adminNewPasswordHtml";
 import { newPasswordUrlFormater } from "../common/newPasswordUrlFormater";
 import { generateToken } from "../common/generateToken";
-import HTTP_STATUS_CODE from "@src/constant/httpCodes";
 
 const prisma = new PrismaClient();
 export const createSuperUser = async () => {
