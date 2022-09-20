@@ -42,19 +42,19 @@ model Subscribers {
   id Int @id @default(autoincrement())
   users users?
   email String
-  voucher String
+  voucher String?
   address String?
   phone String 
   role String
   username String 
-  sellers sellers?
+  sellerId Int? @unique
+  seller sellers?   @relation(fields: [sellerId], references: [id])
   orderId Orders?
 }
 
 model sellers {
   id Int @id @default(autoincrement())
-  userId Int @unique
-  subscribers Subscribers?   @relation(fields: [userId], references: [id])
+  users Subscribers?
   businessName String?
   businessType String
   shopAddress String

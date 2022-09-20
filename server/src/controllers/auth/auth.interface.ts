@@ -5,6 +5,7 @@ export interface IUser {
     accountStatus: number;
     adminId: number | null;
     subscriberId: number | null;
+    sellerId: null | null;
     role: string | null;
 }
 export interface IAdmin {

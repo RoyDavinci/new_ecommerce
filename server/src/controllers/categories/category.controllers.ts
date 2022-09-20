@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
-import HTTP_STATUS_CODE from "@src/constant/httpCodes";
+import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { RedisClient } from "../../db/class";
 import { IUser } from "../auth/auth.interface";
-import { logger } from "@src/common/logger";
+import { logger } from "../../common/logger";
 
 const prisma = new PrismaClient();
 const redisInstance: RedisClient = new RedisClient();
