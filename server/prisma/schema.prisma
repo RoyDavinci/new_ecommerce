@@ -54,7 +54,7 @@ model Subscribers {
 
 model sellers {
   id Int @id @default(autoincrement())
-  users Subscribers?
+  users Subscribers? 
   businessName String?
   businessType String
   shopAddress String

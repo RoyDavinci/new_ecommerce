@@ -76,3 +76,33 @@ export const deleteSeller = async (req: Request, res: Response) => {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e, message: "an error occured on creating a user" });
     }
 };
+
+export const updateSeller = async (req: Request, res: Response) => {
+    const { businessName, businessType, shopAddress, phone, image, homeAddress, phone1, email } = req.body;
+    const { subscriberId } = req.user as unknown as IUser;
+
+    try {
+        const checkSubscriber = await prisma.subscribers.findUnique({ where: { id: Number(subscriberId) } });
+        if (!checkSubscriber) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "seller does not exist" });
+
+        if (checkSubscriber.sellerId) {
+            const updateSeller = await prisma.sellers.update({ where: { id: checkSubscriber.sellerId }, data: { businessType, businessName, shopAddress, phone, image, homeAddress, phone1 } });
+            if (email) {
+                await prisma.users.update({ where: { subscriberId: checkSubscriber.id }, data: { email } });
+                await prisma.subscribers.update({ where: { id: checkSubscriber.id }, data: { email } });
+            }
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "seller updated", updateSeller });
+        }
+        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "seller id not found on subscriber table" });
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === "P2002") {
+                logger.info("There is a unique constraint violation, a new user cannot be created with this email");
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "There is a unique constraint violation, a new user cannot be created with this email" });
+            }
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e });
+        }
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e, message: "an error occured on creating a user" });
+    }
+};
