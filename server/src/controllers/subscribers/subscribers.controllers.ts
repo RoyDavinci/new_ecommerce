@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client";
-import HTTP_STATUS_CODE from "@src/constant/httpCodes";
+import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { NextFunction, Request, Response } from "express";
 import { generateHash } from "../../common/generateHash";
 import { generateToken } from "../../common/generateToken";

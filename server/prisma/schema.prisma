@@ -34,6 +34,7 @@ model Admin {
   email String
   users users?
   role Role
+  products Product[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -70,8 +71,10 @@ model sellers {
 
 model Product {
   id Int @id @default(autoincrement())
-  sellerId Int 
-  sellers sellers @relation(fields: [sellerId], references: [id])
+  sellerId Int? 
+  sellers sellers? @relation(fields: [sellerId], references: [id])
+  adminId Int?
+  admins Admin? @relation(fields: [adminId], references: [id])
   name String?
   images String[]
   quantity Int
@@ -94,7 +97,7 @@ model productRatings {
 }
 model Category {
   id Int @id @default(autoincrement())
-  name String
+  name String @unique
   description String
   products Product[]
   subCategory SubCategory[]

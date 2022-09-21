@@ -56,12 +56,17 @@ export const deleteSeller = async (req: Request, res: Response) => {
         const checkSubscriber = await prisma.subscribers.findUnique({ where: { id: Number(subscriberId) } });
         if (!checkSubscriber) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "seller does not exist" });
         if (checkSubscriber.sellerId) {
-            Promise.all([
-                await prisma.subscribers.delete({ where: { id: Number(subscriberId) } }),
-                await prisma.users.delete({ where: { subscriberId: Number(subscriberId) } }),
-                await prisma.sellers.delete({ where: { id: checkSubscriber.sellerId } }),
-            ]);
-            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "seller deleted" });
+            try {
+                await Promise.all([
+                    await prisma.subscribers.delete({ where: { id: Number(subscriberId) } }),
+                    await prisma.users.delete({ where: { subscriberId: Number(subscriberId) } }),
+                    await prisma.sellers.delete({ where: { id: checkSubscriber.sellerId } }),
+                ]);
+                return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "seller deleted" });
+            } catch (error) {
+                logger.error(error);
+                return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: error });
+            }
         }
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "cannot find seller on subscriber id" });
     } catch (e) {
@@ -73,6 +78,7 @@ export const deleteSeller = async (req: Request, res: Response) => {
             }
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e });
         }
+        logger.error(e);
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e, message: "an error occured on creating a user" });
     }
 };

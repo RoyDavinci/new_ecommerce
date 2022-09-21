@@ -16,7 +16,7 @@ export class RedisClient {
                 (await this.client).open(config.redis.REDIS);
             }
             logger.info("Connected to redis server");
-            Promise.all([
+            await Promise.all([
                 (await this.prospectiveUserRepository).dropIndex(),
                 (await this.prospectiveUserRepository).createIndex(),
                 (await this.blacklistedUserRepository).dropIndex(),
