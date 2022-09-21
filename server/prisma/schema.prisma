@@ -21,25 +21,25 @@ model users {
   role String
   adminId Int? @unique
   subscriberId Int? @unique
-  subscribers Subscribers?   @relation(fields: [subscriberId], references: [id])
-  admin Admin? @relation(fields: [adminId], references: [id])
+  subscribers subscribers?   @relation(fields: [subscriberId], references: [id])
+  admin admin? @relation(fields: [adminId], references: [id])
   accountStatus Int @default(1234567890)
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
 
-model Admin {
+model admin {
   id Int @id @default(autoincrement())
   name String
   email String
   users users?
   role Role
-  products Product[]
+  products product[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
 
-model Subscribers {
+model subscribers {
   id Int @id @default(autoincrement())
   users users?
   email String
@@ -50,12 +50,12 @@ model Subscribers {
   username String 
   sellerId Int? @unique
   seller sellers?   @relation(fields: [sellerId], references: [id])
-  orderId Orders?
+  orderId orders?
 }
 
 model sellers {
   id Int @id @default(autoincrement())
-  users Subscribers? 
+  users subscribers? 
   businessName String?
   businessType String
   shopAddress String
@@ -63,24 +63,24 @@ model sellers {
   image String
   homeAddress String
   phone1 String
-  products Product[]
-  orders Orders?
+  products product[]
+  orders orders?
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
 
-model Product {
+model product {
   id Int @id @default(autoincrement())
   sellerId Int? 
   sellers sellers? @relation(fields: [sellerId], references: [id])
   adminId Int?
-  admins Admin? @relation(fields: [adminId], references: [id])
+  admins admin? @relation(fields: [adminId], references: [id])
   name String?
   images String[]
   quantity Int
   price Decimal
   categoryId Int
-  category Category @relation(fields: [categoryId], references: [id])
+  category category @relation(fields: [categoryId], references: [id])
   description String?
   productRatings productRatings[]
   createdAt DateTime @default(now())
@@ -91,29 +91,29 @@ model productRatings {
   id Int @id @default(autoincrement())
   rating Int
   productId Int
-  product Product @relation(fields: [productId], references: [id])
+  product product @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
-model Category {
+model category {
   id Int @id @default(autoincrement())
   name String @unique
   description String
-  products Product[]
-  subCategory SubCategory[]
+  products product[]
+  subCategory subCategory[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
 
-model SubCategory {
+model subCategory {
   id Int @id @default(autoincrement())
   name String[]
   categoryId Int
-  category Category @relation(fields: [categoryId], references: [id])
+  category category @relation(fields: [categoryId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
-model Orders {
+model orders {
   id Int @id @default(autoincrement())
   order_code String
   product_detail Json
@@ -123,7 +123,7 @@ model Orders {
   total_amount String
   place String
   userId Int @unique
-  subscribers Subscribers? @relation(fields: [userId], references: [id])
+  subscribers subscribers? @relation(fields: [userId], references: [id])
   merchantId Int @unique
   sellers sellers @relation(fields: [merchantId], references: [id])
   orderDetail orderDetails[]
@@ -131,9 +131,9 @@ model Orders {
   payment_type String
   quantity Int
   address String
-  shippers Shippers?
-  transaction Transaction?
-  transaction_history Transaction_History?
+  shippers shippers?
+  transaction transaction?
+  transaction_history transaction_History?
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -141,17 +141,17 @@ model Orders {
 model orderDetails {
   id Int @id @default(autoincrement())
   orderId Int
-  orders Orders @relation(fields: [orderId], references: [id])
+  orders orders @relation(fields: [orderId], references: [id])
   place String
   email String
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
 
-model Transaction {
+model transaction {
   id Int @id @default(autoincrement())
   orderId Int @unique
-  orders Orders @relation(fields: [orderId], references: [id])
+  orders orders @relation(fields: [orderId], references: [id])
   phone String
   email String
   total_amount String
@@ -165,24 +165,24 @@ model Transaction {
   updatedAt DateTime?
 }
 
-model Transaction_History{
+model transaction_History{
   id Int @id @default(autoincrement())
   orderId Int @unique
-  orders Orders @relation(fields: [orderId], references: [id])
+  orders orders @relation(fields: [orderId], references: [id])
   transaction_code String
   status Status
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
 
-model Shippers {
+model shippers {
   id Int @id @default(autoincrement())
   name String
   places String[]
   contact String
   lagos Boolean
   orderId Int @unique
-  orders Orders @relation(fields: [orderId], references: [id])
+  orders orders @relation(fields: [orderId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }

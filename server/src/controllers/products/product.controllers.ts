@@ -13,27 +13,32 @@ const redisInstance: RedisClient = new RedisClient();
 export const createProduct = async (req: Request, res: Response) => {
     const { name, images, quantity, price, categoryId, description } = req.body;
 
-    const { adminId, subscriberId } = req.user as unknown as IUser;
-
     try {
         let newProducts: IProducts;
 
-        const findAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
-        const findSubscriber = await prisma.subscribers.findUnique({ where: { id: Number(subscriberId) } });
-        if (!findAdmin || !findSubscriber) {
-            return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "error on create product" });
-        }
-        const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
+        if (req.user) {
+            const { adminId, subscriberId } = req.user as unknown as IUser;
+            const findAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
+            const findSubscriber = await prisma.subscribers.findUnique({ where: { id: Number(subscriberId) } });
+            if (!findAdmin && !findSubscriber) {
+                return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "error on create products", adminId, subscriberId });
+            }
+            const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
 
-        if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
-        if (adminId) {
-            newProducts = await prisma.product.create({ data: { name, images, quantity, price, categoryId: findCategory.id, description, adminId: findAdmin.id } });
-            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
+            if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
+            if (adminId) {
+                if (!findAdmin?.id) return res.status(403).json({ message: "cannoot create product" });
+                newProducts = await prisma.product.create({ data: { name, images, quantity, price, categoryId: findCategory.id, description, adminId: findAdmin.id } });
+                return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
+            }
+            if (subscriberId) {
+                if (!findSubscriber?.sellerId) return res.status(403).json({ message: "cannoot create product" });
+
+                newProducts = await prisma.product.create({ data: { name, images, quantity, price, categoryId: findCategory.id, description, sellerId: findSubscriber.sellerId } });
+                return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
+            }
         }
-        if (subscriberId) {
-            newProducts = await prisma.product.create({ data: { name, images, quantity, price, categoryId: findCategory.id, description, sellerId: findSubscriber.id } });
-            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
-        }
+        return res.status(403).json({ message: "authentication needed" });
     } catch (error) {
         logger.error(error);
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });
@@ -41,25 +46,27 @@ export const createProduct = async (req: Request, res: Response) => {
 };
 
 export const deleteProducts = async (req: Request, res: Response) => {
-    const { adminId, subscriberId } = req.user as unknown as IUser;
-
     const { id } = req.params;
 
     try {
-        const findProduct = await prisma.product.findUnique({ where: { id: Number(id) } });
-        if (!findProduct) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "product not found" });
-        if (subscriberId) {
-            const findUnique = await prisma.$queryRaw`SELECT * FROM Products WHERE id = ${Number(id)} AND sellerId = ${Number(subscriberId)}`;
-            if (!findUnique) return res.status(400).json({ message: "product not found" });
-            await prisma.product.delete({ where: { id: Number(id) } });
-            return res.status(200).json({ message: "prodict deleted" });
+        if (req.user) {
+            const { adminId, subscriberId } = req.user as unknown as IUser;
+            const findProduct = await prisma.product.findUnique({ where: { id: Number(id) } });
+            if (!findProduct) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "product not found" });
+            if (subscriberId) {
+                const findUnique = await prisma.$queryRaw`SELECT * FROM Product WHERE id = ${Number(id)} AND sellerId = ${Number(subscriberId)}`;
+                if (!findUnique) return res.status(400).json({ message: "product not found" });
+                await prisma.product.delete({ where: { id: Number(id) } });
+                return res.status(200).json({ message: "prodict deleted" });
+            }
+            if (adminId) {
+                const findUnique = await prisma.$queryRaw`SELECT * FROM Product WHERE id = ${Number(id)} AND "adminId" = ${Number(adminId)}`;
+                if (!findUnique) return res.status(400).json({ message: "product not found" });
+                await prisma.product.delete({ where: { id: Number(id) } });
+                return res.status(200).json({ message: "prodict deleted" });
+            }
         }
-        if (adminId) {
-            const findUnique = await prisma.$queryRaw`SELECT * FROM Products WHERE id = ${Number(id)} AND adminId = ${Number(adminId)}`;
-            if (!findUnique) return res.status(400).json({ message: "product not found" });
-            await prisma.product.delete({ where: { id: Number(id) } });
-            return res.status(200).json({ message: "prodict deleted" });
-        }
+        return res.status(403).json({ message: "authentication needed" });
     } catch (error) {
         logger.error(error);
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });

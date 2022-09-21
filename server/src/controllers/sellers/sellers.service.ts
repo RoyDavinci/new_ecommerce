@@ -7,5 +7,7 @@ const sellerRouter = Router();
 sellerRouter.post("/", controller.createNewSeller);
 sellerRouter.delete("/:id", authenticateJWT, controller.deleteSeller);
 sellerRouter.patch("/:id", authenticateJWT, controller.updateSeller);
+sellerRouter.get("/", authenticateJWT, controller.getSellers);
+sellerRouter.get("/:id", authenticateJWT, controller.getSeller);
 
 export { sellerRouter };

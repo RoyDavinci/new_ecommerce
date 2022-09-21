@@ -117,3 +117,50 @@ export const updateSeller = async (req: Request, res: Response) => {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e, message: "an error occured on creating a user" });
     }
 };
+
+export const getSellers = async (req: Request, res: Response) => {
+    try {
+        if (req.user) {
+            const { adminId } = req.user as unknown as IUser;
+            const searchAdmin = await prisma.users.findUnique({ where: { id: Number(adminId) } });
+
+            if (!searchAdmin) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "user not found" });
+            const getSellers = await prisma.sellers.findMany();
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "sellers gotten", getSellers });
+        }
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === "P2002") {
+                logger.info("There is a unique constraint violation, a new user cannot be created with this email");
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "There is a unique constraint violation, a new user cannot be created with this email" });
+            }
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e });
+        }
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e, message: "an error occured on creating a user" });
+    }
+};
+export const getSeller = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        if (req.user) {
+            const { adminId } = req.user as unknown as IUser;
+            const searchAdmin = await prisma.users.findUnique({ where: { id: Number(adminId) } });
+
+            if (!searchAdmin) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "user not found" });
+            const getSellers = await prisma.sellers.findUnique({ where: { id: Number(id) } });
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "sellers gotten", getSellers });
+        }
+    } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === "P2002") {
+                logger.info("There is a unique constraint violation, a new user cannot be created with this email");
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "There is a unique constraint violation, a new user cannot be created with this email" });
+            }
+            return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e });
+        }
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: e, message: "an error occured on creating a user" });
+    }
+};
