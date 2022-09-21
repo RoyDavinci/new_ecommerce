@@ -5,16 +5,19 @@ import { RedisClient } from "../../db/class";
 import { IUser } from "../auth/auth.interface";
 import { logger } from "../../common/logger";
 
+const redisInstance: RedisClient = new RedisClient();
+
 const prisma = new PrismaClient();
 
 export const createCatrgory = async (req: Request, res: Response) => {
     const { name, description } = req.body;
-    const { adminId } = req.user as unknown as IUser;
+    const { adminId, subscriberId } = req.user as unknown as IUser;
 
     try {
-        logger.info("waiting");
-        // const checkAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
-        // if (!checkAdmin) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "Admin not found" });
+        const checkAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
+        const checkSeller = await prisma.subscribers.findUnique({ where: { id: Number(subscriberId) } });
+
+        if (!checkAdmin || checkSeller?.sellerId) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "Admin not found" });
         const newCategory = await prisma.category.create({ data: { name, description } });
         return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "category created", newCategory });
     } catch (error) {
@@ -22,7 +25,7 @@ export const createCatrgory = async (req: Request, res: Response) => {
             // The .code property can be accessed in a type-safe manner
             if (error.code === "P2002") {
                 logger.info("There is a unique constraint violation, a new user cannot be created with this email");
-                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "There is a unique constraint violation, a new user cannot be created with this email" });
+                return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "There is a unique constraint violation, a new category cannot be created with this name" });
             }
             return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ error: error });
         }

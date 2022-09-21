@@ -63,7 +63,7 @@ export const confirmOtp = async (req: Request, res: Response, next: NextFunction
 
         const newSubscriber = await prisma.subscribers.create({ data: { username: cachedUserInfo.username, phone: cachedUserInfo.phone, email: cachedUserInfo.email, voucher, role: "subscriber" } });
         const newUser = await prisma.users.create({
-            data: { first_name: cachedUserInfo.first_name, last_name: cachedUserInfo.last_name, password: hashedPasssword, email: cachedUserInfo.email, subscriberId: newSubscriber.id, role: cachedUserInfo.role },
+            data: { first_name: cachedUserInfo.first_name, last_name: cachedUserInfo.last_name, password: hashedPasssword, email: cachedUserInfo.email, subscriberId: newSubscriber.id, role: newSubscriber.role },
         });
 
         const token = generateToken({ id: newUser.id, email: newUser.email, role: newUser.role });

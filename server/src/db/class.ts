@@ -31,27 +31,43 @@ export class RedisClient {
     }
 
     async emailAlreadyExist(email: string) {
-        const checkEmail = (await this.prospectiveUserRepository).search().where("email").equalTo(email).return.all();
-        return (await checkEmail).length;
+        try {
+            const checkEmail = (await this.prospectiveUserRepository).search().where("email").equalTo(email).return.all();
+            return (await checkEmail).length;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async createProspectiveUser(data: EntityData | undefined) {
-        const prospectiveUser = await (await this.prospectiveUserRepository).createAndSave(data);
-        const id = await (await this.prospectiveUserRepository).save(prospectiveUser);
-        (await this.client).execute(["EXPIRE", `ProspectiveUser:${id}`, config.server.OTP_TTL]);
-        return id;
+        try {
+            const prospectiveUser = await (await this.prospectiveUserRepository).createAndSave(data);
+            const id = await (await this.prospectiveUserRepository).save(prospectiveUser);
+            (await this.client).execute(["EXPIRE", `ProspectiveUser:${id}`, config.server.OTP_TTL]);
+            return id;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async fetchProspectiveUser(id: string) {
-        const entity = await (await this.prospectiveUserRepository).fetch(id);
-        return entity;
+        try {
+            const entity = await (await this.prospectiveUserRepository).fetch(id);
+            return entity;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async createForgetPasswordRequest(data: EntityData | undefined) {
-        const forgetPasswordRequest = (await this.ForgetPasswordRequestRepository).createEntity(data);
-        const id = await (await this.ForgetPasswordRequestRepository).save(forgetPasswordRequest);
-        (await this.client).execute(["EXPIRE", `ForgetPasswordRequest:${id}`, config.server.OTP_TTL]);
-        return id;
+        try {
+            const forgetPasswordRequest = (await this.ForgetPasswordRequestRepository).createEntity(data);
+            const id = await (await this.ForgetPasswordRequestRepository).save(forgetPasswordRequest);
+            (await this.client).execute(["EXPIRE", `ForgetPasswordRequest:${id}`, config.server.OTP_TTL]);
+            return id;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async removeForgetPasswordRequest(id: string) {
@@ -59,49 +75,77 @@ export class RedisClient {
     }
 
     async fetchForgetPasswordRequest(id: string) {
-        const entity = await (await this.ForgetPasswordRequestRepository).fetch(id);
-        return entity;
+        try {
+            const entity = await (await this.ForgetPasswordRequestRepository).fetch(id);
+            return entity;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     // blacklisted users logics and methods
 
     async blacklistUser(data: { token: string | undefined; reason: string; createdAt: string } | undefined) {
-        const blacklistedUser = await (await this.blacklistedUserRepository).createAndSave(data as unknown as EntityData | undefined);
-        const id = await (await this.blacklistedUserRepository).save(blacklistedUser);
-        (await this.client).execute(["EXPIRE", `BlacklistedUser:${id}`, 7 * 24 * 60 * 60]);
+        try {
+            const blacklistedUser = await (await this.blacklistedUserRepository).createAndSave(data as unknown as EntityData | undefined);
+            const id = await (await this.blacklistedUserRepository).save(blacklistedUser);
+            (await this.client).execute(["EXPIRE", `BlacklistedUser:${id}`, 7 * 24 * 60 * 60]);
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async searchBlaclklistedUsers(token: string) {
-        const users = await (await this.blacklistedUserRepository).search().where("token").eq(token).return.all();
-        return users;
+        try {
+            const users = await (await this.blacklistedUserRepository).search().where("token").eq(token).return.all();
+            return users;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async removeBlacklistedUser(id: string) {
         return (await this.blacklistedUserRepository).remove(id);
     }
     async setAdmins(data: object[]) {
-        const rolesStrigified = JSON.stringify(data);
-        (await this.client).execute(["SET", "admins", rolesStrigified]);
-        (await this.client).execute(["EXPIRE", "admins", config.server.RESOURCE_KEY_EXPIRATION]);
+        try {
+            const rolesStrigified = JSON.stringify(data);
+            (await this.client).execute(["SET", "admins", rolesStrigified]);
+            (await this.client).execute(["EXPIRE", "admins", config.server.RESOURCE_KEY_EXPIRATION]);
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async getAdmins() {
-        const rolesStrigified = await (await this.client).execute(["GET", "admins"]);
-        const datum = JSON.stringify(rolesStrigified);
-        const data = JSON.parse(datum);
-        return data;
+        try {
+            const rolesStrigified = await (await this.client).execute(["GET", "admins"]);
+            const datum = JSON.stringify(rolesStrigified);
+            const data = JSON.parse(datum);
+            return data;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 
     async setSubscribers(data: object[]) {
-        const subscribersStrigified = JSON.stringify(data);
-        (await this.client).execute(["SET", "subscribers", subscribersStrigified]);
-        (await this.client).execute(["EXPIRE", "subscribers", config.server.RESOURCE_KEY_EXPIRATION]);
+        try {
+            const subscribersStrigified = JSON.stringify(data);
+            (await this.client).execute(["SET", "subscribers", subscribersStrigified]);
+            (await this.client).execute(["EXPIRE", "subscribers", config.server.RESOURCE_KEY_EXPIRATION]);
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
     async getSubscribers() {
-        const rolesStrigified = await (await this.client).execute(["GET", "subscribers"]);
-        const datum = JSON.stringify(rolesStrigified);
-        const data = JSON.parse(datum);
-        return data;
+        try {
+            const rolesStrigified = await (await this.client).execute(["GET", "subscribers"]);
+            const datum = JSON.stringify(rolesStrigified);
+            const data = JSON.parse(datum);
+            return data;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
     }
 }
 

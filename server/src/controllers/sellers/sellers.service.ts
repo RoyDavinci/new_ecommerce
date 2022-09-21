@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateJWT, authenticateLocal, authenticateAdminJWT } from "../../common/authenticate";
+import { authenticateJWT } from "../../common/authenticate";
 import * as controller from "./sellers.controllers";
 
 const sellerRouter = Router();

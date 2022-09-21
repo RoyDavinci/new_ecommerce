@@ -46,7 +46,7 @@ model Subscribers {
   voucher String?
   address String?
   phone String 
-  role String
+  role String @default("subscribers")
   username String 
   sellerId Int? @unique
   seller sellers?   @relation(fields: [sellerId], references: [id])
