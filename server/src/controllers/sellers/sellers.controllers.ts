@@ -5,12 +5,15 @@ import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { RedisClient } from "../../db/class";
 import { generateHash } from "../../common/generateHash";
 import { logger } from "../../common/logger";
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
+import { v2 as cloudinary } from "cloudinary";
 
 const prisma = new PrismaClient();
 const redisInstance: RedisClient = new RedisClient();
 
 export const createNewSeller = async (req: Request, res: Response) => {
-    const { businessName, businessType, shopAddress, phone, image, homeAddress, phone1, email, first_name, last_name, password, username } = req.body;
+    const { businessName, businessType, shopAddress, phone, homeAddress, phone1, email, first_name, last_name, password, username } = req.body;
     logger.info(req.body);
 
     try {
@@ -20,8 +23,20 @@ export const createNewSeller = async (req: Request, res: Response) => {
                 const searchSubscriber = await prisma.users.findUnique({ where: { id: Number(subscriberId) } });
 
                 if (!searchSubscriber) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "user not found" });
+                let images: string = "";
+                const files = req.file;
+                if (files) {
+                    const { path } = files;
+                    await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
+                        if (error) return res.status(400).json({ message: error });
+                        if (result) images = result.secure_url;
+                        // fs.unlink(path, function (err) {
+                        //     if (err) return res.status(400).json({ message: err });
+                        // });
+                    });
+                }
 
-                const newSeller = await prisma.sellers.create({ data: { businessType, businessName, shopAddress, phone, image, homeAddress, phone1 } });
+                const newSeller = await prisma.sellers.create({ data: { businessType, businessName, shopAddress, phone, image: images, homeAddress, phone1 } });
 
                 await prisma.subscribers.update({ where: { id: Number(subscriberId) }, data: { sellerId: newSeller.id } });
 
@@ -35,8 +50,21 @@ export const createNewSeller = async (req: Request, res: Response) => {
             const newSubscriber = await prisma.subscribers.create({ data: { email, address: homeAddress, username, role: "seller", phone: phone1 } });
 
             await prisma.users.create({ data: { email, first_name, last_name, password: hashedPassword, role: "seller", subscriberId: newSubscriber.id } });
+            let images: string = "";
+            const files = req.file;
+            return res.status(200).json({ files });
+            // if (files) {
+            //     const { path } = files;
+            //     await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
+            //         if (error) return res.status(400).json({ message: error });
+            //         if (result) images = result.secure_url;
+            //         // fs.unlink(path, function (err) {
+            //         //     if (err) return res.status(400).json({ message: err });
+            //         // });
+            //     });
+            // }
 
-            const newSeller = await prisma.sellers.create({ data: { businessType, businessName, shopAddress, phone, image, homeAddress, phone1 } });
+            const newSeller = await prisma.sellers.create({ data: { businessType, businessName, shopAddress, phone, image: images, homeAddress, phone1 } });
 
             await prisma.subscribers.update({ where: { id: newSubscriber.id }, data: { sellerId: newSeller.id } });
 

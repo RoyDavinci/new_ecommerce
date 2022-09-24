@@ -18,6 +18,7 @@ import debug from "debug";
 import { healthRouter } from "./controllers";
 import connectRedisCache from "./db/redis";
 import { createSuperUser } from "./serverSetup";
+import { v2 as cloudinary } from "cloudinary";
 
 const app: Express = express();
 
@@ -32,6 +33,12 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(compress());
 app.use(cors());
+
+cloudinary.config({
+    cloud_name: config.cloudinaryConfig.CLOUDINARY_NAME,
+    api_key: config.cloudinaryConfig.CLOUDINARY_API_KEY,
+    api_secret: config.cloudinaryConfig.CLOUDNIARY_API_SECRET,
+});
 
 app.use(sessionInstance);
 connectRedisCache();
