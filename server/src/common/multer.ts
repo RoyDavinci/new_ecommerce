@@ -1,6 +1,6 @@
-import { NextFunction, Response } from "express";
-import { Request } from "express-serve-static-core";
+import { NextFunction, Response, Request } from "express";
 import multer from "multer";
+import { logger } from "./logger";
 
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {

@@ -9,8 +9,7 @@ const prisma = new PrismaClient();
 const redisInstance: RedisClient = new RedisClient();
 
 export const createSubCategory = async (req: Request, res: Response) => {
-    const { categoryId } = req.params;
-    const { name } = req.body;
+    const { name, categoryId } = req.body;
     const { adminId } = req.user as unknown as IUser;
     try {
         const checkAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });

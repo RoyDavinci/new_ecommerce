@@ -6,12 +6,15 @@ import { RedisClient } from "../../db/class";
 import { generateHash } from "../../common/generateHash";
 import { logger } from "../../common/logger";
 import { IProducts } from "./products.interfaces";
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
+import { v2 as cloudinary } from "cloudinary";
 
 const prisma = new PrismaClient();
 const redisInstance: RedisClient = new RedisClient();
 
 export const createProduct = async (req: Request, res: Response) => {
-    const { name, images, quantity, price, categoryId, description } = req.body;
+    const { name, quantity, price, categoryId, description } = req.body;
 
     try {
         let newProducts: IProducts;
@@ -28,20 +31,49 @@ export const createProduct = async (req: Request, res: Response) => {
             if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
             if (adminId) {
                 if (!findAdmin?.id) return res.status(403).json({ message: "cannoot create product" });
-                newProducts = await prisma.product.create({ data: { name, images, quantity, price, categoryId: findCategory.id, description, adminId: findAdmin.id } });
+                const value: string[] = [];
+                if (req.files) {
+                    const files = req.files as unknown as Express.Multer.File[];
+                    for (const file of files) {
+                        const { path } = file;
+                        await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
+                            if (error) return res.status(400).json({ message: error });
+                            if (result) value.push(result.secure_url);
+                            fs.unlink(path, function (err) {
+                                if (err) return res.status(400).json({ message: err });
+                            });
+                        });
+                    }
+                }
+
+                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, adminId: findAdmin.id } });
                 return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
             }
             if (subscriberId) {
                 if (!findSubscriber?.sellerId) return res.status(403).json({ message: "cannoot create product" });
+                const value: string[] = [];
+                if (req.files) {
+                    const files = req.files as unknown as Express.Multer.File[];
 
-                newProducts = await prisma.product.create({ data: { name, images, quantity, price, categoryId: findCategory.id, description, sellerId: findSubscriber.sellerId } });
+                    for (const file of files) {
+                        const { path } = file;
+                        await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
+                            if (error) return res.status(400).json({ message: error });
+                            if (result) value.push(result.secure_url);
+                            fs.unlink(path, function (err) {
+                                if (err) return res.status(400).json({ message: err });
+                            });
+                        });
+                    }
+                }
+                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, sellerId: findSubscriber.sellerId } });
                 return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
             }
         }
         return res.status(403).json({ message: "authentication needed" });
     } catch (error) {
         logger.error(error);
-        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request", error });
     }
 };
 
