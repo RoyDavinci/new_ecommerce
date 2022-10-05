@@ -1,0 +1,54 @@
+.headerContainer {
+	display: flex;
+	justify-content: space-between;
+	text-align: center;
+	padding: 10px;
+	/* background-color: rgba(16, 16, 16, 0.8); */
+	/* color: white; */
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+
+.headerLogo img {
+	width: 80px;
+}
+
+.headerUser,
+.headerLinks {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.headerUser img {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+}
+.headerUser i,
+.headerLinks ul li {
+	position: relative;
+	margin: 0px 5px;
+}
+.headerLinks ul li,
+.headerLinks ul li a {
+	display: inline-flex;
+	color: black;
+}
+.headerUser i span {
+	position: absolute;
+	color: white;
+	background: red;
+	border-radius: 50%;
+	font-size: 5px;
+	padding: 5px;
+	top: -5px;
+	right: 0;
+}
+.headerUser button {
+	background-color: #4285f4;
+	color: white;
+	padding: 8px 15px;
+	border-radius: 5%;
+}
