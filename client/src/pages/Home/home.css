@@ -5,8 +5,27 @@
 }
 .home__newsletterContainer {
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	background-color: black;
 	color: white;
-	padding: 20px;
+	padding: 30px;
+	align-items: center;
+	gap: 20px;
+}
+.home__newsletterContainer form {
+	margin: 0px 10px;
+}
+.home__newsletterContainer form button,
+.home__newsletterContainer form input {
+	padding: 10px 20px;
+	color: white;
+	border: 0.5px solid #ccc;
+	margin: 0px 10px;
+	font-size: 20px;
+}
+.home__newsletterContainer form button {
+	background-color: #4285f4;
+}
+.home__newsletterContainer form input::placeholder {
+	color: white;
 }

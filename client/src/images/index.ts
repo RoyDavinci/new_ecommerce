@@ -4,6 +4,7 @@ import logoLight from "./png/undraw_by_my_car_re_j3jt.svg";
 import tyres from "./jpg/pexels-photo-3806252.jpeg";
 import windshield from "./jpg/download.jpeg";
 import engine from "./jpg/pexels-photo-2607555.jpeg";
+import footerLogo from "./png/pngwing.com.png";
 
 const data = {
 	logo: Logo,
@@ -12,6 +13,7 @@ const data = {
 	tyres,
 	windshield,
 	engine,
+	footerLogo,
 };
 
 export default data;

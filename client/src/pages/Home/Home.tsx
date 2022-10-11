@@ -1,5 +1,5 @@
 import React from "react";
-import { Header, Hero, Category, Blog } from "../../components";
+import { Header, Hero, Category, Blog, Footer } from "../../components";
 import images from "../../images";
 import { data } from "../../utils/data";
 import "./home.css";
@@ -27,13 +27,13 @@ export const Home = () => {
 			</div>
 			<Blog></Blog>
 			<div className='home__newsletterContainer'>
-				<p>Newsletter</p>
-				<p>Subscribe to our newsletter for tips on your car</p>
+				<h2>Subscribe to our newsletter for tips on your car</h2>
 				<form action=''>
-					<input type='email' />
+					<input type='email' placeholder='getdata@gmail.com' />
 					<button>Submit</button>
 				</form>
 			</div>
+			<Footer links={data} image={images.footerLogo}></Footer>
 		</div>
 	);
 };
