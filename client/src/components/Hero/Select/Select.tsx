@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getItem, models } from "../../../utils/cars/carItems";
+import { getItem, modelType } from "../../../utils/cars/carItems";
 
 export interface SelectProps {
 	items: string[];
@@ -10,9 +10,7 @@ export const Select: React.FunctionComponent<SelectProps> = ({
 	items,
 	name,
 }) => {
-	const [make, SetMake] = useState<
-		{ name: string; items: string[] } | { name: string; items: {} } | undefined
-	>();
+	const [make, SetMake] = useState<modelType>();
 
 	const handleChange = (e: React.FormEvent<HTMLSelectElement>) => {
 		const currentValue = e.currentTarget.value;
@@ -38,14 +36,15 @@ export const Select: React.FunctionComponent<SelectProps> = ({
 				<option value='Select Model' disabled>
 					Select Model
 				</option>
-				{items.map((item, index) => {
+				{make?.items?.map((item, index) => {
 					return (
-						<option key={index} value={item.toLowerCase()}>
+						<option value={item} key={index}>
 							{item}
 						</option>
 					);
 				})}
 			</select>
+			<button>Search Products</button>
 		</div>
 	);
 };

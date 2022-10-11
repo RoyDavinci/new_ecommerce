@@ -1,0 +1,14 @@
+.blogItemContainer img {
+	width: 400px;
+	height: 280px;
+}
+.blogItemContainer {
+	padding: 20px;
+}
+section p {
+	margin: 10px 0px;
+	line-height: 1.5rem;
+}
+section h3 {
+	margin: 10px 0px;
+}

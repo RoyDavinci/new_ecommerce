@@ -1,0 +1,12 @@
+.app__header {
+	min-height: 100vh;
+	background-color: black;
+	color: white;
+}
+.home__newsletterContainer {
+	display: flex;
+	justify-content: space-between;
+	background-color: black;
+	color: white;
+	padding: 20px;
+}

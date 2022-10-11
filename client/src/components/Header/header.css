@@ -29,12 +29,13 @@
 .headerUser i,
 .headerLinks ul li {
 	position: relative;
-	margin: 0px 5px;
+	margin: 0px 10px;
 }
 .headerLinks ul li,
 .headerLinks ul li a {
 	display: inline-flex;
-	color: black;
+	color: white;
+	font-size: 22px;
 }
 .headerUser i span {
 	position: absolute;
