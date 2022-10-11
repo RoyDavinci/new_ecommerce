@@ -80,6 +80,9 @@ model product {
   quantity Int
   price Decimal
   categoryId Int
+  make String
+  model String
+  year String
   category category @relation(fields: [categoryId], references: [id])
   description String?
   productRatings productRatings[]

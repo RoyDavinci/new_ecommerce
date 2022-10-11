@@ -6,67 +6,74 @@ import { RedisClient } from "../../db/class";
 import { generateHash } from "../../common/generateHash";
 import { logger } from "../../common/logger";
 import { IProducts } from "./products.interfaces";
-import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
-import { v2 as cloudinary } from "cloudinary";
+import { UploadApiResponse } from "cloudinary";
+import { streamUpload } from "../../utils/streamifier";
 
 const prisma = new PrismaClient();
 const redisInstance: RedisClient = new RedisClient();
 
 export const createProduct = async (req: Request, res: Response) => {
-    const { name, quantity, price, categoryId, description } = req.body;
-
+    const { name, quantity, price, categoryId, description, make, model, year } = req.body;
+    logger.info("gotten to req.body");
     try {
         let newProducts: IProducts;
 
         if (req.user) {
             const { adminId, subscriberId } = req.user as unknown as IUser;
+            logger.info("gotten to check admin");
             const findAdmin = await prisma.admin.findUnique({ where: { id: Number(adminId) } });
+            logger.info("gotten to find admin");
             const findSubscriber = await prisma.subscribers.findUnique({ where: { id: Number(subscriberId) } });
+            logger.info("gotten to find subscriber");
             if (!findAdmin && !findSubscriber) {
                 return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "error on create products", adminId, subscriberId });
             }
+            logger.info("gotten to verify subscriber admin");
             const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
-
+            logger.info("gotten to find category");
             if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
             if (adminId) {
+                logger.info(adminId);
                 if (!findAdmin?.id) return res.status(403).json({ message: "cannoot create product" });
                 const value: string[] = [];
-                if (req.files) {
-                    const files = req.files as unknown as Express.Multer.File[];
-                    for (const file of files) {
-                        const { path } = file;
-                        await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
-                            if (error) return res.status(400).json({ message: error });
-                            if (result) value.push(result.secure_url);
-                            fs.unlink(path, function (err) {
-                                if (err) return res.status(400).json({ message: err });
-                            });
-                        });
-                    }
+                logger.info(value);
+                const result = (await streamUpload(req)) as unknown as UploadApiResponse;
+                logger.info(JSON.stringify(result));
+                if (result) {
+                    value.push(result.secure_url);
                 }
+                //   if (req.files) {
+                //       const files = req.files as unknown as Express.Multer.File[];
 
-                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, adminId: findAdmin.id } });
+                //       for (const file of files) {
+                //           const { path } = file;
+                //           await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
+                //               if (error) return res.status(400).json({ message: error });
+                //               if (result) value.push(result.secure_url);
+                //               fs.unlink(path, function (err) {
+                //                   if (err) return res.status(400).json({ message: err });
+                //               });
+                //           });
+                //       }
+                //   }
+                // if(req.files) {
+                //     const files = req.files as unknown as Express.Multer.File[];
+                //     for (const file of files){
+                //         const {buffer} = file
+                //     }
+                // }
+                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, adminId: findAdmin.id, make, model, year } });
                 return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
             }
             if (subscriberId) {
+                logger.info(subscriberId);
                 if (!findSubscriber?.sellerId) return res.status(403).json({ message: "cannoot create product" });
                 const value: string[] = [];
-                if (req.files) {
-                    const files = req.files as unknown as Express.Multer.File[];
-
-                    for (const file of files) {
-                        const { path } = file;
-                        await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
-                            if (error) return res.status(400).json({ message: error });
-                            if (result) value.push(result.secure_url);
-                            fs.unlink(path, function (err) {
-                                if (err) return res.status(400).json({ message: err });
-                            });
-                        });
-                    }
+                const result = (await streamUpload(req)) as unknown as UploadApiResponse;
+                if (result) {
+                    value.push(result.secure_url);
                 }
-                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, sellerId: findSubscriber.sellerId } });
+                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, sellerId: findSubscriber.sellerId, make, model, year } });
                 return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
             }
         }
