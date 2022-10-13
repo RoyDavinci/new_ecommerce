@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 const redisInstance: RedisClient = new RedisClient();
 
 export const createProduct = async (req: Request, res: Response) => {
-    const { name, quantity, price, categoryId, description, make, model, year } = req.body;
+    const { name, quantity, price, description, make, model, year, categoryName } = req.body;
     logger.info("gotten to req.body");
     try {
         let newProducts: IProducts;
@@ -29,9 +29,16 @@ export const createProduct = async (req: Request, res: Response) => {
                 return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "error on create products", adminId, subscriberId });
             }
             logger.info("gotten to verify subscriber admin");
-            const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
-            logger.info("gotten to find category");
-            if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
+            let num: number = 0;
+            const checkCategoryName = await prisma.category.findUnique({ where: { name: categoryName } });
+            if (!checkCategoryName) {
+                const newCategory = await prisma.category.create({ data: { name: categoryName, description: ` descriptio for ${name}` } });
+                num = newCategory.id;
+            }
+            if (checkCategoryName) {
+                num = checkCategoryName.id;
+            }
+
             if (adminId) {
                 logger.info(adminId);
                 if (!findAdmin?.id) return res.status(403).json({ message: "cannoot create product" });
@@ -62,18 +69,25 @@ export const createProduct = async (req: Request, res: Response) => {
                 //         const {buffer} = file
                 //     }
                 // }
-                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, adminId: findAdmin.id, make, model, year } });
+                if (num > 0) {
+                    newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: num, description, adminId: findAdmin.id, make, model, year } });
+                    return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
+                }
+                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: num, description, adminId: findAdmin.id, make, model, year } });
                 return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
             }
             if (subscriberId) {
-                logger.info(subscriberId);
                 if (!findSubscriber?.sellerId) return res.status(403).json({ message: "cannoot create product" });
                 const value: string[] = [];
                 const result = (await streamUpload(req)) as unknown as UploadApiResponse;
                 if (result) {
                     value.push(result.secure_url);
                 }
-                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: findCategory.id, description, sellerId: findSubscriber.sellerId, make, model, year } });
+                if (num > 0) {
+                    newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: num, description, adminId: findSubscriber.id, make, model, year } });
+                    return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
+                }
+                newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: num, description, adminId: findSubscriber.id, make, model, year } });
                 return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
             }
         }
@@ -114,35 +128,50 @@ export const deleteProducts = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
     const { adminId, subscriberId } = req.user as unknown as IUser;
-    const { name, images, quantity, price, categoryId, description } = req.body;
+    const { name, quantity, price, categoryId, description } = req.body;
     const { id } = req.params;
 
     try {
         const findProduct = await prisma.product.findUnique({ where: { id: Number(id) } });
         if (!findProduct) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "product not found" });
 
-        const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
+        // const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
 
-        if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
-
+        // if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
+        const value: string[] = [];
+        if (req.file) {
+            logger.info(value);
+            const result = (await streamUpload(req)) as unknown as UploadApiResponse;
+            logger.info(JSON.stringify(result));
+            if (result) {
+                value.push(result.secure_url);
+            }
+            if (subscriberId) {
+                const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "sellerId" = ${Number(subscriberId)}`;
+                if (!findUnique) return res.status(400).json({ message: "product not found" });
+                await prisma.product.update({ where: { id: Number(id) }, data: { name, images: value, quantity, price, categoryId: Number(categoryId), description, adminId: Number(adminId) } });
+            }
+            if (adminId) {
+                const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "adminId" = ${Number(adminId)}`;
+                if (!findUnique) return res.status(400).json({ message: "product not found" });
+                await prisma.product.update({ where: { id: Number(id) }, data: { name, images: value, quantity, price, categoryId: Number(categoryId), description, adminId: Number(adminId) } });
+                return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "product updated" });
+            }
+        }
         if (subscriberId) {
             const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "sellerId" = ${Number(subscriberId)}`;
             if (!findUnique) return res.status(400).json({ message: "product not found" });
-            if (findCategory.id) {
-                await prisma.product.update({ where: { id: Number(id) }, data: { name, images, quantity, price, categoryId: findCategory.id, description, adminId: Number(adminId) } });
-                return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "product updated" });
-            }
+            if (!findUnique) return res.status(400).json({ message: "product not found" });
+            await prisma.product.update({ where: { id: Number(id) }, data: { name, quantity, price, categoryId: Number(categoryId), description, adminId: Number(adminId) } });
 
             return res.status(200).json({ message: "prodict deleted" });
         }
         if (adminId) {
             const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "adminId" = ${Number(adminId)}`;
             if (!findUnique) return res.status(400).json({ message: "product not found" });
-            if (findCategory.id) {
-                await prisma.product.update({ where: { id: Number(id) }, data: { name, images, quantity, price, categoryId: findCategory.id, description, adminId: Number(adminId) } });
-                return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "product updated" });
-            }
-            return res.status(200).json({ message: "prodict deleted" });
+            if (!findUnique) return res.status(400).json({ message: "product not found" });
+            await prisma.product.update({ where: { id: Number(id) }, data: { name, quantity, price, categoryId: Number(categoryId), description, adminId: adminId } });
+            return res.status(200).json({ message: "prodict updated" });
         }
     } catch (error) {
         logger.error(error);
@@ -171,7 +200,7 @@ export const getSingleProduct = async (req: Request, res: Response) => {
     }
 };
 
-export const getProductByCategory = async (req: Request, res: Response) => {
+export const getProductByCategoryId = async (req: Request, res: Response) => {
     const { categoryId } = req.params;
     try {
         const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
@@ -181,6 +210,18 @@ export const getProductByCategory = async (req: Request, res: Response) => {
         const getProduct = await prisma.product.findMany();
         const filteredProduct = getProduct.filter((product) => product.categoryId === Number(categoryId));
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: filteredProduct });
+    } catch (error) {
+        logger.error(error);
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });
+    }
+};
+
+export const searchByProductName = async (req: Request, res: Response) => {
+    const { productName } = req.body;
+
+    try {
+        const results = await prisma.product.findMany({ where: { name: { search: productName } } });
+        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "data gotten", results });
     } catch (error) {
         logger.error(error);
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });

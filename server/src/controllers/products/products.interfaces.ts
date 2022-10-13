@@ -10,4 +10,7 @@ export interface IProducts {
     price: Decimal;
     categoryId: number;
     quantity: number;
+    year: string;
+    make: string;
+    model: string;
 }

@@ -12,6 +12,6 @@ productRouter.get("/", controller.getProducts);
 productRouter.delete("/:id", authenticateJWT, controller.deleteProducts);
 productRouter.patch("/:id", authenticateJWT, controller.updateProduct);
 productRouter.get("/:id", controller.getSingleProduct);
-productRouter.get("/category/:categoryId", controller.getProductByCategory);
+productRouter.get("/category/:categoryId", controller.getProductByCategoryId);
 
 export { productRouter };
