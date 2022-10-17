@@ -55,3 +55,15 @@ export const ForgetPasswordRequestSchema = new Schema(
         dataStructure: "JSON",
     },
 );
+
+export class ShipperInfo extends Entity {
+    [x: string]: any;
+}
+
+export const shipperInfoSchema = new Schema(ShipperInfo, {
+    name: { type: "string" },
+    places: { type: "string[]" },
+    contact: { type: "string" },
+    lagos: { type: "boolean" },
+    price: { type: "string" },
+});

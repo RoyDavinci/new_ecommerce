@@ -1,7 +1,7 @@
 import { Client, EntityData, Entity } from "redis-om";
 import config from "../config";
 import { logger } from "../common/logger";
-import { blacklistedUserSchema, prospectiveUserSchema, ForgetPasswordRequestSchema } from "./schemas";
+import { blacklistedUserSchema, prospectiveUserSchema, ForgetPasswordRequestSchema, shipperInfoSchema } from "./schemas";
 
 export class RedisClient {
     private client = new Client().open(config.redis.REDIS);
@@ -9,6 +9,7 @@ export class RedisClient {
     private prospectiveUserRepository = this.client.then((data) => data.fetchRepository(prospectiveUserSchema));
     private blacklistedUserRepository = this.client.then((data) => data.fetchRepository(blacklistedUserSchema));
     private ForgetPasswordRequestRepository = this.client.then((data) => data.fetchRepository(ForgetPasswordRequestSchema));
+    private ShipperInfoRepository = this.client.then((data) => data.fetchRepository(shipperInfoSchema));
 
     async connect() {
         try {
@@ -16,14 +17,7 @@ export class RedisClient {
                 (await this.client).open(config.redis.REDIS);
             }
             logger.info("Connected to redis server");
-            await Promise.all([
-                (await this.prospectiveUserRepository).dropIndex(),
-                (await this.prospectiveUserRepository).createIndex(),
-                (await this.blacklistedUserRepository).dropIndex(),
-                (await this.blacklistedUserRepository).createIndex(),
-                (await this.ForgetPasswordRequestRepository).dropIndex(),
-                (await this.ForgetPasswordRequestRepository).createIndex(),
-            ]);
+            await Promise.all([(await this.prospectiveUserRepository).createIndex(), (await this.blacklistedUserRepository).createIndex(), (await this.ForgetPasswordRequestRepository).createIndex(), (await this.ShipperInfoRepository).createIndex()]);
         } catch (error) {
             logger.info("failed Connecting to redis server");
             throw new Error(error as unknown as string | undefined);
@@ -143,6 +137,42 @@ export class RedisClient {
             const datum = JSON.stringify(rolesStrigified);
             const data = JSON.parse(datum);
             return data;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
+    }
+
+    async createProspectiveShipper(data: EntityData | undefined) {
+        try {
+            const prospectiveShipper = await (await this.ShipperInfoRepository).createAndSave(data);
+            const id = await (await this.ShipperInfoRepository).save(prospectiveShipper);
+            return id;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
+    }
+
+    async fetchProspectiveShipper() {
+        try {
+            const entity = await (await this.ShipperInfoRepository).search().return.all();
+            return entity;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
+    }
+
+    async searchLagosShippers(data: boolean) {
+        try {
+            const checkLagos = (await this.ShipperInfoRepository).search().where("lagos").equalTo(data).return.all();
+            return (await checkLagos).length;
+        } catch (error) {
+            throw new Error(error as unknown as string | undefined);
+        }
+    }
+    async searchShipperInfo(data: string) {
+        try {
+            const checkPrice = (await this.ShipperInfoRepository).search().where("name").equalTo(data).return.all();
+            return (await checkPrice).length;
         } catch (error) {
             throw new Error(error as unknown as string | undefined);
         }

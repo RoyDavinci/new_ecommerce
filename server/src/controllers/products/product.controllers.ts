@@ -49,26 +49,6 @@ export const createProduct = async (req: Request, res: Response) => {
                 if (result) {
                     value.push(result.secure_url);
                 }
-                //   if (req.files) {
-                //       const files = req.files as unknown as Express.Multer.File[];
-
-                //       for (const file of files) {
-                //           const { path } = file;
-                //           await cloudinary.uploader.upload(path, { public_id: uuidv4(), folder: "sellers" }, function (error, result) {
-                //               if (error) return res.status(400).json({ message: error });
-                //               if (result) value.push(result.secure_url);
-                //               fs.unlink(path, function (err) {
-                //                   if (err) return res.status(400).json({ message: err });
-                //               });
-                //           });
-                //       }
-                //   }
-                // if(req.files) {
-                //     const files = req.files as unknown as Express.Multer.File[];
-                //     for (const file of files){
-                //         const {buffer} = file
-                //     }
-                // }
                 if (num > 0) {
                     newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: num, description, adminId: findAdmin.id, make, model, year } });
                     return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
@@ -134,10 +114,6 @@ export const updateProduct = async (req: Request, res: Response) => {
     try {
         const findProduct = await prisma.product.findUnique({ where: { id: Number(id) } });
         if (!findProduct) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "product not found" });
-
-        // const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
-
-        // if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
         const value: string[] = [];
         if (req.file) {
             logger.info(value);

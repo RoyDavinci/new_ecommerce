@@ -87,6 +87,7 @@ model product {
   category category @relation(fields: [categoryId], references: [id])
   description String?
   productRatings productRatings[]
+  orderDetail orderDetails[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -125,7 +126,6 @@ model orders {
   email String
   phone String
   total_amount String
-  place String
   userId Int @unique
   subscribers subscribers? @relation(fields: [userId], references: [id])
   merchantId Int @unique
@@ -135,7 +135,9 @@ model orders {
   payment_type String
   quantity Int
   address String
-  shippers shippers?
+  delivery_type String
+  shippersId Int?
+  shipper shippers? @relation(fields: [shippersId], references: [id])
   transaction transaction?
   transaction_history transaction_History?
   createdAt DateTime @default(now())
@@ -146,8 +148,11 @@ model orderDetails {
   id Int @id @default(autoincrement())
   orderId Int
   orders orders @relation(fields: [orderId], references: [id])
-  place String
+  address String
   email String
+  phone String
+  productId Int @unique
+  products product @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -185,8 +190,8 @@ model shippers {
   places String[]
   contact String
   lagos Boolean
-  orderId Int @unique
-  orders orders @relation(fields: [orderId], references: [id])
+  price String
+  orderId orders[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
