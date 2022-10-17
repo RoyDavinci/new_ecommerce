@@ -6,7 +6,7 @@ import { RedisClient } from "../../db/class";
 import { generateHash } from "../../common/generateHash";
 import { logger } from "../../common/logger";
 import { IProducts } from "./products.interfaces";
-import { UploadApiResponse } from "cloudinary";
+import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 import { streamUpload } from "../../utils/streamifier";
 
 const prisma = new PrismaClient();
@@ -44,11 +44,10 @@ export const createProduct = async (req: Request, res: Response) => {
                 if (!findAdmin?.id) return res.status(403).json({ message: "cannoot create product" });
                 const value: string[] = [];
                 logger.info(value);
-                const result = (await streamUpload(req)) as unknown as UploadApiResponse;
+                const result = (await streamUpload(req)) as unknown as UploadApiResponse | UploadApiErrorResponse;
                 logger.info(JSON.stringify(result));
-                if (result) {
-                    value.push(result.secure_url);
-                }
+                if (result.message) return res.status(result.http_code).json({ message: "error using cloudinary upload", data: result.message });
+                value.push(result.secure_url);
                 if (num > 0) {
                     newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: num, description, adminId: findAdmin.id, make, model, year } });
                     return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
@@ -59,10 +58,9 @@ export const createProduct = async (req: Request, res: Response) => {
             if (subscriberId) {
                 if (!findSubscriber?.sellerId) return res.status(403).json({ message: "cannoot create product" });
                 const value: string[] = [];
-                const result = (await streamUpload(req)) as unknown as UploadApiResponse;
-                if (result) {
-                    value.push(result.secure_url);
-                }
+                const result = (await streamUpload(req)) as unknown as UploadApiResponse | UploadApiErrorResponse;
+                if (result.message) return res.status(result.http_code).json({ message: "error using cloudinary upload", data: result.message });
+                value.push(result.secure_url);
                 if (num > 0) {
                     newProducts = await prisma.product.create({ data: { name, images: value, quantity: Number(quantity), price, categoryId: num, description, adminId: findSubscriber.id, make, model, year } });
                     return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "product created", product: { newProducts } });
@@ -114,14 +112,14 @@ export const updateProduct = async (req: Request, res: Response) => {
     try {
         const findProduct = await prisma.product.findUnique({ where: { id: Number(id) } });
         if (!findProduct) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "product not found" });
+
         const value: string[] = [];
         if (req.file) {
             logger.info(value);
-            const result = (await streamUpload(req)) as unknown as UploadApiResponse;
+            const result = (await streamUpload(req)) as unknown as UploadApiResponse | UploadApiErrorResponse;
             logger.info(JSON.stringify(result));
-            if (result) {
-                value.push(result.secure_url);
-            }
+            if (result.message) return res.status(result.http_code).json({ message: "error using cloudinary upload", data: result.message });
+            value.push(result.secure_url);
             if (subscriberId) {
                 const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "sellerId" = ${Number(subscriberId)}`;
                 if (!findUnique) return res.status(400).json({ message: "product not found" });

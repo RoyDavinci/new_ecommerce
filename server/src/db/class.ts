@@ -154,7 +154,7 @@ export class RedisClient {
 
     async fetchProspectiveShipper() {
         try {
-            const entity = await (await this.ShipperInfoRepository).search().return.all();
+            const entity = await (await this.ShipperInfoRepository).search().returnAll();
             return entity;
         } catch (error) {
             throw new Error(error as unknown as string | undefined);

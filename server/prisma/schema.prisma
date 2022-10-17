@@ -40,6 +40,14 @@ model admin {
   updatedAt DateTime?
 }
 
+model guest {
+  id Int @id @default(autoincrement())
+  email String
+  name String?
+  address String?
+  mobile String?
+}
+
 model subscribers {
   id Int @id @default(autoincrement())
   users users?
@@ -120,13 +128,14 @@ model subCategory {
 }
 model orders {
   id Int @id @default(autoincrement())
-  order_code String
+  order_code String @unique
   product_detail Json
   name String
   email String
   phone String
   total_amount String
-  userId Int @unique
+  userId Int? @unique
+  guestId Int? @unique
   subscribers subscribers? @relation(fields: [userId], references: [id])
   merchantId Int @unique
   sellers sellers @relation(fields: [merchantId], references: [id])
