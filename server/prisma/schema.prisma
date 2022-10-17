@@ -36,16 +36,18 @@ model admin {
   users users?
   role Role
   products product[]
+  orders orderDetails[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
 
 model guest {
   id Int @id @default(autoincrement())
-  email String
+  email String @unique
   name String?
   address String?
   mobile String?
+  orderId orders[]
 }
 
 model subscribers {
@@ -59,7 +61,7 @@ model subscribers {
   username String 
   sellerId Int? @unique
   seller sellers?   @relation(fields: [sellerId], references: [id])
-  orderId orders?
+  orderId orders[]
 }
 
 model sellers {
@@ -73,7 +75,7 @@ model sellers {
   homeAddress String
   phone1 String
   products product[]
-  orders orders?
+  orderDetails orderDetails[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -134,19 +136,16 @@ model orders {
   email String
   phone String
   total_amount String
-  userId Int? @unique
-  guestId Int? @unique
-  subscribers subscribers? @relation(fields: [userId], references: [id])
-  merchantId Int @unique
-  sellers sellers @relation(fields: [merchantId], references: [id])
   orderDetail orderDetails[]
+  userId Int? 
+  guestId Int?
+  subscribers subscribers? @relation(fields: [userId], references: [id])
+  guests guest? @relation(fields: [guestId], references: [id])
   status Status
   payment_type String
   quantity Int
   address String
   delivery_type String
-  shippersId Int?
-  shipper shippers? @relation(fields: [shippersId], references: [id])
   transaction transaction?
   transaction_history transaction_History?
   createdAt DateTime @default(now())
@@ -160,8 +159,14 @@ model orderDetails {
   address String
   email String
   phone String
-  productId Int @unique
+  productId Int
   products product @relation(fields: [productId], references: [id])
+  merchantId Int? 
+  sellers sellers? @relation(fields: [merchantId], references: [id])
+  adminId Int?
+  admins admin? @relation(fields: [adminId], references: [id])
+  shippersId Int?
+  shipper shippers? @relation(fields: [shippersId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }
@@ -200,7 +205,7 @@ model shippers {
   contact String
   lagos Boolean
   price String
-  orderId orders[]
+  orderId orderDetails[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
 }

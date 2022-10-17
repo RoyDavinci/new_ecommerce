@@ -48,3 +48,18 @@ export const authenticateAdminJWT = async (req: Request, res: Response, next: Ne
         });
     })(req, res, next);
 };
+
+export const optionalAuthenticate = async (req: Request, res: Response, next: NextFunction) => {
+    if (req.headers.authorization) {
+        return passport.authenticate("jwt", (error: Error, user, info) => {
+            if (error) return next({ statusCode: statusCodes.FORBIDDEN, message: error.message, data: "error" });
+            if (!user) return next({ statusCode: statusCodes.NOT_FOUND, message: info.message });
+            return req.logIn(user, (err) => {
+                if (err) return next({ statusCode: statusCodes.FORBIDDEN, message: err.message });
+                return next();
+            });
+        })(req, res, next);
+    } else {
+        return next();
+    }
+};

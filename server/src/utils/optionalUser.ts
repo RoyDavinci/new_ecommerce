@@ -15,6 +15,6 @@ export const verifyUser = (req: Request, res: Response, next: NextFunction) => {
             next();
         });
     } else {
-        res.status(401).json({ message: "Please provide JWT" });
+        next();
     }
 };

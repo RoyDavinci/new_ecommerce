@@ -7,3 +7,4 @@ export { sellerRouter } from "./sellers/sellers.service";
 export { categoryRouter } from "./categories/category.service";
 export { ssubscriberRouter } from "./subscribers/subscribers.service";
 export { shipperRouter } from "./shippers/shippers.service";
+export { orderRouter } from "./orders/order.service";
