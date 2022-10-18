@@ -1,0 +1,14 @@
+.categories__heroContent h1 {
+	width: 90%;
+	margin: 10px 0px;
+}
+.categories__heroContent article p {
+	width: 90%;
+	margin: 10px 0px;
+}
+.categories__heroContent button {
+	padding: 10px;
+	color: white;
+	background-color: rgb(238, 186, 89);
+	border-radius: 5px;
+}

@@ -19,4 +19,4 @@ export const validateUpdateShippingData = [
     check("param").notEmpty().withMessage("param is required for update"),
     validationErrorHandler,
 ];
-export const validatedeleteShippingData = [check("param").notEmpty().withMessage("param is required for update"), validationErrorHandler];
+export const validatedeleteShippingData = [param("param").notEmpty().withMessage("param is required for update"), validationErrorHandler];

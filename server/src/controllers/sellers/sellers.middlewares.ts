@@ -11,7 +11,7 @@ export const validateCreateShipperData = [
     check("email").notEmpty().withMessage("email is required").isString().withMessage("email must be string").isEmail().withMessage("value must be email"),
     check("first_name").optional().isString().withMessage("first_name must be string"),
     check("password").optional().isString().withMessage("last_name must be string"),
-    check("username").optional().withMessage("username is required").isString().withMessage("username must be string").isEmail().withMessage("value must be email"),
+    check("username").optional().isString().withMessage("username must be string"),
     validationErrorHandler,
 ];
 export const validateUpdateShipperData = [
@@ -23,8 +23,8 @@ export const validateUpdateShipperData = [
     check("email").notEmpty().withMessage("email is required").isString().withMessage("email must be string").isEmail().withMessage("value must be email"),
     check("first_name").optional().isString().withMessage("first_name must be string"),
     check("password").optional().isString().withMessage("last_name must be string"),
-    check("username").optional().withMessage("username is required").isString().withMessage("username must be string").isEmail().withMessage("value must be email"),
+    check("username").optional().isString().withMessage("username must be string"),
     validationErrorHandler,
 ];
 
-export const validatedGetSellerData = [check("param").notEmpty().withMessage("param is required for update"), validationErrorHandler];
+export const validatedGetSellerData = [param("param").notEmpty().withMessage("param is required for update"), validationErrorHandler];
