@@ -87,14 +87,14 @@ export const deleteProducts = async (req: Request, res: Response) => {
             if (subscriberId) {
                 const findUnique = await prisma.$queryRaw`SELECT * FROM Product WHERE id = ${Number(id)} AND sellerId = ${Number(subscriberId)}`;
                 if (!findUnique) return res.status(400).json({ message: "product not found" });
-                await prisma.product.delete({ where: { id: Number(id) } });
-                return res.status(200).json({ message: "prodict deleted" });
+                await prisma.product.delete({ where: { id: Number(id) }, include: { productRatings: true } });
+                return res.status(200).json({ message: "product deleted" });
             }
             if (adminId) {
                 const findUnique = await prisma.$queryRaw`SELECT * FROM Product WHERE id = ${Number(id)} AND "adminId" = ${Number(adminId)}`;
                 if (!findUnique) return res.status(400).json({ message: "product not found" });
-                await prisma.product.delete({ where: { id: Number(id) } });
-                return res.status(200).json({ message: "prodict deleted" });
+                await prisma.product.delete({ where: { id: Number(id) }, include: { productRatings: true } });
+                return res.status(200).json({ message: "product deleted" });
             }
         }
         return res.status(403).json({ message: "authentication needed" });
@@ -166,7 +166,7 @@ export const getProducts = async (req: Request, res: Response) => {
 export const getSingleProduct = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        const getProduct = await prisma.product.findUnique({ where: { id: Number(id) } });
+        const getProduct = await prisma.product.findUnique({ where: { id: Number(id) }, select: { productRatings: true } });
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: getProduct });
     } catch (error) {
         logger.error(error);

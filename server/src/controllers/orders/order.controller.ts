@@ -90,3 +90,86 @@ export const createOrder = async (req: Request, res: Response) => {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request", error });
     }
 };
+
+export const getAllOrdersForAUser = async (req: Request, res: Response) => {
+    try {
+        const { adminId, subscriberId } = req.user as unknown as IUser;
+        if (adminId) {
+            const getOrders = await prisma.orders.findMany({ where: { userId: adminId } });
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", getOrders });
+        }
+        if (subscriberId) {
+            const getOrders = await prisma.orders.findMany({ where: { userId: subscriberId } });
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", getOrders });
+        }
+    } catch (error) {
+        logger.error(error);
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request", error });
+    }
+};
+
+export const getSingleOrder = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    // logger.info(JSON.stringify(id));
+    try {
+        const searchForOrder = await prisma.orders.findUnique({ where: { id: Number(id) } });
+        return res.status(200).json({ message: "order gotten", searchForOrder });
+    } catch (error) {
+        logger.error(error);
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request", error });
+    }
+};
+
+export const updateOrder = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const { name, email, total_amount, payment_type, quantity, address, delivery_type, product_details, mobile, shipperId } = req.body;
+    try {
+        let shipperInfo: IShipper | null;
+        if (shipperId) {
+            shipperInfo = await prisma.shippers.findUnique({ where: { id: Number(shipperId) } });
+            if (!shipperInfo) return res.status(400).json({ message: "shipper does not exist" });
+        }
+        const updateOders = await prisma.orders.update({ where: { id: Number(id) }, data: { name, email, quantity: parseInt(quantity), total_amount, phone: mobile, delivery_type, address, payment_type, product_detail: product_details } });
+
+        return res.status(200).json({ updateOders, message: "order updated" });
+    } catch (error) {
+        logger.error(error);
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request", error });
+    }
+};
+
+export const getUpdate = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        logger.info(id);
+        return res.status(200).json({ message: "huhb" });
+    } catch (error) {
+        logger.error(error);
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request", error });
+    }
+};
+
+export const deleteOrder = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const user = req.user as unknown as IUser;
+        if (!user) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "cannot delete order" });
+        const findOrder = await prisma.orders.findUnique({ where: { id: Number(id) } });
+        if (!findOrder) return res.status(400).json({ message: `order with order id ${id} does not exist` });
+        const findOrderDetails = await prisma.orderDetails.findMany({ where: { orderId: Number(id) } });
+        Promise.all([
+            await prisma.orders.delete({ where: { id: Number(id) } }),
+            findOrderDetails.forEach(async (item) => {
+                await prisma.orderDetails.delete({ where: { id: item.id } });
+            }),
+        ]);
+        return res.status(400).json({ message: "order deleted" });
+    } catch (error) {
+        logger.error(error);
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request", error });
+    }
+};

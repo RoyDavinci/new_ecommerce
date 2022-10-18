@@ -7,5 +7,8 @@ const shipperRouter = Router();
 
 shipperRouter.post("/create-shipper", authenticateJWT, middleware.validateCreateShippingData, controller.addNewShippers);
 shipperRouter.get("/get-shipping", controller.getAllShipping);
+shipperRouter.patch("/update-shipping", middleware.validateUpdateShippingData, controller.updateShipping);
+shipperRouter.delete("/delete-shipping", middleware.validatedeleteShippingData, controller.deleteShipping);
+shipperRouter.get("/shipping/:id", middleware.validatedeleteShippingData, controller.getSingleShipper);
 
 export { shipperRouter };
