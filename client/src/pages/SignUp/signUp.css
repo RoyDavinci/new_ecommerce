@@ -1,0 +1,52 @@
+.signUp__container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #84807b;
+}
+.signup__containerContent {
+	background-color: #fff;
+	padding: 20px 15px;
+	width: 35%;
+	margin: 20px 0px;
+}
+.signup__containerContent p,
+.signup__containerContent h3 {
+	margin: 10px 0px;
+}
+.signup__containerContent h3 i {
+	color: #04b936;
+	padding: 10px;
+	background-color: #d7fde2;
+	border-radius: 50%;
+	margin-right: 10px;
+}
+.signup__containerContent form {
+	margin: 15px 0px;
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	padding: 15px 0px;
+}
+.focus,
+.focus:focus {
+	border: none;
+	outline: none;
+}
+.signup__containerContent form input[class*="email"],
+.signup__containerContent form button,
+.password__formControl {
+	width: 100%;
+	padding: 12px;
+	border: 0.5px solid #ccc;
+	margin: 10px 0px;
+}
+.signup__containerContent form button {
+	color: #fff;
+	background-color: #4285f4;
+	border-radius: 5px;
+}
+.password__formControl input {
+	width: 90%;
+}
