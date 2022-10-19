@@ -1,8 +1,9 @@
 import React from "react";
-import { Header } from "../../components";
+import { Footer, Header } from "../../components";
 import images from "../../images";
-import { data } from "../../utils/data";
+import { data, categoryData } from "../../utils/data";
 import "./categories.css";
+import { CategoryItems } from "./CategoryItem/CategoryItems";
 
 export const Categories = () => {
 	return (
@@ -58,7 +59,21 @@ export const Categories = () => {
 			</div>
 			<div className='categoriesContainer__categoryITems__container'>
 				<h1>Explore By Category</h1>
+				<div className='categoriesContainer__categoryITems__content'>
+					{categoryData.map((item, index) => {
+						return (
+							<CategoryItems
+								key={index}
+								icon={item.button}
+								name={item.name}
+								description={item.description}
+								image={item.image}
+							></CategoryItems>
+						);
+					})}
+				</div>
 			</div>
+			<Footer links={data} image={images.footerLogo}></Footer>
 		</div>
 	);
 };

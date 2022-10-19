@@ -12,3 +12,12 @@
 	background-color: rgb(238, 186, 89);
 	border-radius: 5px;
 }
+.categoriesContainer__categoryITems__content {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	gap: 20px;
+}
+.categoriesContainer__categoryITems__container {
+	background-color: #eef4fa;
+	padding: 10px;
+}

@@ -20,7 +20,9 @@ export const Header: React.FunctionComponent<HeaderProps> = ({
 	return (
 		<div className='headerContainer'>
 			<div className='headerLogo'>
-				<img src={logo} alt='' />
+				<Link to='/'>
+					<img src={logo} alt='' />
+				</Link>
 			</div>
 			<div className='headerLinks'>
 				<ul>

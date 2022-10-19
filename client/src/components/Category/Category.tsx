@@ -25,12 +25,14 @@ export const Category: React.FC<categoryProps> = ({}) => {
 			>
 				<h2>Popular Categories</h2>
 				<p>
-					Now you can browse from{" "}
+					Now you can browse from
 					<Link to={"/categories"}>100,000 products</Link> choose your category
 					and narrow down what you are searching for
 				</p>
 				<button>
-					Browse Categories <i className='fa-solid fa-arrow-right-long'></i>
+					<Link to='/categories'>
+						Browse Categories <i className='fa-solid fa-arrow-right-long'></i>
+					</Link>
 				</button>
 			</div>
 			<div className='category__item__container'>

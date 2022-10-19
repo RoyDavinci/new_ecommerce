@@ -1,0 +1,17 @@
+.categoryItems__container {
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+	padding: 20px;
+	border-radius: 5px;
+}
+.categoryItems__container img {
+	width: 366px;
+	height: 244px;
+}
+
+.categoryItems__container h2 {
+	margin: 10px 0px;
+}
+.categoryItems__container button {
+	display: block;
+	margin-left: auto;
+}
