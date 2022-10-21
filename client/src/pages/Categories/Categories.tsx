@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { Footer, Header } from "../../components";
 import images from "../../images";
 import { data, categoryData } from "../../utils/data";
@@ -6,12 +7,14 @@ import "./categories.css";
 import { CategoryItems } from "./CategoryItem/CategoryItems";
 
 export const Categories = () => {
+	const location = useLocation();
+	console.log(location);
+
 	return (
 		<div className='categoriesContainer'>
 			<Header
 				logo={images.logoLight}
 				cartItems={1}
-				user={false}
 				links={data}
 				userImg={images.userImg}
 			></Header>

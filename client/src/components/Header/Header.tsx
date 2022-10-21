@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
 
@@ -6,7 +6,6 @@ export interface HeaderProps {
 	logo?: string;
 	links: string[];
 	cartItems: number;
-	user: boolean;
 	userImg?: string;
 }
 
@@ -14,9 +13,19 @@ export const Header: React.FunctionComponent<HeaderProps> = ({
 	logo,
 	links,
 	cartItems,
-	user,
 	userImg,
 }) => {
+	const [userState, setUserState] = useState(false);
+
+	const user = localStorage.getItem("user");
+
+	useEffect(() => {
+		if (user) setUserState(true);
+		return () => {
+			console.log("cleaning useeffect");
+		};
+	}, [user]);
+
 	return (
 		<div className='headerContainer'>
 			<div className='headerLogo'>

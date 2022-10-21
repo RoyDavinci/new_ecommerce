@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Header, Hero, Category, Blog, Footer } from "../../components";
 import images from "../../images";
 import { data } from "../../utils/data";
@@ -11,7 +11,6 @@ export const Home = () => {
 				<Header
 					logo={images.logoLight}
 					cartItems={1}
-					user={false}
 					links={data}
 					userImg={images.userImg}
 				></Header>

@@ -1,11 +1,24 @@
-import React, { BaseSyntheticEvent, ChangeEvent, useState } from "react";
+import React, {
+	BaseSyntheticEvent,
+	ChangeEvent,
+	useEffect,
+	useState,
+} from "react";
 import { Link } from "react-router-dom";
-import { useQuery, useMutation } from "react-query";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import "./login.css";
-import axios from "axios";
+import { loginAdmin } from "../../features/auth/authenticateUser";
+import { payloadResponse } from "../../interfaces/userinterfaces";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
 	const [text, setText] = useState<string>("password");
+	const [user, setUser] = useState<payloadResponse>({
+		success: false,
+		token: "",
+		validity: "",
+		data: { user: { id: 0, email: "", token: "", name: "" } },
+	});
 
 	const [inputValue, setInputValue] = useState({ email: "", password: "" });
 
@@ -13,36 +26,34 @@ export const Login = () => {
 		return text === "password" ? setText("text") : setText("password");
 	};
 
+	const { data, status } = useAppSelector((state) => state.auth);
+
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 
 		setInputValue({ ...inputValue, [name]: value });
 	};
 
-	const mutation = useMutation(
-		(variables: { email: string; password: string }) => {
-			return axios.post("http://localhost:8090/api/v1/user/signin", {
-				email: variables.email,
-				password: variables.password,
-			});
-		}
-	);
-
-	const { isError, isLoading, isSuccess, error } = mutation;
-
 	const handleSubmit = async (e: BaseSyntheticEvent) => {
 		try {
 			e.preventDefault();
-			mutation.mutate({
-				password: inputValue.password,
-				email: inputValue.email,
-			});
-
-			// console.log(error, isLoading);
-		} catch (error) {
-			console.log(error);
-		}
+			dispatch(
+				loginAdmin({
+					email: inputValue.email,
+					password: inputValue.password,
+				})
+			);
+		} catch (error) {}
 	};
+
+	useEffect(() => {
+		setUser(data);
+		const userState = localStorage.getItem("user");
+		userState && navigate(-1);
+	}, [data, user]);
 
 	return (
 		<div className='login__container'>
@@ -54,9 +65,11 @@ export const Login = () => {
 					Become a member -- you'll enjoy exclusive deals offers, invites and
 					rewards
 				</p>
+				{status === "failed" && (
+					<p className='failed-message'>Email or Password Incorrect</p>
+				)}
 				<form action='' onSubmit={handleSubmit}>
 					<div className='email__formControl'>
-						{isError && <small>{}</small>}
 						<label htmlFor='email'>
 							<input
 								type='email'
