@@ -5,7 +5,7 @@ import {
 	userInfo,
 	UserState,
 } from "../../interfaces/userinterfaces";
-import { publicRequest } from "../../api/client";
+import { publicFormDataRequest, publicRequest } from "../../api/client";
 
 const initialState: UserState = {
 	message: "",
@@ -32,6 +32,24 @@ export const loginAdmin = createAsyncThunk(
 	}
 );
 
+export const createUser = createAsyncThunk(
+	"subscribe",
+	async (item: FormData, thunkAPI) => {
+		try {
+			const { data } = await publicFormDataRequest.post(
+				"http://localhost:8090/api/v1/user",
+				item
+			);
+			return data;
+		} catch (error) {
+			const err = error as AxiosError<payloadErrorResponse>;
+			return thunkAPI.rejectWithValue({
+				message: err.response?.data.message,
+			});
+		}
+	}
+);
+
 export const authSlice = createSlice({
 	name: "login",
 	initialState,
@@ -49,6 +67,18 @@ export const authSlice = createSlice({
 		builder.addCase(loginAdmin.rejected, (state, action) => {
 			state.error = action.error;
 			state.status = "failed";
+		});
+		builder.addCase(createUser.pending, (state, action) => {
+			state.status = "idle";
+		});
+		builder.addCase(createUser.fulfilled, (state, action) => {
+			state.data = action.payload;
+			state.status = "successful";
+			localStorage.setItem("data", JSON.stringify(state.data));
+		});
+		builder.addCase(createUser.rejected, (state, action) => {
+			state.status = "failed";
+			state.error = action.error;
 		});
 	},
 });

@@ -28,6 +28,16 @@ export type userInfo = {
 	password: string;
 };
 
+export type userSignUp = {
+	first_name: string;
+	last_name: string;
+	password: string;
+	email: string;
+	mobile: string;
+	username: string;
+	image: string | Blob;
+};
+
 export interface UserState {
 	message: string;
 	status: "idle" | "loading" | "failed" | "successful";

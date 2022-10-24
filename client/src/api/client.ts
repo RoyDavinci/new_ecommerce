@@ -12,6 +12,19 @@ export const privateRequest = axios.create({
 	baseURL: BASE_URL,
 });
 
+export const publicFormDataRequest = axios.create({
+	baseURL: BASE_URL,
+});
+
+publicFormDataRequest.interceptors.request.use(
+	(config: AxiosRequestConfig) => {
+		config.headers = config.headers ?? {};
+		config.headers["Content-Type"] = "multipart/form-data";
+		return config;
+	},
+	(error) => Promise.reject(error)
+);
+
 privateRequest.interceptors.request.use(
 	(config: AxiosRequestConfig) => {
 		config.headers = config.headers ?? {};

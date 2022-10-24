@@ -10,6 +10,7 @@ import "./login.css";
 import { loginAdmin } from "../../features/auth/authenticateUser";
 import { payloadResponse } from "../../interfaces/userinterfaces";
 import { useNavigate } from "react-router-dom";
+import logging from "../../utils/logging";
 
 export const Login = () => {
 	const [text, setText] = useState<string>("password");
@@ -46,14 +47,17 @@ export const Login = () => {
 					password: inputValue.password,
 				})
 			);
-		} catch (error) {}
+		} catch (error) {
+			const err = error as unknown as string;
+			logging.info(err);
+		}
 	};
 
 	useEffect(() => {
 		setUser(data);
 		const userState = localStorage.getItem("user");
 		userState && navigate(-1);
-	}, [data, user]);
+	}, [data, user, navigate]);
 
 	return (
 		<div className='login__container'>
