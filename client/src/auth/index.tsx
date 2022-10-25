@@ -9,8 +9,9 @@ export const AuthRoute: React.FunctionComponent<IAuthRouteProps> = ({
 	children,
 }) => {
 	const user = localStorage.getItem("user");
+	console.log(user);
 
-	return user ? <Outlet /> : <Navigate to='/login' />;
+	return user !== null ? <Outlet /> : <Navigate to='/login' />;
 };
 
 export default AuthRoute;

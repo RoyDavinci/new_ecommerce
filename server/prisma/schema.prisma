@@ -57,6 +57,7 @@ model subscribers {
   voucher String?
   address String?
   phone String 
+  image String? 
   role String @default("subscribers")
   username String 
   sellerId Int? @unique
@@ -116,6 +117,7 @@ model category {
   name String @unique
   description String
   products product[]
+  images String?
   subCategory subCategory[]
   createdAt DateTime @default(now())
   updatedAt DateTime?

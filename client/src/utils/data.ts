@@ -7,7 +7,7 @@ import windShield from "../images/jpg/windShield.jpeg";
 import sideMirror from "../images/jpg/sideMirror.jpeg";
 import carDoors from "../images/jpg/carDoors.jpeg";
 
-export const data = ["Home", "About", "Products", "Contact"];
+export const linksData = ["Home", "About", "Products", "Contact"];
 
 export const blogData = [
 	{

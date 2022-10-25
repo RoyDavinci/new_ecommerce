@@ -1,21 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Footer, Header } from "../../components";
 import images from "../../images";
-import { data, categoryData } from "../../utils/data";
+import { linksData, categoryData } from "../../utils/data";
 import "./categories.css";
 import { CategoryItems } from "./CategoryItem/CategoryItems";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { getCategories } from "../../features/categories/cateorySlice";
+import LoadingComponent from "../../components/Loading";
+import { categoryPayloadResponse } from "../../interfaces/category";
 
 export const Categories = () => {
 	const location = useLocation();
-	console.log(location);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [getCategoryData, setGetCategoryData] = useState<
+		categoryPayloadResponse[]
+	>([]);
+
+	// const user = localStorage.getItem("user");
+	// console.log(getCategoryData);
+
+	const dispatch = useAppDispatch();
+
+	const { data, status } = useAppSelector((state) => state.category);
+	// console.log(data);
+
+	useEffect(() => {
+		const fetchCategories = () => {
+			try {
+				dispatch(getCategories());
+				setGetCategoryData(data);
+				setLoading(false);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		fetchCategories();
+		return () => {
+			console.log("this will log on unmount");
+		};
+	}, [loading, dispatch]);
+	console.log(loading, data);
+
+	// console.log(getCategoryData);
 
 	return (
 		<div className='categoriesContainer'>
 			<Header
 				logo={images.logoLight}
 				cartItems={1}
-				links={data}
+				links={linksData}
 				userImg={images.userImg}
 			></Header>
 			<div
@@ -60,23 +94,29 @@ export const Categories = () => {
 				</div>
 				<img src={images.categoryImage} alt='' />
 			</div>
-			<div className='categoriesContainer__categoryITems__container'>
-				<h1>Explore By Category</h1>
-				<div className='categoriesContainer__categoryITems__content'>
-					{categoryData.map((item, index) => {
-						return (
-							<CategoryItems
-								key={index}
-								icon={item.button}
-								name={item.name}
-								description={item.description}
-								image={item.image}
-							></CategoryItems>
-						);
-					})}
+			{loading && (
+				<LoadingComponent card={true}>
+					<p>Loading...</p>
+				</LoadingComponent>
+			)}
+			{!loading && (
+				<div className='categoriesContainer__categoryITems__container'>
+					<h1>Explore By Category</h1>
+					<div className='categoriesContainer__categoryITems__content'>
+						{getCategoryData.map((item, index) => {
+							return (
+								<CategoryItems
+									key={index}
+									name={item.name}
+									description={item.description}
+									image={item.images}
+								></CategoryItems>
+							);
+						})}
+					</div>
 				</div>
-			</div>
-			<Footer links={data} image={images.footerLogo}></Footer>
+			)}
+			<Footer links={linksData} image={images.footerLogo}></Footer>
 		</div>
 	);
 };

@@ -177,13 +177,13 @@ export const getSingleProduct = async (req: Request, res: Response) => {
 export const getProductByCategoryId = async (req: Request, res: Response) => {
     const { categoryId } = req.params;
     try {
-        const findCategory = await prisma.category.findUnique({ where: { id: Number(categoryId) } });
+        const findCategory = await prisma.category.findUnique({ where: { name: categoryId } });
 
         if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category does not exist" });
 
-        const getProduct = await prisma.product.findMany();
-        const filteredProduct = getProduct.filter((product) => product.categoryId === Number(categoryId));
-        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: filteredProduct });
+        const getProduct = await prisma.product.findMany({ where: { categoryId: findCategory.id }, include: { productRatings: true } });
+        // const filteredProduct = getProduct.filter((product) => product.categoryId === findCategory.id);
+        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: getProduct });
     } catch (error) {
         logger.error(error);
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });

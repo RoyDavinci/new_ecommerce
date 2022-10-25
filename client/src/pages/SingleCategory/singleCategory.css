@@ -1,0 +1,22 @@
+.products__categoryContainer__coontent img {
+	height: 500px;
+}
+.cart__singlePRoduct {
+	display: flex;
+	justify-content: space-between;
+}
+.products__categoryContainer {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	gap: 30px;
+	padding: 10px;
+}
+.products__categoryContainer__coontent {
+	padding: 10px;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+	border-radius: 5px;
+}
+.products__categoryContainer__coontent h1,
+.products__categoryContainer__coontent p {
+	margin: 10px 0px;
+}

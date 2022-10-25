@@ -1,4 +1,4 @@
-import { check, param, query } from "express-validator";
+import { check, param, query, body } from "express-validator";
 import config from "../../config";
 import { validationErrorHandler } from "../../common/validationErrorHandler";
 

@@ -4,6 +4,8 @@ import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { RedisClient } from "../../db/class";
 import { IUser } from "../auth/auth.interface";
 import { logger } from "../../common/logger";
+import { streamUpload } from "../../utils/streamifier";
+import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 
 const redisInstance: RedisClient = new RedisClient();
 
@@ -18,7 +20,13 @@ export const createCatrgory = async (req: Request, res: Response) => {
         const checkSeller = await prisma.subscribers.findUnique({ where: { id: Number(subscriberId) } });
 
         if (!checkAdmin || checkSeller?.sellerId) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "Admin not found" });
-        const newCategory = await prisma.category.create({ data: { name, description } });
+        let image: string = "";
+        if (req.file) {
+            const result = (await streamUpload(req)) as unknown as UploadApiResponse | UploadApiErrorResponse;
+            if (result.message) return res.status(result.http_code).json({ message: "error using cloudinary upload", data: result.message });
+            image = result.secure_url;
+        }
+        const newCategory = await prisma.category.create({ data: { name, description, images: image } });
         return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "category created", newCategory });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -45,9 +53,15 @@ export const updateCategories = async (req: Request, res: Response, next: NextFu
 
         const findCategory = await prisma.category.findUnique({ where: { id: Number(id) } });
         if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "Category not found" });
+        let image: string = "";
+        if (req.file) {
+            const result = (await streamUpload(req)) as unknown as UploadApiResponse | UploadApiErrorResponse;
+            if (result.message) return res.status(result.http_code).json({ message: "error using cloudinary upload", data: result.message });
+            image = result.secure_url;
+        }
 
-        await prisma.category.update({ where: { id: Number(id) }, data: { name, description } });
-        return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "category updated" });
+        const updatedCategory = await prisma.category.update({ where: { id: Number(id) }, data: { name, description, images: image } });
+        return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "category updated", updatedCategory });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             // The .code property can be accessed in a type-safe manner
@@ -100,6 +114,19 @@ export const getCategory = async (req: Request, res: Response) => {
         if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "Category not found" });
         const catergory = await prisma.category.findUnique({ where: { id: Number(id) } });
         return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "category gotten", catergory });
+    } catch (error) {
+        logger.error(error);
+        return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });
+    }
+};
+
+export const getCategoryByName = async (req: Request, res: Response) => {
+    const { name } = req.params;
+
+    try {
+        const findCategory = await prisma.category.findUnique({ where: { name } });
+        if (!findCategory) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "Category not found" });
+        return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "category gotten", findCategory });
     } catch (error) {
         logger.error(error);
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });

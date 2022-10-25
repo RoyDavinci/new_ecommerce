@@ -3,6 +3,7 @@ import { Categories } from "../pages";
 import { SignUp } from "../pages";
 import { Home } from "../pages";
 import { Login } from "../pages";
+import { SingleCategory } from "../pages/SingleCategory/SingleCategory";
 
 const authRoutes: IRoute[] = [
 	{
@@ -24,6 +25,12 @@ const mainRoutes: IRoute[] = [
 		path: "/categories",
 		component: Categories,
 		name: "categories",
+		auth: true,
+	},
+	{
+		path: "/categories/:name",
+		component: SingleCategory,
+		name: "singleCategory",
 		auth: true,
 	},
 ];

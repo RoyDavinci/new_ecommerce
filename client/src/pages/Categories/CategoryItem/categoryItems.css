@@ -2,6 +2,10 @@
 	box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
 	padding: 20px;
 	border-radius: 5px;
+	color: white;
+}
+.categoryItems__container a {
+	color: black;
 }
 .categoryItems__container img {
 	width: 366px;

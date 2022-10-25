@@ -15,6 +15,8 @@ import { generateOTP } from "../../common/generateOtp";
 import { adminNewPasswordHTML } from "../../common/adminNewPasswordHtml";
 import { admiNewPasswordLink } from "../../common/adminNewPasswordLink";
 import { adminNewPasswordConfirmationHTML } from "../../common/adminNewPAsswordConfirmationHTML";
+import { streamUpload } from "../../utils/streamifier";
+import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 
 const prisma = new PrismaClient();
 const redisInstance: RedisClient = new RedisClient();
@@ -22,14 +24,23 @@ const redisInstance: RedisClient = new RedisClient();
 export const createUser = async (req: Request, res: Response) => {
     const { first_name, last_name, email, password, username, phone, address } = req.body;
 
+    logger.info(JSON.stringify(req.body));
     try {
         const checkEmail = await prisma.users.findUnique({ where: { email } });
 
         if (checkEmail) return res.status(HTTP_STATUS_CODE.FORBIDDEN).json({ message: "user already exist" });
 
         const { otp, ttl, createdAt } = await generateOTP();
+        let image: string = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2DsvZVmO8R0meFJxT95IeHnnraPoqW-WJlliipzlMekNzv4SngxTX7Xr3KJFU0NnLj2M&usqp=CAU";
 
-        const prospectId = await redisInstance.createProspectiveUser({ first_name, last_name, otp, ttl, createdAt, email, password, username, phone, address });
+        if (req.file) {
+            const result = (await streamUpload(req)) as unknown as UploadApiResponse | UploadApiErrorResponse;
+
+            if (result.message) return res.status(result.http_code).json({ message: "error using cloudinary upload", data: result.message });
+            image = result.secure_url;
+        }
+
+        const prospectId = await redisInstance.createProspectiveUser({ first_name, last_name, otp, ttl, createdAt, email, password, username, phone, address, image });
 
         return res.status(200).json({ success: true, message: "kindly enter the OTP sent to your email", data: { ttl, createdAt, otp }, prospectId });
     } catch (e) {
@@ -61,7 +72,7 @@ export const confirmOtp = async (req: Request, res: Response, next: NextFunction
 
         const voucher = makeid(10);
 
-        const newSubscriber = await prisma.subscribers.create({ data: { username: cachedUserInfo.username, phone: cachedUserInfo.phone, email: cachedUserInfo.email, voucher, role: "subscriber" } });
+        const newSubscriber = await prisma.subscribers.create({ data: { username: cachedUserInfo.username, phone: cachedUserInfo.phone, email: cachedUserInfo.email, voucher, role: "subscriber", image: cachedUserInfo.image } });
         const newUser = await prisma.users.create({
             data: { first_name: cachedUserInfo.first_name, last_name: cachedUserInfo.last_name, password: hashedPasssword, email: cachedUserInfo.email, subscriberId: newSubscriber.id, role: newSubscriber.role },
         });

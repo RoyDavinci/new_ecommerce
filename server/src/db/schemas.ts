@@ -18,6 +18,7 @@ export const prospectiveUserSchema = new Schema(
         role: { type: "string" },
         createdAt: { type: "string" },
         address: { type: "string" },
+        image: { type: "string" },
     },
     {
         dataStructure: "JSON",

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Header, Hero, Category, Blog, Footer } from "../../components";
 import images from "../../images";
-import { data } from "../../utils/data";
+import { linksData } from "../../utils/data";
 import "./home.css";
 
 export const Home = () => {
@@ -11,7 +11,7 @@ export const Home = () => {
 				<Header
 					logo={images.logoLight}
 					cartItems={1}
-					links={data}
+					links={linksData}
 					userImg={images.userImg}
 				></Header>
 				<Hero></Hero>
@@ -32,7 +32,7 @@ export const Home = () => {
 					<button>Submit</button>
 				</form>
 			</div>
-			<Footer links={data} image={images.footerLogo}></Footer>
+			<Footer links={linksData} image={images.footerLogo}></Footer>
 		</div>
 	);
 };

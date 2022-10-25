@@ -1,28 +1,30 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./categoryItems.css";
 
 export interface categoryItems {
 	image: string;
 	name: string;
 	description: string;
-	icon: string;
 	children?: React.ReactNode;
+	id?: number;
 }
 
 export const CategoryItems: React.FC<categoryItems> = ({
 	image,
 	name,
 	description,
-	icon,
 }) => {
 	return (
 		<div className='categoryItems__container'>
-			<img src={image} alt='' />
-			<h2>{name}</h2>
-			<p>{description}</p>
-			<button>
-				<i className={icon}></i>
-			</button>
+			<Link to={`/categories/${name}`}>
+				<img src={image} alt='' />
+				<h2>{name}</h2>
+				<p>{description}</p>
+				<button>
+					<i className='fa-solid fa-arrow-right'></i>
+				</button>
+			</Link>
 		</div>
 	);
 };

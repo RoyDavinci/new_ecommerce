@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { Home, About, Categories, Login, SignUp } from "./pages";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { useAuth } from "./utils/useAuth";
 import LoadingComponent from "./components/Loading";
 import routes from "./auth/route";
 import AuthRoute from "./auth";
@@ -46,8 +44,6 @@ function App() {
 	if (loading) {
 		return <LoadingComponent>{authStage}</LoadingComponent>;
 	}
-
-	useEffect(() => {}, [user]);
 
 	return (
 		<div className='App'>
