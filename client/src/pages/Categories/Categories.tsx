@@ -39,10 +39,7 @@ export const Categories = () => {
 		return () => {
 			console.log("this will log on unmount");
 		};
-	}, [loading, dispatch]);
-	console.log(loading, data);
-
-	// console.log(getCategoryData);
+	}, [loading]);
 
 	return (
 		<div className='categoriesContainer'>
@@ -94,11 +91,8 @@ export const Categories = () => {
 				</div>
 				<img src={images.categoryImage} alt='' />
 			</div>
-			{loading && (
-				<LoadingComponent card={true}>
-					<p>Loading...</p>
-				</LoadingComponent>
-			)}
+			{/* {!loading && <LoadingComponent card={true}>{}</LoadingComponent>} */}
+			{loading && <LoadingComponent card={true}>{}</LoadingComponent>}
 			{!loading && (
 				<div className='categoriesContainer__categoryITems__container'>
 					<h1>Explore By Category</h1>
