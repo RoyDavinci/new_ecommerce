@@ -3,6 +3,9 @@ import { Categories } from "../pages";
 import { SignUp } from "../pages";
 import { Home } from "../pages";
 import { Login } from "../pages";
+import { Admin } from "../pages/Admin/Admin";
+import { Cataglog } from "../pages/Catalogue/Cataglg";
+import { Orders } from "../pages/Orders/Orders";
 import { SingleCategory } from "../pages/SingleCategory/SingleCategory";
 
 const authRoutes: IRoute[] = [
@@ -25,17 +28,14 @@ const mainRoutes: IRoute[] = [
 		path: "/categories",
 		component: Categories,
 		name: "categories",
-		auth: true,
+		auth: false,
 	},
 	{
 		path: "/categories/:name",
 		component: SingleCategory,
 		name: "singleCategory",
-		auth: true,
+		auth: false,
 	},
-];
-
-const authRoute: IRoute[] = [
 	{
 		path: "/",
 		component: Home,
@@ -44,6 +44,27 @@ const authRoute: IRoute[] = [
 	},
 ];
 
-const routes: IRoute[] = [...authRoutes, ...authRoute, ...mainRoutes];
+const authRoute: IRoute[] = [
+	{
+		path: "/admin",
+		component: Admin,
+		name: "admin",
+		auth: true,
+	},
+	{
+		path: "/orders",
+		component: Orders,
+		name: "orders",
+		auth: true,
+	},
+	{
+		path: "/products",
+		component: Cataglog,
+		name: "products",
+		auth: true,
+	},
+];
 
-export default routes;
+const routes: IRoute[] = [...authRoutes, ...mainRoutes, ...authRoute];
+
+export { routes };

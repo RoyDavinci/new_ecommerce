@@ -7,6 +7,10 @@
  * 1. Correct the line height in all browsers.
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
 html {
 	line-height: 1.15; /* 1 */
@@ -395,4 +399,15 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
 	-webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+button,
+input,
+button:focus,
+input:focus,
+input:active,
+button:active {
+	border: none;
+	overflow: visible;
+	outline: none;
+	background-color: none;
 }

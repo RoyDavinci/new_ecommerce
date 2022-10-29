@@ -3,12 +3,12 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import LoadingComponent from "./components/Loading";
-import routes from "./auth/route";
-import AuthRoute from "./auth";
+import { routes } from "./auth/route";
+import { AdminLayout } from "./components";
 const queryClient = new QueryClient();
 
 function App() {
-	const [userState, setUserState] = useState(false);
+	// const [userState, setUserState] = useState(false);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [authStage, setAuthStage] = useState<string>("Checking local storage");
 
@@ -47,28 +47,24 @@ function App() {
 
 	return (
 		<div className='App'>
-			<QueryClientProvider client={queryClient} contextSharing={true}>
-				<Routes>
-					{routes.map((route, index) => {
-						if (route.auth) {
-							<Route path='/' element={<AuthRoute />}>
-								<Route
-									key={index}
-									path={route.path}
-									element={<route.component></route.component>}
-								></Route>
-							</Route>;
-						}
-						return (
-							<Route
-								key={index}
-								path={route.path}
-								element={<route.component></route.component>}
-							></Route>
-						);
-					})}
-				</Routes>
-			</QueryClientProvider>
+			<Routes>
+				{routes.map((route, index) => {
+					if (route.auth) {
+						<Route
+							key={index}
+							path={route.path}
+							element={<route.component></route.component>}
+						></Route>;
+					}
+					return (
+						<Route
+							key={index}
+							path={route.path}
+							element={<route.component></route.component>}
+						></Route>
+					);
+				})}
+			</Routes>
 		</div>
 	);
 }

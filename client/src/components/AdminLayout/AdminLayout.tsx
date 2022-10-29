@@ -3,13 +3,18 @@ import "./adminLayout.css";
 import { Outlet } from "react-router-dom";
 import { AdminSidebar } from "../AdminSidebar/AdminSidebar";
 
-export const AdminLayout = () => {
+export interface adminLayoutInterface {
+	children: React.ReactNode;
+}
+
+export const AdminLayout: React.FC<adminLayoutInterface> = ({ children }) => {
 	return (
-		<div>
-			<AdminSidebar></AdminSidebar>
-			<section className='main__content'>
-				<Outlet />
-			</section>
+		<div className='admin__layoutContent'>
+			<div className='adminSideBarContent'>
+				<AdminSidebar></AdminSidebar>
+			</div>
+
+			<section className='main__content'>{children}</section>
 		</div>
 	);
 };

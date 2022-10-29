@@ -1,0 +1,34 @@
+.adminSidebarContent__container {
+	background-color: #f2f5f6;
+	height: 100vh;
+	font-size: 12px;
+}
+
+.adminSidebar__menuContainer .sideBarItems__linkContainer {
+	color: black;
+	margin: 0 auto;
+	padding: 10px;
+}
+
+.adminSidebar__userContainer {
+	justify-content: space-between;
+}
+.adminSidebar__userContainer,
+.userAdmin__sidebarContent {
+	display: flex;
+}
+.userAdmin__sidebarContent img {
+	margin-right: 10px;
+}
+.adminSidebar__userContainer img {
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+}
+.sideBarItems__linkItemContainer {
+	display: flex;
+	justify-content: space-between;
+}
+.sideBarItems__linkContainer span {
+	margin: 0px 10px;
+}

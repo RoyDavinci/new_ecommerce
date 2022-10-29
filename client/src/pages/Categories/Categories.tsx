@@ -39,7 +39,7 @@ export const Categories = () => {
 		return () => {
 			console.log("this will log on unmount");
 		};
-	}, [loading]);
+	}, [loading, data, dispatch]);
 
 	return (
 		<div className='categoriesContainer'>

@@ -1,0 +1,85 @@
+.statistics-paragraph {
+	padding: 2px 4px;
+	/* border: 0.5px solid #ccc; */
+}
+.order__componentContainer {
+	font-size: 13px;
+}
+.order__help span {
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0px 10px;
+}
+.orderFilter {
+	border-radius: 5px;
+	border: 0.5px solid #ccc;
+	padding: 10px;
+}
+.orderFilter__content__contianer {
+	margin: 0px 15px;
+}
+.orderFilter__container form {
+	border: 0.5px solid #ccc;
+	padding: 5px 10px;
+	margin: 0px 10px;
+}
+.orderFilter__container form i,
+.orderFilter__container .export {
+	font-size: 13px;
+	font-weight: 600;
+	margin-right: 5px;
+}
+.orderFilter__container .export {
+	padding: 5px 10px;
+	border: 0.5px solid #ccc;
+}
+table {
+	border-collapse: separate !important;
+	border-spacing: 0.5em 0.5em;
+	/* padding: 10px; */
+	background-color: white;
+	border-radius: 10px;
+	width: 100%;
+}
+table {
+	display: block;
+	overflow-x: auto;
+	white-space: nowrap;
+}
+table th:not(:first-child),
+table td:not(:first-child) {
+	width: 100px;
+}
+
+table td,
+table th {
+	text-align: center;
+}
+.failed,
+.pending,
+.paid {
+	padding: 10px;
+	text-align: center;
+	border-radius: 5px;
+}
+.failed {
+	background-color: red;
+	color: #fff;
+}
+.paid {
+	background-color: greenyellow;
+}
+.pending {
+	background-color: bisque;
+}
+table tbody tr td .fa-eye {
+	background-color: rgb(113, 113, 230);
+	padding: 10px;
+	border-radius: 5px;
+	color: #fff;
+}
+table tr input[type="checkbox"] {
+	width: 20px;
+}
