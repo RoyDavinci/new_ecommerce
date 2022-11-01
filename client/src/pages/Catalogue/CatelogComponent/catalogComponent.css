@@ -1,0 +1,41 @@
+/* .limtiCharClass {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 300px;
+	display: inline-block;
+} */
+/* .catalog__componentContainer table tr th {
+	text-align: left;
+} */
+.products__table__container {
+	border-collapse: separate !important;
+	border-spacing: 0.8em 0.8em;
+	border-radius: 10px;
+	width: 100%;
+	display: block;
+	overflow-x: auto;
+	font-size: 12px;
+	/* white-space: nowrap; */
+}
+.products__table__container tbody tr td img {
+	height: 50px;
+	width: 50px;
+}
+/* .catalog__componentContainer table th,
+.catalog__componentContainer table td:not(:last-child) {
+	width: 100px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.catalog__componentContainer table td:nth-child(2) {
+	width: 30px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+} */
+/* .catalog__componentContainer table tr td {
+	text-align: center;
+} */

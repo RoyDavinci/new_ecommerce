@@ -1,8 +1,6 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./adminSidebar.css";
 import { Link } from "react-router-dom";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 
 export const AdminSidebar = () => {
 	const [image, setImage] = useState<string>(
@@ -34,14 +32,14 @@ export const AdminSidebar = () => {
 	const sideMenuLinks = [
 		{
 			id: 1,
-			icon: <DashboardIcon />,
+			icon: "fa-solid fa-bars",
 			text: "Dashboard",
 			path: "/admin",
 			hasChildren: false,
 		},
 		{
 			id: 2,
-			icon: <FolderOpenOutlinedIcon />,
+			icon: "fa-solid fa-cart-shopping",
 			text: "Orders",
 			path: "/orders",
 			hasChildren: false,
@@ -55,7 +53,7 @@ export const AdminSidebar = () => {
 		},
 		{
 			id: 4,
-			icon: <FolderOpenOutlinedIcon />,
+			icon: "fa-solid fa-person",
 			text: "Customers",
 			path: "/admin",
 			hasChildren: false,
@@ -84,7 +82,7 @@ export const AdminSidebar = () => {
 	];
 
 	return (
-		<div className='adminSidebarContent__container p-3'>
+		<main className='adminSidebarContent__container p-2'>
 			<div className='adminSidebar__userContainer mb-12'>
 				<div className='userAdmin__sidebarContent flex'>
 					<img src={image} alt='' />
@@ -95,10 +93,10 @@ export const AdminSidebar = () => {
 				</div>
 				<i className='fa-solid fa-chevron-down'></i>
 			</div>
-			<div className='adminSidebar__menuContainer'>
+			<section className='adminSidebar__menuContainer'>
 				{sideMenuLinks.map((item) => {
 					return (
-						<div
+						<ul
 							className='sideBarItems__linkContainer '
 							key={item.id}
 							onClick={() => onBackgroundChange(item.id)}
@@ -109,24 +107,16 @@ export const AdminSidebar = () => {
 								marginBottom: "10px",
 							}}
 						>
-							<div className='sideBarItems__linkItemContainer'>
+							<li className='sideBarItems__linkItemContainer'>
 								<Link to={item.path}>
-									{typeof item.icon === "string" ? (
-										<i className={item.icon}></i>
-									) : (
-										item.icon
-									)}
+									<i className={item.icon}></i>
 									<span>{item.text}</span>
 								</Link>
-
-								{item.hasChildren && (
-									<i className='fa-solid fa-chevron-down'></i>
-								)}
-							</div>
-						</div>
+							</li>
+						</ul>
 					);
 				})}
-			</div>
-		</div>
+			</section>
+		</main>
 	);
 };

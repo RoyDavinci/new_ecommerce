@@ -2,6 +2,35 @@
 	padding: 2px 4px;
 	/* border: 0.5px solid #ccc; */
 }
+.order__SectionCenter {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+}
+.order__sectionArticle {
+	padding: 10px;
+	border-radius: 5px;
+}
+.cancelledOrders {
+	background-color: #ffeae6;
+}
+.deliveredOrders {
+	background-color: #f4f3fe;
+}
+.newOrders {
+	background-color: #ecf6fe;
+}
+.order__sectionArticle div h2 {
+	font-size: 22px;
+}
+.order__filtersContainer h4 {
+	margin-right: 10px;
+}
+.state {
+	color: #c4e4fe;
+	border-bottom: 0.5px solid #c4e4fe;
+	padding-bottom: 5px;
+}
 .order__componentContainer {
 	font-size: 13px;
 }
@@ -35,26 +64,24 @@
 	padding: 5px 10px;
 	border: 0.5px solid #ccc;
 }
-table {
+.orderFilter table {
 	border-collapse: separate !important;
 	border-spacing: 0.5em 0.5em;
-	/* padding: 10px; */
-	background-color: white;
 	border-radius: 10px;
 	width: 100%;
 }
-table {
+.orderFilter table {
 	display: block;
 	overflow-x: auto;
 	white-space: nowrap;
 }
-table th:not(:first-child),
-table td:not(:first-child) {
+.orderFilter table th:not(:first-child),
+.orderFilter table td:not(:first-child) {
 	width: 100px;
 }
 
-table td,
-table th {
+.orderFilter table td,
+.orderFilter table th {
 	text-align: center;
 }
 .failed,

@@ -1,112 +1,93 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./orderComponent.css";
+import orderItems from "../../../defaultData/orders";
+import { orderItemInterface } from "../../../interfaces/order";
 
 export const OrderComponent = () => {
-	const orderItems = [
-		{
-			id: 1,
-			reference: "buybubudbu",
-			new: true,
-			price: 3000,
-			payment: "Paypal",
-			status: "pending",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-		{
-			id: 2,
-			reference: "buybubudbu",
-			new: true,
-			price: 3000,
-			payment: "Check",
-			status: "pending",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-		{
-			id: 3,
-			reference: "buybubudbu",
-			new: false,
-			price: 3000,
-			payment: "Paystack",
-			status: "paid",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-		{
-			id: 4,
-			reference: "buybubudbu",
-			new: false,
-			price: 3000,
-			payment: "Check",
-			status: "paid",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-		{
-			id: 5,
-			reference: "buybubudbu",
-			new: true,
-			price: 3000,
-			payment: "Check",
-			status: "pending",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-		{
-			id: 6,
-			reference: "buybubudbu",
-			new: false,
-			price: 3000,
-			payment: "Flutterwave",
-			status: "failed",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-		{
-			id: 7,
-			reference: "buybubudbu",
-			new: true,
-			price: 3000,
-			payment: "Paypal",
-			status: "failed",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-		{
-			id: 8,
-			reference: "buybubudbu",
-			new: true,
-			price: 3000,
-			payment: "Paystack",
-			status: "paid",
-			name: "Mathias Roy",
-			email: "emsthias33@gmail.com",
-			Address: "Ikeja Lagos",
-		},
-	];
+	const [orderState, setOrderState] = useState("All");
+	const [orders, setOrders] = useState<orderItemInterface[]>(orderItems);
+	// const [filteredData, setFilteredData] = useState([]);
+
+	const setFilteredPaid = () => {
+		const filtered = orderItems.filter((item) => item.status === "paid");
+		setOrders(filtered);
+		setOrderState("completed");
+		console.log(filtered);
+	};
+
+	const setFilteredAll = () => {
+		setOrders(orderItems);
+		setOrderState("All");
+	};
+
+	const setFilteredPending = () => {
+		const filtered = orderItems.filter((item) => item.status === "pending");
+		setOrders(filtered);
+		setOrderState("pending");
+		console.log(filtered);
+	};
 
 	return (
 		<main className='order__componentContainer p-4'>
-			<section className='orderComponent__headers flex justify-between'>
-				<h1>Orders</h1>
-				<article className='order__help flex'>
-					<span className='cursor-pointer'>Help</span>
-					<span className='statistics-paragraph cursor-pointer'>
-						Order Statistics
-					</span>
+			<h1>Orders</h1>
+			<section className='order__SectionCenter my-4'>
+				<article className='order__sectionArticle newOrders'>
+					<h3>New Orders</h3>
+					<div className='newOrders__content flex items-center'>
+						<h2>245</h2>
+						<p className='mx-4'>|</p>
+						<p>Impression - 20%</p>
+					</div>
+				</article>
+				<article className='order__sectionArticle deliveredOrders'>
+					<h3>Delivered Orders</h3>
+					<div className='deliveredOrders__content flex items-center'>
+						<h2>245</h2>
+						<p className='mx-4'>|</p>
+						<p>Impression - 20%</p>
+					</div>
+				</article>
+				<article className='order__sectionArticle cancelledOrders'>
+					<h3>Cancelled Orders</h3>
+					<div className='cancelledOrders__content flex items-center'>
+						<h2>245</h2>
+						<p className='mx-4'>|</p>
+						<p>Impression - 20%</p>
+					</div>
 				</article>
 			</section>
-			<section className='orderFilter'>
+			<section className='orderFilter bg-[#F9F9F9]'>
 				<div className='orderFilter__content__contianer  flex justify-between items-center'>
-					<h4>Orders</h4>
+					<div className='order__filtersContainer flex'>
+						<h4
+							className={
+								orderState === "All" ? "state cursor-pointer" : "cursor-pointer"
+							}
+							onClick={setFilteredAll}
+						>
+							All Orders
+						</h4>
+						<h4
+							className={
+								orderState === "completed"
+									? "state cursor-pointer"
+									: "cursor-pointer"
+							}
+							onClick={setFilteredPaid}
+						>
+							Completed
+						</h4>
+						<h4
+							className={
+								orderState === "pending"
+									? "state cursor-pointer"
+									: "cursor-pointer"
+							}
+							onClick={setFilteredPending}
+						>
+							Pending
+						</h4>
+					</div>
 					<div className='orderFilter__container flex justify-between items-center '>
 						<p className='px-2'>
 							<i className='fa-solid fa-filter'></i> Filters
@@ -139,7 +120,7 @@ export const OrderComponent = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{orderItems.map((item) => {
+						{orders.map((item) => {
 							return (
 								<tr key={item.id}>
 									<td>
