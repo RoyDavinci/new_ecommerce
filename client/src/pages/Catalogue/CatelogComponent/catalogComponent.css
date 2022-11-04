@@ -1,13 +1,3 @@
-/* .limtiCharClass {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	width: 300px;
-	display: inline-block;
-} */
-/* .catalog__componentContainer table tr th {
-	text-align: left;
-} */
 .products__table__container {
 	border-collapse: separate !important;
 	border-spacing: 0.8em 0.8em;
@@ -22,20 +12,42 @@
 	height: 50px;
 	width: 50px;
 }
-/* .catalog__componentContainer table th,
-.catalog__componentContainer table td:not(:last-child) {
-	width: 100px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+.catalog__SectionFilter__component form {
+	border: 0.5px solid #ccc;
+	border-radius: 5px;
 }
-
-.catalog__componentContainer table td:nth-child(2) {
-	width: 30px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-} */
-/* .catalog__componentContainer table tr td {
-	text-align: center;
-} */
+.catalog__SectionFilter__component form i {
+	font-size: 12px;
+	margin-right: 5px;
+}
+.addNewProductForm {
+	padding: 15px;
+	background-color: white;
+	border-radius: 5px;
+	left: 50%;
+	transform: translate(-50%, 0);
+}
+.addNewProductForm {
+	height: 92vh;
+	overflow-y: scroll;
+	width: 35vw;
+}
+.addNewProductForm div label,
+.addNewProductForm div input,
+.addNewPRoductForm__inputContainer select {
+	display: block;
+	margin: 15px 0px;
+}
+.addNewProductForm div input,
+.addNewPRoductForm__inputContainer select {
+	padding: 10px;
+	border: 0.5px solid #ccc;
+	width: 100%;
+}
+.addNewProductForm div input[type="file"] {
+	display: none;
+}
+.addNewProductForm button {
+	margin: 10px 0px;
+	width: 100%;
+}

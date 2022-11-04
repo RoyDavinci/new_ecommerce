@@ -1,6 +1,6 @@
 export interface ProductInterface {
 	name: string;
-	image: string[];
+	images: string[];
 	quantity: number;
 	price: number;
 	make: string;
@@ -8,6 +8,48 @@ export interface ProductInterface {
 	year: string;
 	description?: string;
 	id: number;
+}
+export interface AddProductInterface {
+	name: string;
+	product: string | Blob;
+	quantity: number;
+	price: number;
+	make: string;
+	model: string;
+	year: string;
+	description?: string;
+	id: number;
+	categoryName: string;
+}
+export interface productPayloadResponse {
+	name: string;
+	sellerId: number | null;
+	adminId: number | null;
+	quantity: number;
+	price: string;
+	categoryName: string;
+	model: string;
+	make: string;
+	year: string;
+	description: string | null;
+	createdAt: string;
+	updatedAt: string | null;
+	product: string[] | string | File;
+}
+
+export interface AllProductInterface {
+	message: string;
+	data: ProductInterface[];
+	error: {};
+	status: "idle" | "loading" | "failed" | "successful";
+}
+
+export interface productAddInterface {
+	message: string;
+	data: productPayloadResponse;
+	productStatus: "idle" | "loading" | "failed" | "successful";
+	error: {};
+	productError: unknown | { message: string };
 }
 
 export const productsData: ProductInterface[] = [
@@ -20,7 +62,7 @@ export const productsData: ProductInterface[] = [
 		make: "Apple",
 		model: "smartphones",
 		year: "2022",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/1/1.jpg",
 			"https://dummyjson.com/image/i/products/1/2.jpg",
 			"https://dummyjson.com/image/i/products/1/3.jpg",
@@ -38,7 +80,7 @@ export const productsData: ProductInterface[] = [
 		make: "Apple",
 		model: "smartphones",
 		year: "2022",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/2/1.jpg",
 			"https://dummyjson.com/image/i/products/2/2.jpg",
 			"https://dummyjson.com/image/i/products/2/3.jpg",
@@ -55,7 +97,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 36,
 		make: "Samsung",
 		model: "smartphones",
-		image: ["https://dummyjson.com/image/i/products/3/1.jpg"],
+		images: ["https://dummyjson.com/image/i/products/3/1.jpg"],
 	},
 	{
 		id: 4,
@@ -66,7 +108,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 123,
 		make: "OPPO",
 		model: "smartphones",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/4/1.jpg",
 			"https://dummyjson.com/image/i/products/4/2.jpg",
 			"https://dummyjson.com/image/i/products/4/3.jpg",
@@ -84,7 +126,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 32,
 		make: "Huawei",
 		model: "smartphones",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/5/1.jpg",
 			"https://dummyjson.com/image/i/products/5/2.jpg",
 			"https://dummyjson.com/image/i/products/5/3.jpg",
@@ -100,7 +142,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 83,
 		make: "APPle",
 		model: "laptops",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/6/1.png",
 			"https://dummyjson.com/image/i/products/6/2.jpg",
 			"https://dummyjson.com/image/i/products/6/3.png",
@@ -117,7 +159,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 50,
 		make: "Samsung",
 		model: "laptops",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/7/1.jpg",
 			"https://dummyjson.com/image/i/products/7/2.jpg",
 			"https://dummyjson.com/image/i/products/7/3.jpg",
@@ -134,7 +176,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 68,
 		make: "Microsoft Surface",
 		model: "laptops",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/8/1.jpg",
 			"https://dummyjson.com/image/i/products/8/2.jpg",
 			"https://dummyjson.com/image/i/products/8/3.jpg",
@@ -152,7 +194,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 96,
 		make: "Infinix",
 		model: "laptops",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/9/1.jpg",
 			"https://dummyjson.com/image/i/products/9/2.png",
 			"https://dummyjson.com/image/i/products/9/3.png",
@@ -170,7 +212,7 @@ export const productsData: ProductInterface[] = [
 		make: "HP Pavilion",
 		model: "laptops",
 		year: "2022",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/10/1.jpg",
 			"https://dummyjson.com/image/i/products/10/2.jpg",
 			"https://dummyjson.com/image/i/products/10/3.jpg",
@@ -187,7 +229,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 65,
 		make: "Impression of Acqua Di Gio",
 		model: "fragrances",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/11/1.jpg",
 			"https://dummyjson.com/image/i/products/11/2.jpg",
 			"https://dummyjson.com/image/i/products/11/3.jpg",
@@ -203,7 +245,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 52,
 		make: "Royal_Mirage",
 		model: "fragrances",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/12/1.jpg",
 			"https://dummyjson.com/image/i/products/12/2.jpg",
 			"https://dummyjson.com/image/i/products/12/3.png",
@@ -221,7 +263,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 61,
 		make: "Fog Scent Xpressio",
 		model: "fragrances",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/13/1.jpg",
 			"https://dummyjson.com/image/i/products/13/2.png",
 			"https://dummyjson.com/image/i/products/13/3.jpg",
@@ -239,7 +281,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 114,
 		make: "Al Munakh",
 		model: "fragrances",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/14/1.jpg",
 			"https://dummyjson.com/image/i/products/14/2.jpg",
 			"https://dummyjson.com/image/i/products/14/3.jpg",
@@ -256,7 +298,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 105,
 		make: "Lord - Al-Rehab",
 		model: "fragrances",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/15/1.jpg",
 			"https://dummyjson.com/image/i/products/15/2.jpg",
 			"https://dummyjson.com/image/i/products/15/3.jpg",
@@ -274,7 +316,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 110,
 		make: "L'Oreal Paris",
 		model: "skincare",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/16/1.png",
 			"https://dummyjson.com/image/i/products/16/2.webp",
 			"https://dummyjson.com/image/i/products/16/3.jpg",
@@ -292,7 +334,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 78,
 		make: "Hemani Tea",
 		model: "skincare",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/17/1.jpg",
 			"https://dummyjson.com/image/i/products/17/2.jpg",
 			"https://dummyjson.com/image/i/products/17/3.jpg",
@@ -309,7 +351,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 88,
 		make: "Dermive",
 		model: "skincare",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/18/1.jpg",
 			"https://dummyjson.com/image/i/products/18/2.jpg",
 			"https://dummyjson.com/image/i/products/18/3.jpg",
@@ -327,7 +369,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 54,
 		make: "ROREC White Rice",
 		model: "skincare",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/19/1.jpg",
 			"https://dummyjson.com/image/i/products/19/2.jpg",
 			"https://dummyjson.com/image/i/products/19/3.png",
@@ -344,7 +386,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 140,
 		make: "Fair & Clear",
 		model: "skincare",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/20/1.jpg",
 			"https://dummyjson.com/image/i/products/20/2.jpg",
 			"https://dummyjson.com/image/i/products/20/3.jpg",
@@ -361,7 +403,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 133,
 		make: "Saaf & Khaas",
 		model: "groceries",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/21/1.png",
 			"https://dummyjson.com/image/i/products/21/2.jpg",
 			"https://dummyjson.com/image/i/products/21/3.jpg",
@@ -376,7 +418,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 146,
 		make: "Bake Parlor Big",
 		model: "groceries",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/22/1.jpg",
 			"https://dummyjson.com/image/i/products/22/2.jpg",
 			"https://dummyjson.com/image/i/products/22/3.jpg",
@@ -392,7 +434,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 26,
 		make: "Baking Food Items",
 		model: "groceries",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/23/1.jpg",
 			"https://dummyjson.com/image/i/products/23/2.jpg",
 			"https://dummyjson.com/image/i/products/23/3.jpg",
@@ -410,7 +452,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 113,
 		make: "fauji",
 		model: "groceries",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/24/1.jpg",
 			"https://dummyjson.com/image/i/products/24/2.jpg",
 			"https://dummyjson.com/image/i/products/24/3.jpg",
@@ -427,7 +469,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 47,
 		make: "Dry Rose",
 		model: "groceries",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/25/1.png",
 			"https://dummyjson.com/image/i/products/25/2.jpg",
 			"https://dummyjson.com/image/i/products/25/3.png",
@@ -445,7 +487,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 131,
 		make: "Boho Decor",
 		model: "home-decoration",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/26/1.jpg",
 			"https://dummyjson.com/image/i/products/26/2.jpg",
 			"https://dummyjson.com/image/i/products/26/3.jpg",
@@ -464,7 +506,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 17,
 		make: "Flying Wooden",
 		model: "home-decoration",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/27/1.jpg",
 			"https://dummyjson.com/image/i/products/27/2.jpg",
 			"https://dummyjson.com/image/i/products/27/3.jpg",
@@ -482,7 +524,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 54,
 		make: "LED Lights",
 		model: "home-decoration",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/28/1.jpg",
 			"https://dummyjson.com/image/i/products/28/2.jpg",
 			"https://dummyjson.com/image/i/products/28/3.png",
@@ -500,7 +542,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 7,
 		make: "luxury palace",
 		model: "home-decoration",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/29/1.jpg",
 			"https://dummyjson.com/image/i/products/29/2.jpg",
 			"https://dummyjson.com/image/i/products/29/3.webp",
@@ -518,7 +560,7 @@ export const productsData: ProductInterface[] = [
 		quantity: 54,
 		make: "Golden",
 		model: "home-decoration",
-		image: [
+		images: [
 			"https://dummyjson.com/image/i/products/30/1.jpg",
 			"https://dummyjson.com/image/i/products/30/2.jpg",
 			"https://dummyjson.com/image/i/products/30/3.jpg",

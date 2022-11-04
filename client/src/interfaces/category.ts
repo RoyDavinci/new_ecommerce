@@ -9,7 +9,7 @@ export interface categoryPayloadResponse {
 
 export interface CategoryState {
 	message: string;
-	data: categoryPayloadResponse[];
+	categoryData: categoryPayloadResponse[];
 	status: "idle" | "loading" | "failed" | "successful";
 	error: {};
 }

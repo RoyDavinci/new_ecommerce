@@ -1,4 +1,17 @@
-.admin__layoutContent {
+.admin__container {
 	display: grid;
 	grid-template-columns: 0.6fr 3.4fr;
+}
+.admin_container,
+.overlay {
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.overlayBackground {
+	background-color: rgba(0, 0, 0, 0.4);
+	z-index: 10;
+	height: 100%;
 }

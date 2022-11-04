@@ -22,14 +22,14 @@ export const Categories = () => {
 
 	const dispatch = useAppDispatch();
 
-	const { data, status } = useAppSelector((state) => state.category);
-	// console.log(data);
+	const { categoryData, status } = useAppSelector((state) => state.category);
+	// console.log(categoryData);
 
 	useEffect(() => {
 		const fetchCategories = () => {
 			try {
 				dispatch(getCategories());
-				setGetCategoryData(data);
+				setGetCategoryData(categoryData);
 				setLoading(false);
 			} catch (error) {
 				console.log(error);
@@ -39,7 +39,7 @@ export const Categories = () => {
 		return () => {
 			console.log("this will log on unmount");
 		};
-	}, [loading, data, dispatch]);
+	}, [loading, categoryData, dispatch]);
 
 	return (
 		<div className='categoriesContainer'>

@@ -12,7 +12,7 @@ import { payloadErrorResponse } from "../../interfaces/userinterfaces";
 const initialState: CategoryState = {
 	message: "",
 	status: "idle",
-	data: [
+	categoryData: [
 		{
 			images: "",
 			name: "",
@@ -64,7 +64,7 @@ export const categorySlice = createSlice({
 			(state, action: PayloadAction<categoryPayloadResponse[]>) => {
 				state.message = "success";
 				state.status = "successful";
-				state.data = action.payload;
+				state.categoryData = action.payload;
 			}
 		);
 		builder.addCase(getCategories.rejected, (state, action) => {

@@ -14,3 +14,8 @@
 	justify-content: space-between;
 	padding: 0px 15px;
 }
+.userAdmin__sidebarContent img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
