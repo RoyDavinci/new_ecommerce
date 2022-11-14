@@ -21,6 +21,19 @@ export interface AddProductInterface {
 	id: number;
 	categoryName: string;
 }
+
+export interface EditProductInterface {
+	name: string;
+	images: Array<string>;
+	quantity: number;
+	price: number;
+	make: string;
+	model: string;
+	year: string;
+	description?: string;
+	id: number;
+	categoryName: string;
+}
 export interface productPayloadResponse {
 	name: string;
 	sellerId: number | null;
@@ -43,13 +56,17 @@ export interface AllProductInterface {
 	error: {};
 	status: "idle" | "loading" | "failed" | "successful";
 }
+export interface productErrorResponse {
+	data?: [];
+	message?: string;
+}
 
 export interface productAddInterface {
 	message: string;
 	data: productPayloadResponse;
 	productStatus: "idle" | "loading" | "failed" | "successful";
 	error: {};
-	productError: unknown | { message: string };
+	productError: unknown;
 }
 
 export const productsData: ProductInterface[] = [

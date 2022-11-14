@@ -1,6 +1,5 @@
 import React, {
 	BaseSyntheticEvent,
-	ChangeEvent,
 	useCallback,
 	useEffect,
 	useState,
@@ -10,6 +9,7 @@ import {
 	productsData,
 	ProductInterface,
 	AddProductInterface,
+	EditProductInterface,
 } from "../../../interfaces/product";
 import "./catalogComponent.css";
 import Box from "@mui/material/Box";
@@ -21,10 +21,13 @@ import {
 	deleteProducts,
 	getProducts,
 	addProduct,
+	getSingleProduct,
+	editProducts,
 } from "../../../features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import { getCategories } from "../../../features/categories/cateorySlice";
 import { categoryPayloadResponse } from "../../../interfaces/category";
+import { ErrorResponse } from "../../../interfaces/error";
 
 export const CatalogComponent = () => {
 	const [products, setProducts] = useState<ProductInterface[]>([
@@ -41,9 +44,9 @@ export const CatalogComponent = () => {
 		},
 	]);
 	const [showAddForm, setShowAddForm] = useState<boolean>(false);
-	const [previewImage, setPreviewImage] = useState<string | ArrayBuffer | null>(
-		null
-	);
+	const [previewImage, setPreviewImage] = useState<
+		string | Blob | ArrayBuffer | null
+	>(null);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [initial, setInitial] = useState<AddProductInterface>({
 		name: "",
@@ -57,6 +60,7 @@ export const CatalogComponent = () => {
 		year: "",
 		categoryName: "",
 	});
+	const [editId, setEditId] = useState<number>(0);
 	const [value, setValue] = useState("");
 	const [categories, setCategories] = useState<categoryPayloadResponse[]>([]);
 
@@ -109,14 +113,14 @@ export const CatalogComponent = () => {
 
 	const closeAddForm = () => {
 		setShowAddForm(false);
+		setEditId(0);
 		dispatch(changeState());
 	};
 
 	const form = new FormData();
 
-	const addNewProduct = (e: BaseSyntheticEvent) => {
+	const addNewProduct = async (e: BaseSyntheticEvent) => {
 		e.preventDefault();
-		console.log(initial);
 		form.append("name", initial.name);
 		initial.description && form.append("description", initial.description);
 		form.append("make", initial.make);
@@ -124,26 +128,70 @@ export const CatalogComponent = () => {
 		form.append("year", initial.year);
 		form.append("price", initial.price.toString());
 		form.append("quantity", initial.quantity.toString());
-		form.append("product", initial.product);
+		typeof initial.product === "object" &&
+			form.append("product", initial.product);
 		form.append("categoryName", initial.categoryName);
 
-		try {
+		if (!editId) {
 			dispatch(addProduct(form));
 			if (productStatus === "failed") {
-				// if(productError.message)
+				const errors = productError as unknown as ErrorResponse;
+				if (errors.message?.includes("jwt")) {
+					dispatch(changeState());
+					navigate("/login");
+				}
 			}
-		} catch (error) {}
-		// setShowAddForm(false);
-		// dispatch(changeState());
+			if (productStatus === "successful") {
+				window.location.reload();
+			}
+		} else {
+			form.forEach((item) => {
+				console.log(item);
+			});
+			// const data = await editProducts(editId, form);
+			// console.log(data);
+			// if (typeof data.message === "string" && data.message.includes("jwt")) {
+			// 	setShowAddForm(false);
+			// 	setEditId(0);
+			// 	localStorage.removeItem("user");
+			// 	localStorage.removeItem("token");
+			// 	dispatch(changeState());
+			// 	navigate("/login");
+			// } else {
+			// 	console.log("No");
+			// }
+		}
 	};
 
-	const editProduct = (id: number) => {
-		console.log(id);
+	const editProduct = async (id: number) => {
+		const item = await getSingleProduct(id);
+		if (typeof item.message === "string" && item.message.includes("jwt")) {
+			localStorage.removeItem("user");
+			localStorage.removeItem("token");
+			navigate("/login");
+		}
+		const data = item.message as unknown as EditProductInterface;
+		setEditId(id);
+		setInitial({
+			product: data.images[0],
+			quantity: data.quantity,
+			id: data.id,
+			categoryName: data.categoryName,
+			description: data.description,
+			model: data.model,
+			name: data.name,
+			make: data.make,
+			price: data.price,
+			year: data.year,
+		});
+		setShowAddForm(true);
+		setPreviewImage(data.images[0]);
+		dispatch(changeState());
 	};
 
 	const deleteProduct = async (id: number) => {
 		const data = await deleteProducts(id);
-		if (data.message.includes("expired")) {
+		if (data.message.includes("jwt")) {
 			localStorage.removeItem("user");
 			localStorage.removeItem("token");
 			navigate("/login");
@@ -151,7 +199,7 @@ export const CatalogComponent = () => {
 		toast.success(data.message, {
 			position: toast.POSITION.TOP_RIGHT,
 		});
-		return setData();
+		window.location.reload();
 	};
 
 	const columns: GridColDef[] = [
@@ -458,7 +506,6 @@ export const CatalogComponent = () => {
 							multiple
 							type='file'
 							onChange={onInputChange}
-							required
 						/>
 					</label>
 				</div>

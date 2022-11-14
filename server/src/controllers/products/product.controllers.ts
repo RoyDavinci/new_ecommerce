@@ -30,9 +30,11 @@ export const createProduct = async (req: Request, res: Response) => {
             }
             logger.info("gotten to verify subscriber admin");
             let num: number = 0;
+            console.log(JSON.stringify(req.body));
             const checkCategoryName = await prisma.category.findUnique({ where: { name: categoryName } });
+
             if (!checkCategoryName) {
-                const newCategory = await prisma.category.create({ data: { name: categoryName, description: ` descriptio for ${name}` } });
+                const newCategory = await prisma.category.create({ data: { name: categoryName, description: ` description for ${name}` } });
                 num = newCategory.id;
             }
             if (checkCategoryName) {
@@ -166,7 +168,7 @@ export const getProducts = async (req: Request, res: Response) => {
 export const getSingleProduct = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        const getProduct = await prisma.product.findUnique({ where: { id: Number(id) }, select: { productRatings: true } });
+        const getProduct = await prisma.product.findUnique({ where: { id: Number(id) }, include: { productRatings: true } });
         return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: getProduct });
     } catch (error) {
         logger.error(error);

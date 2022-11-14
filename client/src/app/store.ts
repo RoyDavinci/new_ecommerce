@@ -15,6 +15,10 @@ export const store = configureStore({
 		products: productReducer,
 		allProducts: getProductReducer,
 	},
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: false,
+		}),
 });
 
 export type AppDispatch = typeof store.dispatch;

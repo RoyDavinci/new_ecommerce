@@ -4,6 +4,7 @@ import { privateRequest, publicRequest } from "../../api/client";
 import {
 	AllProductInterface,
 	productAddInterface,
+	productErrorResponse,
 	ProductInterface,
 } from "../../interfaces/product";
 import { payloadErrorResponse } from "../../interfaces/userinterfaces";
@@ -27,7 +28,7 @@ const initialState: productAddInterface = {
 	},
 	productStatus: "idle",
 	error: {},
-	productError: { message: "" },
+	productError: null,
 };
 
 const productInitialState: AllProductInterface = {
@@ -49,6 +50,34 @@ const productInitialState: AllProductInterface = {
 	],
 };
 
+// export const updateUser = createAsyncThunk<
+// 	{
+// 		rejectValue: productErrorResponse;
+// 	}
+// >("users/update", async (item, { rejectWithValue }) => {
+// 	try {
+// 		const data: AxiosResponse  = await publicRequest.post(
+// 			"http://localhost:8090/api/v1/product/add-product",
+// 			item,
+// 			{
+// 				headers: {
+// 					Authorization: `Bearer ${token}`,
+// 					"Content-Type": "multipart/form-data",
+// 				},
+// 			}
+// 		);
+// 		return data.data.product;
+// 	} catch (err) {
+// 		// let error: AxiosError<productErrorResponse> = err;
+//         const err = error as AxiosError<productErrorResponse>;// cast the error for access
+// 		if (!error.response) {
+// 			throw err;
+// 		}
+// 		// We got validation errors, let's return those so we can reference in our component and set form errors
+// 		return rejectWithValue(error.response.data);
+// 	}
+// });
+
 const token = localStorage.getItem("token");
 
 export const deleteProducts = async (id: number) => {
@@ -63,7 +92,36 @@ export const deleteProducts = async (id: number) => {
 		return err?.response?.data;
 	}
 };
+export const editProducts = async (id: number, form: FormData) => {
+	try {
+		const response = await fetch(`http://localhost:8090/api/v1/product/${id}`, {
+			method: "PATCH",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+			body: form,
+		});
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		const err = error as AxiosError<payloadErrorResponse>;
 
+		return err?.response?.data;
+	}
+};
+
+export const getSingleProduct = async (id: number) => {
+	try {
+		const { data } = await privateRequest.get(
+			`http://localhost:8090/api/v1/product/${id}`
+		);
+		return data;
+	} catch (error) {
+		const err = error as AxiosError<payloadErrorResponse>;
+
+		return err?.response?.data;
+	}
+};
 export const getProducts = createAsyncThunk("items", async (item, thunkAPI) => {
 	try {
 		const { data } = await publicRequest.get(
@@ -81,24 +139,21 @@ export const getProducts = createAsyncThunk("items", async (item, thunkAPI) => {
 export const addProduct = createAsyncThunk(
 	"data",
 	async (item: FormData, thunkAPI) => {
-		try {
-			const { data } = await publicRequest.post(
-				"http://localhost:8090/api/v1/product/add-product",
-				item,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "multipart/form-data",
-					},
-				}
-			);
-			return data.product;
-		} catch (error) {
-			const err = error as AxiosError<payloadErrorResponse>;
-			return thunkAPI.rejectWithValue({
-				message: err.response?.data.message,
-			});
+		const response = await fetch(
+			`http://localhost:8090/api/v1/product/add-product`,
+			{
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+				body: item,
+			}
+		);
+		const data = await response.json();
+		if (response.status < 200 || response.status >= 300) {
+			return thunkAPI.rejectWithValue(data);
 		}
+		return data;
 	}
 );
 
@@ -139,6 +194,7 @@ export const productSlice = createSlice({
 			state.productStatus = "failed";
 			state.error = action.error;
 			state.productError = action.payload;
+			state.message = "failed";
 		});
 	},
 });
