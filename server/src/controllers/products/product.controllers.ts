@@ -108,13 +108,18 @@ export const deleteProducts = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
     const { adminId, subscriberId } = req.user as unknown as IUser;
-    const { name, quantity, price, categoryId, description } = req.body;
+    const { name, quantity, price, categoryName, description } = req.body;
     const { id } = req.params;
 
     try {
         const findProduct = await prisma.product.findUnique({ where: { id: Number(id) } });
         if (!findProduct) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "product not found" });
+        let categoryId: number = 0;
+        logger.info(JSON.stringify(req.body));
 
+        const category = await prisma.category.findUnique({ where: { name: categoryName } });
+        if (!category) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "category not found" });
+        categoryId = category.id;
         const value: string[] = [];
         if (req.file) {
             logger.info(value);
@@ -125,12 +130,12 @@ export const updateProduct = async (req: Request, res: Response) => {
             if (subscriberId) {
                 const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "sellerId" = ${Number(subscriberId)}`;
                 if (!findUnique) return res.status(400).json({ message: "product not found" });
-                await prisma.product.update({ where: { id: Number(id) }, data: { name, images: value, quantity, price, categoryId: Number(categoryId), description, adminId: Number(adminId) } });
+                await prisma.product.update({ where: { id: Number(id) }, data: { name, images: value, quantity: Number(quantity), price, categoryId: categoryId, description, adminId: Number(adminId) } });
             }
             if (adminId) {
                 const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "adminId" = ${Number(adminId)}`;
                 if (!findUnique) return res.status(400).json({ message: "product not found" });
-                await prisma.product.update({ where: { id: Number(id) }, data: { name, images: value, quantity, price, categoryId: Number(categoryId), description, adminId: Number(adminId) } });
+                await prisma.product.update({ where: { id: Number(id) }, data: { name, images: value, quantity: Number(quantity), price, categoryId: categoryId, description, adminId: Number(adminId) } });
                 return res.status(HTTP_STATUS_CODE.CREATED).json({ message: "product updated" });
             }
         }
@@ -138,7 +143,7 @@ export const updateProduct = async (req: Request, res: Response) => {
             const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "sellerId" = ${Number(subscriberId)}`;
             if (!findUnique) return res.status(400).json({ message: "product not found" });
             if (!findUnique) return res.status(400).json({ message: "product not found" });
-            await prisma.product.update({ where: { id: Number(id) }, data: { name, quantity, price, categoryId: Number(categoryId), description, adminId: Number(adminId) } });
+            await prisma.product.update({ where: { id: Number(id) }, data: { name, quantity: Number(quantity), price, categoryId: Number(categoryId), description, adminId: Number(adminId) } });
 
             return res.status(200).json({ message: "prodict deleted" });
         }
@@ -146,7 +151,7 @@ export const updateProduct = async (req: Request, res: Response) => {
             const findUnique = await prisma.$queryRaw`SELECT * FROM product WHERE id = ${Number(id)} AND "adminId" = ${Number(adminId)}`;
             if (!findUnique) return res.status(400).json({ message: "product not found" });
             if (!findUnique) return res.status(400).json({ message: "product not found" });
-            await prisma.product.update({ where: { id: Number(id) }, data: { name, quantity, price, categoryId: Number(categoryId), description, adminId: adminId } });
+            await prisma.product.update({ where: { id: Number(id) }, data: { name, quantity: Number(quantity), price, categoryId: Number(categoryId), description, adminId: adminId } });
             return res.status(200).json({ message: "prodict updated" });
         }
     } catch (error) {

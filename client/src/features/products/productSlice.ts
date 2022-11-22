@@ -93,15 +93,31 @@ export const deleteProducts = async (id: number) => {
 	}
 };
 export const editProducts = async (id: number, form: FormData) => {
+	// const response = await fetch(`http://localhost:8090/api/v1/product/${id}`, {
+	// 	method: "PATCH",
+	// 	headers: {
+	// 		Authorization: `Bearer ${token}`,
+	// 	},
+	// 	body: form,
+	// });
+	// const data = await response.json();
+	// if (response.status < 200 || response.status >= 300) {
+	// 	return data;
+	// }
+	// return data;
+
+	// form.forEach((item) => {
+	// 	console.log(item);
+	// });
+	form.forEach((item) => {
+		console.log(item);
+	});
+
 	try {
-		const response = await fetch(`http://localhost:8090/api/v1/product/${id}`, {
-			method: "PATCH",
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-			body: form,
-		});
-		const data = await response.json();
+		const { data } = await privateRequest.patch(
+			`http://localhost:8090/api/v1/product/${id}`,
+			form
+		);
 		return data;
 	} catch (error) {
 		const err = error as AxiosError<payloadErrorResponse>;

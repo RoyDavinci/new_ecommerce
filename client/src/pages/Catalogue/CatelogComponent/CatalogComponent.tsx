@@ -28,8 +28,11 @@ import { useNavigate } from "react-router-dom";
 import { getCategories } from "../../../features/categories/cateorySlice";
 import { categoryPayloadResponse } from "../../../interfaces/category";
 import { ErrorResponse } from "../../../interfaces/error";
+import { clearStorage } from "../../../utils/localstorage";
 
 export const CatalogComponent = () => {
+	const [title, setTitle] = useState<string>("Add");
+
 	const [products, setProducts] = useState<ProductInterface[]>([
 		{
 			id: 0,
@@ -114,6 +117,20 @@ export const CatalogComponent = () => {
 	const closeAddForm = () => {
 		setShowAddForm(false);
 		setEditId(0);
+
+		title === "Edit" && setTitle("Add");
+		setInitial({
+			name: "",
+			description: "",
+			product: "",
+			make: "",
+			model: "",
+			price: 0,
+			quantity: 0,
+			id: 0,
+			year: "",
+			categoryName: "",
+		});
 		dispatch(changeState());
 	};
 
@@ -136,7 +153,9 @@ export const CatalogComponent = () => {
 			dispatch(addProduct(form));
 			if (productStatus === "failed") {
 				const errors = productError as unknown as ErrorResponse;
+				console.log(errors);
 				if (errors.message?.includes("jwt")) {
+					clearStorage();
 					dispatch(changeState());
 					navigate("/login");
 				}
@@ -145,33 +164,29 @@ export const CatalogComponent = () => {
 				window.location.reload();
 			}
 		} else {
-			form.forEach((item) => {
-				console.log(item);
-			});
-			// const data = await editProducts(editId, form);
-			// console.log(data);
-			// if (typeof data.message === "string" && data.message.includes("jwt")) {
-			// 	setShowAddForm(false);
-			// 	setEditId(0);
-			// 	localStorage.removeItem("user");
-			// 	localStorage.removeItem("token");
-			// 	dispatch(changeState());
-			// 	navigate("/login");
-			// } else {
-			// 	console.log("No");
-			// }
+			const data = await editProducts(editId, form);
+			console.log(data);
+			if (typeof data.message === "string" && data.message.includes("jwt")) {
+				setShowAddForm(false);
+				setEditId(0);
+				clearStorage();
+				dispatch(changeState());
+				navigate("/login");
+			} else {
+				window.location.reload();
+			}
 		}
 	};
 
 	const editProduct = async (id: number) => {
 		const item = await getSingleProduct(id);
 		if (typeof item.message === "string" && item.message.includes("jwt")) {
-			localStorage.removeItem("user");
-			localStorage.removeItem("token");
+			clearStorage();
 			navigate("/login");
 		}
 		const data = item.message as unknown as EditProductInterface;
 		setEditId(id);
+		setTitle("Edit");
 		setInitial({
 			product: data.images[0],
 			quantity: data.quantity,
@@ -191,9 +206,8 @@ export const CatalogComponent = () => {
 
 	const deleteProduct = async (id: number) => {
 		const data = await deleteProducts(id);
-		if (data.message.includes("jwt")) {
-			localStorage.removeItem("user");
-			localStorage.removeItem("token");
+		if (data.message && data.message.includes("jwt")) {
+			clearStorage();
 			navigate("/login");
 		}
 		toast.success(data.message, {
@@ -386,7 +400,7 @@ export const CatalogComponent = () => {
 					className='fa-solid fa-xmark absolute right-7 text-xl'
 					onClick={closeAddForm}
 				></i>
-				<h1>Add New Product</h1>
+				<h1>{title === "Add" ? "Add New" : title} Product</h1>
 				<div className='addNewPRoductForm__inputContainer'>
 					<label htmlFor='name'>Name</label>
 					<input
@@ -438,6 +452,7 @@ export const CatalogComponent = () => {
 						id='category'
 						value={initial.categoryName}
 						onChange={onInputChange}
+						required
 					>
 						{categories.map((item) => {
 							return (
@@ -510,7 +525,7 @@ export const CatalogComponent = () => {
 					</label>
 				</div>
 				<button className='bg-[#4285F4] text-white p-3 rounded-md'>
-					Add Product
+					{title} Product
 				</button>
 			</form>
 		</main>

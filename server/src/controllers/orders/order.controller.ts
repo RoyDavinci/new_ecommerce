@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, orderDetails, orders } from "@prisma/client";
 import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { RedisClient } from "../../db/class";
 import { logger } from "../../common/logger";
@@ -92,15 +92,32 @@ export const createOrder = async (req: Request, res: Response) => {
 };
 
 export const getAllOrdersForAUser = async (req: Request, res: Response) => {
+    logger.info("here");
+
     try {
         const { adminId, subscriberId } = req.user as unknown as IUser;
         if (adminId) {
             const getOrders = await prisma.orders.findMany({ where: { userId: adminId } });
-            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", getOrders });
+
+            const uniqueORderDetail: orderDetails[] = await prisma.orderDetails.findMany({ where: { adminId } });
+            const orders: orders[] = [];
+
+            for (let index = 0; index < uniqueORderDetail.length; index++) {
+                const data = await prisma.orders.findUnique({ where: { id: uniqueORderDetail[index].orderId } });
+                data && orders.push(data);
+            }
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", orders });
         }
         if (subscriberId) {
             const getOrders = await prisma.orders.findMany({ where: { userId: subscriberId } });
-            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", getOrders });
+            const uniqueORderDetail: orderDetails[] = await prisma.orderDetails.findMany({ where: { merchantId: subscriberId } });
+            const orders: orders[] = [];
+
+            for (let index = 0; index < uniqueORderDetail.length; index++) {
+                const data = await prisma.orders.findUnique({ where: { id: uniqueORderDetail[index].orderId } });
+                data && orders.push(data);
+            }
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", orders });
         }
     } catch (error) {
         logger.error(error);

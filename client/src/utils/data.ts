@@ -9,7 +9,11 @@ import carDoors from "../images/jpg/carDoors.jpeg";
 
 export const linksData = ["Home", "About", "Products", "Contact"];
 
-export const blogData = [
+export const blogData: {
+	title: string;
+	image: string;
+	description: string;
+}[] = [
 	{
 		title: "8 things to consider when choosing a car seat",
 		image: carSeat,
@@ -30,7 +34,12 @@ export const blogData = [
 	},
 ];
 
-export const categoryData = [
+export const categoryData: {
+	name: string;
+	description: string;
+	button: string;
+	image: string;
+}[] = [
 	{
 		name: "Tires",
 		description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
