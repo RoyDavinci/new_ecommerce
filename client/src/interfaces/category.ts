@@ -15,7 +15,7 @@ export interface CategoryState {
 }
 
 export interface SingleCategoryInterface {
-	id?: number;
+	id: number;
 	adminId?: number;
 	createdAt?: string;
 	description?: string;

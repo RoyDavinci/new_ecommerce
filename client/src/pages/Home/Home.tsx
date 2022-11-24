@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Header, Hero, Category, Blog, Footer } from "../../components";
 import images from "../../images";
 import { linksData } from "../../utils/data";
+import { useAppSelector } from "../../app/hooks";
 import "./home.css";
 
 export const Home = () => {
+	const { data } = useAppSelector((state) => state.cart);
+
+	console.log(data.length);
 	return (
 		<div>
 			<div className='app__header'>
 				<Header
 					logo={images.logoLight}
-					cartItems={1}
+					cartItems={data.length}
 					links={linksData}
 					userImg={images.userImg}
 				></Header>

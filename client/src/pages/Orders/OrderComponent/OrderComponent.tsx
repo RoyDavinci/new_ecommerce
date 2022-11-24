@@ -1,31 +1,167 @@
 import React, { useEffect, useState } from "react";
 import "./orderComponent.css";
 import orderItems from "../../../defaultData/orders";
-import { orderItemInterface } from "../../../interfaces/order";
+import { orderItemInterface, orders } from "../../../interfaces/order";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { toast } from "react-toastify";
+import Box from "@mui/material/Box";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { changeState } from "../../../features/state/state";
+import { ErrorResponse } from "../../../interfaces/error";
+import { clearStorage } from "../../../utils/localstorage";
+import { getOrders } from "../../../features/orders/orderSlice";
+import { useNavigate } from "react-router-dom";
+import { generateId, generateRandom } from "../../../utils/generateRandom";
 
 export const OrderComponent = () => {
 	const [orderState, setOrderState] = useState("All");
-	const [orders, setOrders] = useState<orderItemInterface[]>(orderItems);
+	const [orders, setOrders] = useState<orders[]>([
+		{
+			id: 1,
+			order_code: "",
+			product_detail: [{ id: 1, name: "" }],
+			name: "",
+			email: "",
+			phone: "",
+			total_amount: "",
+			userId: null,
+			guestId: null,
+			status: "processing",
+			payment_type: "",
+			delivery_type: "",
+			quantity: 1,
+			address: "",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		},
+	]);
+	const [newOrders, setNewORders] = useState<orders[]>([
+		{
+			id: 1,
+			order_code: "",
+			product_detail: [{ id: 1, name: "" }],
+			name: "",
+			email: "",
+			phone: "",
+			total_amount: "",
+			userId: null,
+			guestId: null,
+			status: "processing",
+			payment_type: "",
+			delivery_type: "",
+			quantity: 1,
+			address: "",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		},
+	]);
+
+	const [errorMessage, setErrorMessage] = useState<string>("");
 	// const [filteredData, setFilteredData] = useState([]);
 
+	const navigate = useNavigate();
+
+	const { data, status, error } = useAppSelector((state) => state.allOrder);
+
+	const dispatch = useAppDispatch();
+
 	const setFilteredPaid = () => {
-		const filtered = orderItems.filter((item) => item.status === "paid");
-		setOrders(filtered);
+		const filtered = orders.filter((item) => item.status === "successful");
+		setNewORders(filtered);
 		setOrderState("completed");
 		console.log(filtered);
 	};
 
 	const setFilteredAll = () => {
-		setOrders(orderItems);
+		setNewORders(orders);
 		setOrderState("All");
 	};
 
 	const setFilteredPending = () => {
-		const filtered = orderItems.filter((item) => item.status === "pending");
-		setOrders(filtered);
+		const filtered = orders.filter((item) => item.status === "pending");
+		setNewORders(filtered);
 		setOrderState("pending");
 		console.log(filtered);
 	};
+
+	const columns: GridColDef[] = [
+		{
+			field: "id",
+			headerName: "ID",
+			width: 90,
+		},
+		{
+			field: "name",
+			headerName: "Name",
+			width: 150,
+			editable: true,
+		},
+		{
+			field: "email",
+			headerName: "Email",
+			width: 150,
+			editable: true,
+		},
+		{
+			field: "address",
+			headerName: "Address",
+			width: 110,
+			editable: true,
+		},
+		{
+			field: "phone",
+			headerName: "Phone",
+			width: 110,
+			editable: true,
+		},
+		{
+			field: "delivery_type",
+			headerName: "Delivery_Type",
+			width: 110,
+			editable: true,
+		},
+		{
+			field: "quantity",
+			headerName: "Quantity",
+			width: 110,
+			editable: true,
+		},
+		{
+			field: "status",
+			headerName: "Status",
+			width: 200,
+			editable: true,
+			renderCell: (param) => {
+				return <p className={param?.row.status}>{param.row.status}</p>;
+			},
+		},
+		{
+			field: "total_amount",
+			headerName: "Total_Amount",
+			width: 150,
+			editable: false,
+		},
+	];
+
+	useEffect(() => {
+		if (status === "idle") {
+			dispatch(getOrders());
+		}
+		if (status === "successful") {
+			setNewORders(data.orders);
+			setOrders(data.orders);
+		}
+		if (status === "failed") {
+			const errors = error as unknown as ErrorResponse;
+			console.log(errors);
+			if (errors.message?.includes("jwt")) {
+				clearStorage();
+				navigate("/login");
+			}
+			errors.message && setErrorMessage(errors.message);
+		}
+	}, [status, dispatch, error, data.orders, navigate]);
+	console.log(newOrders);
 
 	return (
 		<main className='order__componentContainer p-4'>
@@ -101,48 +237,18 @@ export const OrderComponent = () => {
 						</p>
 					</div>
 				</div>
-				<table>
-					<thead>
-						<tr>
-							<th>
-								<input type='checkbox' name='' id='' />
-							</th>
-							<th>ID</th>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Address</th>
-							<th>Reference</th>
-							<th>New Client?</th>
-							<th>Price</th>
-							<th>Payment</th>
-							<th>Status</th>
-							<th>More</th>
-						</tr>
-					</thead>
-					<tbody>
-						{orders.map((item) => {
-							return (
-								<tr key={item.id}>
-									<td>
-										<input type='checkbox' name='' id='' />
-									</td>
-									<td>{item.id}</td>
-									<td>{item.name}</td>
-									<td>{item.email}</td>
-									<td>{item.Address}</td>
-									<td>{item.reference}</td>
-									<td>{item.new ? "Yes" : "No"}</td>
-									<td>{item.price}</td>
-									<td>{item.payment}</td>
-									<td className={item.status}>{item.status}</td>
-									<td>
-										<i className='fa-solid fa-eye cursor-pointer'></i>
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
+				<Box sx={{ height: "65vh", width: "100%" }}>
+					{errorMessage && <h1>{errorMessage}</h1>}
+					<DataGrid
+						rows={newOrders}
+						columns={columns}
+						pageSize={8}
+						rowsPerPageOptions={[8]}
+						checkboxSelection
+						disableSelectionOnClick
+						experimentalFeatures={{ newEditingApi: true }}
+					/>
+				</Box>
 			</section>
 		</main>
 	);

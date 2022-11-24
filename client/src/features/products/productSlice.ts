@@ -1,11 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 import { privateRequest, publicRequest } from "../../api/client";
 import {
 	AllProductInterface,
 	productAddInterface,
-	productErrorResponse,
-	ProductInterface,
 } from "../../interfaces/product";
 import { payloadErrorResponse } from "../../interfaces/userinterfaces";
 
@@ -50,34 +48,6 @@ const productInitialState: AllProductInterface = {
 	],
 };
 
-// export const updateUser = createAsyncThunk<
-// 	{
-// 		rejectValue: productErrorResponse;
-// 	}
-// >("users/update", async (item, { rejectWithValue }) => {
-// 	try {
-// 		const data: AxiosResponse  = await publicRequest.post(
-// 			"http://localhost:8090/api/v1/product/add-product",
-// 			item,
-// 			{
-// 				headers: {
-// 					Authorization: `Bearer ${token}`,
-// 					"Content-Type": "multipart/form-data",
-// 				},
-// 			}
-// 		);
-// 		return data.data.product;
-// 	} catch (err) {
-// 		// let error: AxiosError<productErrorResponse> = err;
-//         const err = error as AxiosError<productErrorResponse>;// cast the error for access
-// 		if (!error.response) {
-// 			throw err;
-// 		}
-// 		// We got validation errors, let's return those so we can reference in our component and set form errors
-// 		return rejectWithValue(error.response.data);
-// 	}
-// });
-
 const token = localStorage.getItem("token");
 
 export const deleteProducts = async (id: number) => {
@@ -93,26 +63,6 @@ export const deleteProducts = async (id: number) => {
 	}
 };
 export const editProducts = async (id: number, form: FormData) => {
-	// const response = await fetch(`http://localhost:8090/api/v1/product/${id}`, {
-	// 	method: "PATCH",
-	// 	headers: {
-	// 		Authorization: `Bearer ${token}`,
-	// 	},
-	// 	body: form,
-	// });
-	// const data = await response.json();
-	// if (response.status < 200 || response.status >= 300) {
-	// 	return data;
-	// }
-	// return data;
-
-	// form.forEach((item) => {
-	// 	console.log(item);
-	// });
-	form.forEach((item) => {
-		console.log(item);
-	});
-
 	try {
 		const { data } = await privateRequest.patch(
 			`http://localhost:8090/api/v1/product/${id}`,
@@ -178,7 +128,7 @@ export const getProductSlice = createSlice({
 	initialState: productInitialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(getProducts.pending, (state, action) => {
+		builder.addCase(getProducts.pending, (state) => {
 			state.status = "idle";
 		});
 		builder.addCase(getProducts.fulfilled, (state, action) => {
@@ -197,7 +147,7 @@ export const productSlice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(addProduct.pending, (state, action) => {
+		builder.addCase(addProduct.pending, (state) => {
 			state.message = "idle";
 			state.productStatus = "idle";
 		});

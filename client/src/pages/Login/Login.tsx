@@ -56,7 +56,7 @@ export const Login = () => {
 	useEffect(() => {
 		setUser(data);
 		const userState = localStorage.getItem("user");
-		userState && navigate(-1);
+		userState && navigate("/admin");
 	}, [data, user, navigate]);
 
 	return (

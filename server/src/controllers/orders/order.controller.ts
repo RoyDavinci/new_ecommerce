@@ -92,31 +92,34 @@ export const createOrder = async (req: Request, res: Response) => {
 };
 
 export const getAllOrdersForAUser = async (req: Request, res: Response) => {
-    logger.info("here");
-
     try {
         const { adminId, subscriberId } = req.user as unknown as IUser;
         if (adminId) {
-            const getOrders = await prisma.orders.findMany({ where: { userId: adminId } });
-
             const uniqueORderDetail: orderDetails[] = await prisma.orderDetails.findMany({ where: { adminId } });
-            const orders: orders[] = [];
+            const finalOrder: orders[] = [];
 
             for (let index = 0; index < uniqueORderDetail.length; index++) {
                 const data = await prisma.orders.findUnique({ where: { id: uniqueORderDetail[index].orderId } });
-                data && orders.push(data);
+
+                data && finalOrder.push(data);
             }
+            const orders = finalOrder.map((item, index) => {
+                return { ...item, id: index + 1 };
+            });
             return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", orders });
         }
         if (subscriberId) {
-            const getOrders = await prisma.orders.findMany({ where: { userId: subscriberId } });
-            const uniqueORderDetail: orderDetails[] = await prisma.orderDetails.findMany({ where: { merchantId: subscriberId } });
-            const orders: orders[] = [];
+            const uniqueORderDetail: orderDetails[] = await prisma.orderDetails.findMany({ where: { adminId } });
+            const finalOrder: orders[] = [];
 
             for (let index = 0; index < uniqueORderDetail.length; index++) {
                 const data = await prisma.orders.findUnique({ where: { id: uniqueORderDetail[index].orderId } });
-                data && orders.push(data);
+
+                data && finalOrder.push(data);
             }
+            const orders = finalOrder.map((item, index) => {
+                return { ...item, id: index + 1 };
+            });
             return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: "orders gotten", orders });
         }
     } catch (error) {

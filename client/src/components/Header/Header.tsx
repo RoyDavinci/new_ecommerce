@@ -19,12 +19,16 @@ export const Header: React.FunctionComponent<HeaderProps> = ({
 
 	const user = localStorage.getItem("user");
 
+	useEffect(() => {});
+
 	useEffect(() => {
 		if (user) setUserState(true);
 		return () => {
 			console.log("cleaning useeffect");
 		};
 	}, [user]);
+
+	console.log(cartItems);
 
 	return (
 		<div className='headerContainer'>
@@ -51,8 +55,14 @@ export const Header: React.FunctionComponent<HeaderProps> = ({
 			</div>
 			<div className='headerUser'>
 				<i className='fa-solid fa-magnifying-glass'></i>
-				<i className='fa-solid fa-cart-shopping'>
-					<span className={cartItems > 0 ? "shoCartItem" : "hideCartItem"}>
+				<i
+					className={
+						cartItems > 0
+							? "fa-solid fa-cart-shopping pointer-events-auto"
+							: "fa-solid fa-cart-shopping pointer-events-none"
+					}
+				>
+					<span className={cartItems > 0 ? "showCartItem" : "hideCartItem"}>
 						{cartItems}
 					</span>
 				</i>

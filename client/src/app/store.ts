@@ -1,6 +1,8 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { authReducer } from "../features/auth/authenticateUser";
+import { cartReducer } from "../features/cart/cartSlice";
 import { categoryReducer } from "../features/categories/cateorySlice";
+import { getOrder } from "../features/orders/orderSlice";
 import {
 	getProductReducer,
 	productReducer,
@@ -14,6 +16,8 @@ export const store = configureStore({
 		toggler: stateReducer,
 		products: productReducer,
 		allProducts: getProductReducer,
+		allOrder: getOrder,
+		cart: cartReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

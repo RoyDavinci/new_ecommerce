@@ -55,3 +55,9 @@
 	padding: 8px 15px;
 	border-radius: 5%;
 }
+.showCartItem {
+	display: inline-flex;
+}
+.hideCartItem {
+	display: none;
+}

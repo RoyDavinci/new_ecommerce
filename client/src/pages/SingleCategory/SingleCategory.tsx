@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { BaseSyntheticEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Footer, Header } from "../../components";
+import LoadingComponent from "../../components/Loading";
 import { getCategoryByName } from "../../features/categories/cateorySlice";
 import images from "../../images";
 import { SingleCategoryInterface } from "../../interfaces/category";
+import { ErrorResponse } from "../../interfaces/error";
 import { linksData } from "../../utils/data";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import "./singleCategory.css";
+import { addToCart } from "../../features/cart/cartSlice";
 
 export const SingleCategory: React.FC = ({}) => {
 	const { name } = useParams();
@@ -14,6 +18,18 @@ export const SingleCategory: React.FC = ({}) => {
 		SingleCategoryInterface[]
 	>([]);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string>();
+
+	const { data } = useAppSelector((state) => state.cart);
+	console.log(data);
+
+	const dispatch = useAppDispatch();
+
+	const addItemToCart = (e: BaseSyntheticEvent, id: number) => {
+		e.preventDefault();
+		const item = singleCategory.find((item) => item.id === id);
+		dispatch(addToCart(item));
+	};
 
 	useEffect(() => {
 		const fetchCategory = async () => {
@@ -25,8 +41,10 @@ export const SingleCategory: React.FC = ({}) => {
 					// console.log(item);
 				}
 			} catch (error) {
-				setLoading(true);
+				const errors = error as unknown as ErrorResponse;
 				console.log(error);
+				setError(errors.message);
+				setLoading(false);
 			}
 		};
 		fetchCategory();
@@ -34,8 +52,6 @@ export const SingleCategory: React.FC = ({}) => {
 			console.log("cleaning useeffect");
 		};
 	}, [name]);
-
-	console.log(singleCategory);
 
 	return (
 		<div>
@@ -46,33 +62,38 @@ export const SingleCategory: React.FC = ({}) => {
 				userImg={images.userImg}
 			></Header>
 			<div className='products__categoryContainer'>
-				{singleCategory.map((item) => {
-					return (
-						<div
-							className='products__categoryContainer__coontent'
-							key={item.id}
-						>
-							<img src={item.images && item?.images[0]} alt='' />
-							<h4>{item.name}</h4>
-							<p>{item.description}</p>
-							<div className='star__categoryContainer'>
-								<i className='fa-solid fa-star'></i>
-								<i className='fa-solid fa-star'></i>
-								<i className='fa-solid fa-star'></i>
-								<i className='fa-solid fa-star'></i>
-								<i className='fa-solid fa-star'></i>
-								<span>(85)</span>
+				{loading && <LoadingComponent card={true}>{}</LoadingComponent>}
+				{error && <p>{error}</p>}
+				{!loading &&
+					singleCategory.map((item) => {
+						return (
+							<div
+								className='products__categoryContainer__coontent'
+								key={item.id}
+							>
+								<img src={item.images && item?.images[0]} alt='' />
+								<h4>{item.name}</h4>
+								<p>{item.description}</p>
+								<div className='star__categoryContainer'>
+									<i className='fa-solid fa-star'></i>
+									<i className='fa-solid fa-star'></i>
+									<i className='fa-solid fa-star'></i>
+									<i className='fa-solid fa-star'></i>
+									<i className='fa-solid fa-star'></i>
+									<span>(85)</span>
+								</div>
+								<div className='cart__singlePRoduct'>
+									<p>
+										<span></span>
+										<span style={{ display: "block" }}>₦{item.price}</span>
+									</p>
+									<button onClick={(e) => addItemToCart(e, item.id)}>
+										Add To Cart
+									</button>
+								</div>
 							</div>
-							<div className='cart__singlePRoduct'>
-								<p>
-									<span></span>
-									<p>₦{item.price}</p>
-								</p>
-								<button>Add To Cart</button>
-							</div>
-						</div>
-					);
-				})}
+						);
+					})}
 			</div>
 			<Footer links={linksData} image={images.footerLogo}></Footer>
 		</div>

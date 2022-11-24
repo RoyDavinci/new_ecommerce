@@ -9,6 +9,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { getCategories } from "../../features/categories/cateorySlice";
 import LoadingComponent from "../../components/Loading";
 import { categoryPayloadResponse } from "../../interfaces/category";
+import { ErrorResponse } from "../../interfaces/error";
 
 export const Categories = () => {
 	const location = useLocation();
@@ -16,30 +17,34 @@ export const Categories = () => {
 	const [getCategoryData, setGetCategoryData] = useState<
 		categoryPayloadResponse[]
 	>([]);
+	const [errors, setErrors] = useState<string>();
 
 	// const user = localStorage.getItem("user");
 	// console.log(getCategoryData);
 
 	const dispatch = useAppDispatch();
 
-	const { categoryData, status } = useAppSelector((state) => state.category);
-	// console.log(categoryData);
+	const { categoryData, status, error } = useAppSelector(
+		(state) => state.category
+	);
 
 	useEffect(() => {
-		const fetchCategories = () => {
-			try {
-				dispatch(getCategories());
-				setGetCategoryData(categoryData);
-				setLoading(false);
-			} catch (error) {
-				console.log(error);
-			}
-		};
-		fetchCategories();
+		if (status === "idle") {
+			dispatch(getCategories());
+		}
+		if (status === "successful") {
+			setGetCategoryData(categoryData);
+			setLoading(false);
+		}
+		if (status === "failed") {
+			const errorMessage = error as unknown as ErrorResponse;
+			setErrors(errorMessage.message);
+			setLoading(false);
+		}
 		return () => {
 			console.log("this will log on unmount");
 		};
-	}, [loading, categoryData, dispatch]);
+	}, [loading, error, status, categoryData, dispatch]);
 
 	return (
 		<div className='categoriesContainer'>
