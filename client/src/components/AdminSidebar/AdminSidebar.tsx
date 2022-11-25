@@ -22,7 +22,7 @@ export const AdminSidebar = () => {
 
 	const onBackgroundChange = (id: number) => {
 		setBackground(id);
-		const filter = sideMenuLinks.find((item) => item.id === id);
+		// const filter = sideMenuLinks.find((item) => item.id === id);
 		// if (filter?.hasChildren) {
 		// 	filter.children?.forEach((item) => {setBackground(sideMenuLinks[filter.children[item.id]])});
 		// }

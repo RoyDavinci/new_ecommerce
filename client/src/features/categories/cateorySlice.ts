@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { access } from "fs";
 
-import { publicFormDataRequest, publicRequest } from "../../api/client";
+import { publicRequest } from "../../api/client";
 import {
 	categoryPayloadResponse,
 	CategoryState,
@@ -12,16 +11,7 @@ import { payloadErrorResponse } from "../../interfaces/userinterfaces";
 const initialState: CategoryState = {
 	message: "",
 	status: "idle",
-	categoryData: [
-		{
-			images: "",
-			name: "",
-			description: "",
-			id: 0,
-			createdAt: "",
-			updatedAt: "",
-		},
-	],
+	categoryData: [],
 	error: {},
 };
 

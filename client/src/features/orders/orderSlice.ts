@@ -8,26 +8,7 @@ const initialState: orderInterface = {
 	status: "idle",
 	error: null,
 	data: {
-		orders: [
-			{
-				id: 1,
-				order_code: "",
-				product_detail: [{ id: 1, name: "" }],
-				name: "",
-				email: "",
-				phone: "",
-				total_amount: "",
-				userId: null,
-				guestId: null,
-				status: "processing",
-				payment_type: "",
-				delivery_type: "",
-				quantity: 1,
-				address: "",
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			},
-		],
+		orders: [],
 	},
 };
 

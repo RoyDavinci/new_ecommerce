@@ -1,14 +1,14 @@
 import React from "react";
 import "./blogItemContainer.css";
 
-export interface BlogItemContainer {
+export interface BlogItemContainers {
 	image: string;
 	title: string;
 	description: string;
 	children?: React.ReactNode;
 }
 
-export const BlogItemContainer: React.FC<BlogItemContainer> = ({
+export const BlogItemContainer: React.FC<BlogItemContainers> = ({
 	image,
 	title,
 	description,

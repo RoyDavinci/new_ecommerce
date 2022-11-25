@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { Footer, Header } from "../../components";
 import images from "../../images";
-import { linksData, categoryData } from "../../utils/data";
+import { linksData } from "../../utils/data";
 import "./categories.css";
 import { CategoryItems } from "./CategoryItem/CategoryItems";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
@@ -12,7 +11,6 @@ import { categoryPayloadResponse } from "../../interfaces/category";
 import { ErrorResponse } from "../../interfaces/error";
 
 export const Categories = () => {
-	const location = useLocation();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [getCategoryData, setGetCategoryData] = useState<
 		categoryPayloadResponse[]
@@ -48,12 +46,7 @@ export const Categories = () => {
 
 	return (
 		<div className='categoriesContainer'>
-			<Header
-				logo={images.logoLight}
-				cartItems={1}
-				links={linksData}
-				userImg={images.userImg}
-			></Header>
+			<Header></Header>
 			<div
 				style={{
 					display: "grid",
@@ -98,6 +91,7 @@ export const Categories = () => {
 			</div>
 			{/* {!loading && <LoadingComponent card={true}>{}</LoadingComponent>} */}
 			{loading && <LoadingComponent card={true}>{}</LoadingComponent>}
+			{errors && <p>{errors}</p>}
 			{!loading && (
 				<div className='categoriesContainer__categoryITems__container'>
 					<h1>Explore By Category</h1>
@@ -115,7 +109,7 @@ export const Categories = () => {
 					</div>
 				</div>
 			)}
-			<Footer links={linksData} image={images.footerLogo}></Footer>
+			<Footer></Footer>
 		</div>
 	);
 };

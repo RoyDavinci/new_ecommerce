@@ -1,18 +1,14 @@
 import React from "react";
 import "./footer.css";
+import { linksData } from "../../utils/data";
+import images from "../../images";
 
-export interface footerProps {
-	children?: React.ReactNode;
-	image: string;
-	links: string[];
-}
-
-export const Footer: React.FC<footerProps> = ({ links, image }) => {
+export const Footer: React.FC = () => {
 	return (
 		<div className='footerContainer'>
 			<section>
 				<article>
-					<img src={image} alt='' />
+					<img src={images.footerLogo} alt='' />
 					<p>emsthias33@gmail.com</p>
 					<p>234-91-5940-3602</p>
 					<span>
@@ -24,7 +20,7 @@ export const Footer: React.FC<footerProps> = ({ links, image }) => {
 				<article>
 					<h3>Links</h3>
 					<ul>
-						{links.map((item, index) => {
+						{linksData.map((item, index) => {
 							return <li key={index}>{item}</li>;
 						})}
 					</ul>

@@ -2,9 +2,8 @@ import React, { BaseSyntheticEvent, ChangeEvent, useState } from "react";
 import "./signUp.css";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import { createUser } from "../../features/auth/authenticateUser";
-import { useNavigate } from "react-router-dom";
 import logging from "../../utils/logging";
 import { userSignUp } from "../../interfaces/userinterfaces";
 
@@ -28,7 +27,6 @@ export const SignUp = () => {
 	};
 
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
 
 	const item = new FormData();
 

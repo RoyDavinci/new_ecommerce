@@ -11,7 +11,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import "./singleCategory.css";
 import { addToCart } from "../../features/cart/cartSlice";
 
-export const SingleCategory: React.FC = ({}) => {
+export const SingleCategory: React.FC = () => {
 	const { name } = useParams();
 
 	const [singleCategory, setSingleCategory] = useState<
@@ -55,12 +55,7 @@ export const SingleCategory: React.FC = ({}) => {
 
 	return (
 		<div>
-			<Header
-				logo={images.logoLight}
-				cartItems={1}
-				links={linksData}
-				userImg={images.userImg}
-			></Header>
+			<Header></Header>
 			<div className='products__categoryContainer'>
 				{loading && <LoadingComponent card={true}>{}</LoadingComponent>}
 				{error && <p>{error}</p>}
@@ -95,7 +90,7 @@ export const SingleCategory: React.FC = ({}) => {
 						);
 					})}
 			</div>
-			<Footer links={linksData} image={images.footerLogo}></Footer>
+			<Footer></Footer>
 		</div>
 	);
 };

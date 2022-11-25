@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Header, Hero, Category, Blog, Footer } from "../../components";
 import images from "../../images";
 import { linksData } from "../../utils/data";
@@ -12,12 +12,7 @@ export const Home = () => {
 	return (
 		<div>
 			<div className='app__header'>
-				<Header
-					logo={images.logoLight}
-					cartItems={data.length}
-					links={linksData}
-					userImg={images.userImg}
-				></Header>
+				<Header></Header>
 				<Hero></Hero>
 			</div>
 			<div
@@ -36,7 +31,7 @@ export const Home = () => {
 					<button>Submit</button>
 				</form>
 			</div>
-			<Footer links={linksData} image={images.footerLogo}></Footer>
+			<Footer></Footer>
 		</div>
 	);
 };

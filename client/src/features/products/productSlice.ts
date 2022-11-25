@@ -33,19 +33,7 @@ const productInitialState: AllProductInterface = {
 	message: "starting",
 	status: "idle",
 	error: {},
-	data: [
-		{
-			id: 0,
-			name: "",
-			images: ["image"],
-			quantity: 1,
-			price: 0,
-			make: "",
-			model: "",
-			year: "",
-			description: "",
-		},
-	],
+	data: [],
 };
 
 const token = localStorage.getItem("token");

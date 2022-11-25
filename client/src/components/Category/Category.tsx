@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 export interface categoryProps {}
 
-export const Category: React.FC<categoryProps> = ({}) => {
+export const Category: React.FC<categoryProps> = () => {
 	return (
 		<div
 			className='categoryContainer'

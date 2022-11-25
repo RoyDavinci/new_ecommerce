@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
 import LoadingComponent from "./components/Loading";
 import { routes } from "./auth/route";
-import { AdminLayout } from "./components";
-const queryClient = new QueryClient();
 
 function App() {
 	// const [userState, setUserState] = useState(false);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [authStage, setAuthStage] = useState<string>("Checking local storage");
-
-	const user = localStorage.getItem("user");
-
-	interface childrenInterface {
-		children?: React.ReactNode;
-	}
 
 	useEffect(() => {
 		setTimeout(() => {

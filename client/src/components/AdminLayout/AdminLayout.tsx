@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import "./adminLayout.css";
-import { Outlet } from "react-router-dom";
 import { AdminSidebar } from "../AdminSidebar/AdminSidebar";
 import { useAppSelector } from "../../app/hooks";
 import { defaultState } from "../../features/state/state";

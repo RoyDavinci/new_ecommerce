@@ -1,60 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "./orderComponent.css";
-import orderItems from "../../../defaultData/orders";
-import { orderItemInterface, orders } from "../../../interfaces/order";
+import { orders } from "../../../interfaces/order";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { changeState } from "../../../features/state/state";
 import { ErrorResponse } from "../../../interfaces/error";
 import { clearStorage } from "../../../utils/localstorage";
 import { getOrders } from "../../../features/orders/orderSlice";
 import { useNavigate } from "react-router-dom";
-import { generateId, generateRandom } from "../../../utils/generateRandom";
 
 export const OrderComponent = () => {
 	const [orderState, setOrderState] = useState("All");
-	const [orders, setOrders] = useState<orders[]>([
-		{
-			id: 1,
-			order_code: "",
-			product_detail: [{ id: 1, name: "" }],
-			name: "",
-			email: "",
-			phone: "",
-			total_amount: "",
-			userId: null,
-			guestId: null,
-			status: "processing",
-			payment_type: "",
-			delivery_type: "",
-			quantity: 1,
-			address: "",
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		},
-	]);
-	const [newOrders, setNewORders] = useState<orders[]>([
-		{
-			id: 1,
-			order_code: "",
-			product_detail: [{ id: 1, name: "" }],
-			name: "",
-			email: "",
-			phone: "",
-			total_amount: "",
-			userId: null,
-			guestId: null,
-			status: "processing",
-			payment_type: "",
-			delivery_type: "",
-			quantity: 1,
-			address: "",
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		},
-	]);
+	const [orders, setOrders] = useState<orders[]>([]);
+	const [newOrders, setNewORders] = useState<orders[]>([]);
 
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	// const [filteredData, setFilteredData] = useState([]);

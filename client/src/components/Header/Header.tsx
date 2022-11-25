@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./header.css";
+import images from "../../images";
+import { linksData } from "../../utils/data";
+import { useAppSelector } from "../../app/hooks";
 
-export interface HeaderProps {
-	logo?: string;
-	links: string[];
-	cartItems: number;
-	userImg?: string;
-}
-
-export const Header: React.FunctionComponent<HeaderProps> = ({
-	logo,
-	links,
-	cartItems,
-	userImg,
-}) => {
-	const [userState, setUserState] = useState(false);
+export const Header: React.FunctionComponent = () => {
+	const [userState, setUserState] = useState<boolean>(false);
+	const [cartState, setCartState] = useState<number>(0);
+	const { data } = useAppSelector((state) => state.cart);
 
 	const user = localStorage.getItem("user");
 
-	useEffect(() => {});
+	useEffect(() => {
+		if (data.length >= 1) setCartState(data.length);
+		return () => {
+			console.log("cleaning useeffect");
+		};
+	}, [data.length]);
 
 	useEffect(() => {
 		if (user) setUserState(true);
@@ -28,18 +26,16 @@ export const Header: React.FunctionComponent<HeaderProps> = ({
 		};
 	}, [user]);
 
-	console.log(cartItems);
-
 	return (
 		<div className='headerContainer'>
 			<div className='headerLogo'>
 				<Link to='/'>
-					<img src={logo} alt='' />
+					<img src={images.logoLight} alt='app-logo' />
 				</Link>
 			</div>
 			<div className='headerLinks'>
 				<ul>
-					{links.map((item, index) => {
+					{linksData.map((item, index) => {
 						return (
 							<li key={index}>
 								<Link
@@ -55,18 +51,24 @@ export const Header: React.FunctionComponent<HeaderProps> = ({
 			</div>
 			<div className='headerUser'>
 				<i className='fa-solid fa-magnifying-glass'></i>
-				<i
-					className={
-						cartItems > 0
-							? "fa-solid fa-cart-shopping pointer-events-auto"
-							: "fa-solid fa-cart-shopping pointer-events-none"
-					}
-				>
-					<span className={cartItems > 0 ? "showCartItem" : "hideCartItem"}>
-						{cartItems}
-					</span>
-				</i>
-				{user ? <img src={userImg}></img> : <button>Sign Up</button>}
+				<Link to='/cart'>
+					<i
+						className={
+							cartState > 0
+								? "fa-solid fa-cart-shopping pointer-events-auto"
+								: "fa-solid fa-cart-shopping pointer-events-none"
+						}
+					>
+						<span className={cartState > 0 ? "showCartItem" : "hideCartItem"}>
+							{cartState}
+						</span>
+					</i>
+				</Link>
+				{user ? (
+					<img src={images.userImg} alt=''></img>
+				) : (
+					<button>Sign Up</button>
+				)}
 			</div>
 		</div>
 	);

@@ -1,5 +1,5 @@
 import IRoute from "../interfaces/route";
-import { Categories } from "../pages";
+import { Cart, Categories } from "../pages";
 import { SignUp } from "../pages";
 import { Home } from "../pages";
 import { Login } from "../pages";
@@ -40,6 +40,12 @@ const mainRoutes: IRoute[] = [
 		path: "/",
 		component: Home,
 		name: "home",
+		auth: false,
+	},
+	{
+		path: "/cart",
+		component: Cart,
+		name: "cart",
 		auth: false,
 	},
 ];
