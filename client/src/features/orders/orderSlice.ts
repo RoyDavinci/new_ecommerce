@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { orderInterface } from "../../interfaces/order";
+import { publicRequest } from "../../api/client";
+import { orderInterface, orders } from "../../interfaces/order";
 
 const token = localStorage.getItem("token");
 
@@ -23,18 +24,19 @@ export const getOrders = createAsyncThunk("orders", async (item, thunkAPI) => {
 		return thunkAPI.rejectWithValue(data);
 	}
 	return data;
-
-	// try {
-	// 	const { data } = await privateRequest.get(
-	// 		"http://localhost:8090/api/v1/order/order"
-	// 	);
-	// 	return data;
-	// } catch (error) {
-	// 	const err = error as AxiosError<payloadErrorResponse>;
-
-	// 	return thunkAPI.rejectWithValue(err?.response?.data);
-	// }
 });
+
+export const createOrders = async (orderData: object) => {
+	try {
+		const { data } = await publicRequest.post(
+			"http://localhost:8090/api/v1/order/create/order",
+			orderData
+		);
+		return data;
+	} catch (error) {
+		return error;
+	}
+};
 
 export const getOrderSlice = createSlice({
 	name: "allOrders",

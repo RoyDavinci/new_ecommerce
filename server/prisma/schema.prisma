@@ -163,6 +163,8 @@ model orderDetails {
   email String
   phone String
   productId Int
+  amount Int?
+  quantity Int?
   products product @relation(fields: [productId], references: [id])
   merchantId Int? 
   sellers sellers? @relation(fields: [merchantId], references: [id])

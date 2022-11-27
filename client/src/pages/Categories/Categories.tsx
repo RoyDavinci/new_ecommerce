@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Footer, Header } from "../../components";
 import images from "../../images";
-import { linksData } from "../../utils/data";
 import "./categories.css";
 import { CategoryItems } from "./CategoryItem/CategoryItems";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";

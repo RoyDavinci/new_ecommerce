@@ -20,6 +20,7 @@ export interface AllCartInterface {
 	error: unknown;
 	status: "idle" | "loading" | "failed" | "successful";
 	total_amount: number;
+	total_quantity: number;
 }
 
 export const initialState: AllCartInterface = {
@@ -27,6 +28,7 @@ export const initialState: AllCartInterface = {
 	error: null,
 	data: [],
 	total_amount: 0,
+	total_quantity: 0,
 };
 
 export const cartSlice = createSlice({
@@ -44,20 +46,30 @@ export const cartSlice = createSlice({
 			state.data = item;
 		},
 		increaseQuantity: (state, action) => {
-			let item = state.data.find((data) => data.id, action.payload.id);
-			item?.quantity && item.quantity++;
+			let items = state.data.filter((data) => data.id === action.payload.id);
+			items[0].quantity++;
+			// item?.quantity && item.quantity++;
 		},
 		decreaseQuantity: (state, action) => {
-			let item = state.data.find((data) => data.id, action.payload.id);
-			if (item?.quantity && item.quantity <= 0) return;
-			item?.quantity && item.quantity--;
+			let items = state.data.filter((data) => data.id === action.payload.id);
+			if (items[0].quantity <= 0) return;
+			items[0].quantity--;
+
+			// item?.quantity && item.quantity--;
 		},
 		calculateTotal: (state) => {
 			let sum = 0;
 			state.data.forEach((item) => {
-				sum += Number(item.price);
+				sum += Number(item.price) * item.quantity;
 			});
 			state.total_amount = sum;
+		},
+		calculateTotalQuantity: (state) => {
+			let sum = 0;
+			state.data.forEach((item) => {
+				sum += item.quantity;
+			});
+			state.total_quantity = sum;
 		},
 	},
 });
@@ -68,6 +80,7 @@ export const {
 	increaseQuantity,
 	decreaseQuantity,
 	calculateTotal,
+	calculateTotalQuantity,
 } = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;

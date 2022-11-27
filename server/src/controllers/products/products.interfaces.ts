@@ -13,4 +13,5 @@ export interface IProducts {
     year: string;
     make: string;
     model: string;
+    amount: number;
 }

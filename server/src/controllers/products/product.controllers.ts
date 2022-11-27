@@ -1,11 +1,9 @@
 import { Request, Response } from "express";
 import { IUser } from "../auth/auth.interface";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, product } from "@prisma/client";
 import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { RedisClient } from "../../db/class";
-import { generateHash } from "../../common/generateHash";
 import { logger } from "../../common/logger";
-import { IProducts } from "./products.interfaces";
 import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 import { streamUpload } from "../../utils/streamifier";
 
@@ -16,7 +14,7 @@ export const createProduct = async (req: Request, res: Response) => {
     const { name, quantity, price, description, make, model, year, categoryName } = req.body;
     logger.info("gotten to req.body");
     try {
-        let newProducts: IProducts;
+        let newProducts: product;
 
         if (req.user) {
             const { adminId, subscriberId } = req.user as unknown as IUser;

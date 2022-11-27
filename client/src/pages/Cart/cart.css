@@ -1,0 +1,73 @@
+.__secondSection {
+	background-color: #7073c1;
+	padding: 10px 30px;
+	border: 5px;
+	color: white;
+	border-radius: 10px;
+}
+.__secondSection input,
+.__secondSection label,
+.__secondSection select {
+	display: block;
+	margin: 10px 0px;
+}
+.__secondSection input,
+.__secondSection select,
+.__secondSection input:focus,
+.__secondSection select:focus {
+	border: 0.5px solid #ccc;
+	padding: 10px;
+	border-radius: 5px;
+	width: 60%;
+}
+.__secondSection select {
+	color: black;
+}
+.form__radioORders_item label,
+.form__radioORders_item input {
+	display: flex;
+	margin: 0px 10px;
+	width: 10%;
+}
+.cart__itemsImg__container img {
+	width: 100px;
+	height: 100px;
+	padding: 10px;
+}
+.cart__itemsBtn__container button {
+	padding: 10px;
+	border: 0.5px solid #ccc;
+	margin: 0px 15px;
+}
+.cart__itemsBtn__container p {
+	font-weight: 600;
+	font-size: 22px;
+}
+.item__container__cart__div {
+	padding: 10px;
+	border: 1px solid #ccc;
+	margin: 15px 0px;
+	border-radius: 5px;
+}
+.item__container__cart__div .fa-trash {
+	color: red;
+}
+.main_Cart__container__section form button {
+	width: 60%;
+}
+.no__itemInCart {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 60vh;
+	background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+		url("../../images/jpg/pexels-mike-b-190574.jpg");
+	color: white;
+}
+.no__itemInCart a {
+	padding: 10px 20px;
+	border-radius: 5px;
+	background-color: #4285f4;
+	font-size: xx-large;
+}

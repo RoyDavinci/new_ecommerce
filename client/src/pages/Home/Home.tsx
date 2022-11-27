@@ -1,7 +1,5 @@
 import React from "react";
 import { Header, Hero, Category, Blog, Footer } from "../../components";
-import images from "../../images";
-import { linksData } from "../../utils/data";
 import { useAppSelector } from "../../app/hooks";
 import "./home.css";
 

@@ -15,6 +15,17 @@ export interface orderDetail {
 	name: string;
 }
 
+export type shippers = {
+	id: number;
+	name: string;
+	places: string[];
+	contact: string;
+	lagos: boolean;
+	price: string;
+	createdAt: Date;
+	updatedAt: Date | null;
+};
+
 export interface orders {
 	id: number;
 	order_code: string;
