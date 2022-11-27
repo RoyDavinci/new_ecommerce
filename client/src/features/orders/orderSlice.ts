@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { publicRequest } from "../../api/client";
-import { orderInterface, orders } from "../../interfaces/order";
+import { orderInterface } from "../../interfaces/order";
 
 const token = localStorage.getItem("token");
 

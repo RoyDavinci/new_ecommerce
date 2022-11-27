@@ -126,7 +126,7 @@ export const Cart = () => {
 					<section>
 						<h1>No Items on your shopping Cart</h1>
 					</section>
-					<Link to='/'>Continue Shopping</Link>
+					<Link to='/products'>Continue Shopping</Link>
 				</div>
 			)}
 

@@ -6,6 +6,7 @@ import { Login } from "../pages";
 import { Admin } from "../pages/Admin/Admin";
 import { Cataglog } from "../pages/Catalogue/Cataglg";
 import { Orders } from "../pages/Orders/Orders";
+import { Products } from "../pages/Products/Products";
 import { SingleCategory } from "../pages/SingleCategory/SingleCategory";
 
 const authRoutes: IRoute[] = [
@@ -46,6 +47,12 @@ const mainRoutes: IRoute[] = [
 		path: "/cart",
 		component: Cart,
 		name: "cart",
+		auth: false,
+	},
+	{
+		path: "/products",
+		component: Products,
+		name: "products",
 		auth: false,
 	},
 ];
