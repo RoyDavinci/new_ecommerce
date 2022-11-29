@@ -172,7 +172,9 @@ export const getSingleProduct = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const getProduct = await prisma.product.findUnique({ where: { id: Number(id) }, include: { productRatings: true } });
-        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: getProduct });
+        let findProducts: product[] = [];
+        if (getProduct) findProducts = await prisma.product.findMany({ where: { categoryId: getProduct?.categoryId } });
+        return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ message: getProduct, findProducts });
     } catch (error) {
         logger.error(error);
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "an error occured processing your request" });

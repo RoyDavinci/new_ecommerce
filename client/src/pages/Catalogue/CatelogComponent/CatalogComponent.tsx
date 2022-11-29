@@ -6,7 +6,6 @@ import React, {
 } from "react";
 import "./catalogComponent.css";
 import {
-	productsData,
 	ProductInterface,
 	AddProductInterface,
 	EditProductInterface,
@@ -33,19 +32,7 @@ import { clearStorage } from "../../../utils/localstorage";
 export const CatalogComponent = () => {
 	const [title, setTitle] = useState<string>("Add");
 
-	const [products, setProducts] = useState<ProductInterface[]>([
-		{
-			id: 0,
-			name: "",
-			images: ["image"],
-			quantity: 1,
-			price: 0,
-			make: "",
-			model: "",
-			year: "",
-			description: "",
-		},
-	]);
+	const [products, setProducts] = useState<ProductInterface[]>([]);
 	const [showAddForm, setShowAddForm] = useState<boolean>(false);
 	const [previewImage, setPreviewImage] = useState<
 		string | Blob | ArrayBuffer | null
@@ -321,7 +308,7 @@ export const CatalogComponent = () => {
 	};
 
 	const setAllProducts = () => {
-		setProducts(productsData);
+		setProducts(data);
 	};
 
 	const setData = useCallback(() => {

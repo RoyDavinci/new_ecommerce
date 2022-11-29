@@ -7,6 +7,9 @@ import engine from "./jpg/pexels-photo-2607555.jpeg";
 import footerLogo from "./png/pngwing.com.png";
 import categoryHero from "./jpg/pexels-jae-park-4756887.jpg";
 import categoryImage from "./jpg/automobile-1300231.svg";
+import Image from "./jpg/car-race-g8e78e9940_1280.jpg";
+import SecondImage from "./home/pexels-nishant-aneja-2436230.jpg";
+import ThirdImage from "./home/pexels-максим-карабицын-5222603.jpg";
 
 const data = {
 	logo: Logo,
@@ -19,5 +22,6 @@ const data = {
 	categoryHero,
 	categoryImage,
 };
+export const items = [Image, SecondImage, ThirdImage];
 
 export default data;

@@ -1,0 +1,9 @@
+.new__header__nav ul li {
+	display: inline-flex;
+	margin: 0px 10px;
+	padding: 10px;
+	font-size: 20px;
+}
+.img__cars__container {
+	display: flex;
+}

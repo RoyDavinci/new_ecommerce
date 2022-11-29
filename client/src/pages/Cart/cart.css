@@ -71,3 +71,12 @@
 	background-color: #4285f4;
 	font-size: xx-large;
 }
+@media screen and (max-width: 740px) {
+	.no__itemInCart {
+		padding: 10px 30px;
+		text-align: center;
+	}
+	.no__itemInCart a {
+		font-size: 20px;
+	}
+}

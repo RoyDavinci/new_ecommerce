@@ -133,7 +133,10 @@ export const Cart = () => {
 			{data.length > 0 && (
 				<>
 					<h1>Shopping Cart</h1>
-					<p>You have {data.length} items in your cart</p>
+					<p>
+						You have {data.length} {data.length > 1 ? "items" : "item"} in your
+						cart
+					</p>
 
 					<main className='grid grid-cols-2 gap-10 main_Cart__container p-8'>
 						<section className='main_Cart__container__section __firstSection'>

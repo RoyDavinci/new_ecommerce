@@ -1,14 +1,12 @@
-.headerContainer {
+/* .headerContainer {
 	display: flex;
 	justify-content: space-between;
 	text-align: center;
 	padding: 10px;
-	/* background-color: rgba(16, 16, 16, 0.8); */
-	/* color: white; */
 	box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
 		rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 	background-color: black;
-}
+} */
 
 .headerLogo img {
 	width: 80px;
@@ -60,4 +58,23 @@
 }
 .hideCartItem {
 	display: none;
+}
+@media screen and (min-width: 750px) {
+	.__desktop {
+		display: flex;
+	}
+	.headerLinks__mobile {
+		display: none;
+	}
+}
+@media screen and (max-width: 749px) {
+	.__desktop {
+		display: none;
+	}
+	.headerLinks__mobile {
+		display: flex;
+	}
+	.mobile__headerLinks {
+		position: absolute;
+	}
 }

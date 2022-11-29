@@ -1,4 +1,3 @@
-import { uploadArray } from "../../common/multer";
 import { Router } from "express";
 import { authenticateJWT } from "../../common/authenticate";
 import * as controller from "./product.controllers";

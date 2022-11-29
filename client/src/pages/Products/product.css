@@ -3,3 +3,11 @@
 	padding: 4px;
 	box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
 }
+.products__form__inputContainer label {
+	font-size: 22px;
+}
+.products__form__inputContainer input[type="text"] {
+	padding: 5px 10px;
+	border: 1px solid #ccc;
+	margin: 0px 10px;
+}

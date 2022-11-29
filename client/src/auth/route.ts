@@ -1,3 +1,4 @@
+import { Hero } from "../components/HeroNew/Hero";
 import IRoute from "../interfaces/route";
 import { Cart, Categories } from "../pages";
 import { SignUp } from "../pages";
@@ -8,6 +9,7 @@ import { Cataglog } from "../pages/Catalogue/Cataglg";
 import { Orders } from "../pages/Orders/Orders";
 import { Products } from "../pages/Products/Products";
 import { SingleCategory } from "../pages/SingleCategory/SingleCategory";
+import { SingleProduct } from "../pages/SingleProduct/SingleProduct";
 
 const authRoutes: IRoute[] = [
 	{
@@ -54,6 +56,18 @@ const mainRoutes: IRoute[] = [
 		component: Products,
 		name: "products",
 		auth: false,
+	},
+	{
+		path: "/products/:id",
+		component: SingleProduct,
+		auth: false,
+		name: "single-product",
+	},
+	{
+		path: "/hero",
+		component: Hero,
+		auth: false,
+		name: "single-product",
 	},
 ];
 
