@@ -12,34 +12,21 @@ export const Category: React.FC<categoryProps> = () => {
 			className='categoryContainer'
 			style={{
 				padding: "10px",
-				display: "grid",
-				gridTemplateColumns: "1.5fr 2.5fr",
 				margin: "30px 0px",
 			}}
 		>
 			<div
-				className='categoryContainer__content'
+				className='category__item__container'
 				style={{
-					padding: "10px",
+					display: "grid",
+					gridTemplateColumns: "repeat(auto-fill , minmax(200px 1fr))",
+					placeItems: "center",
 				}}
 			>
-				<h2>Popular Categories</h2>
-				<p>
-					Now you can browse from
-					<Link to={"/categories"}>100,000 products</Link> choose your category
-					and narrow down what you are searching for
-				</p>
-				<button>
-					<Link to='/categories'>
-						Browse Categories <i className='fa-solid fa-arrow-right-long'></i>
-					</Link>
-				</button>
-			</div>
-			<div className='category__item__container'>
 				<CategoryItem
 					image={image.tyres}
 					title='Select From a range of tyres'
-					link='tyres'
+					link='/categories/Tires'
 				>
 					{" "}
 				</CategoryItem>

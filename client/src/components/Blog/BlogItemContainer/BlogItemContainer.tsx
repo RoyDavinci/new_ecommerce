@@ -16,7 +16,17 @@ export const BlogItemContainer: React.FC<BlogItemContainers> = ({
 	return (
 		<section className='blogItemContainer'>
 			<article className='blogItem__imgContainer'>
-				<img src={image} alt='' />
+				<div>
+					<img
+						src={image}
+						alt=''
+						style={{
+							width: "100%",
+							height: "100%",
+							objectFit: "contain",
+						}}
+					/>
+				</div>
 				<button></button>
 			</article>
 			<h3>{title}</h3>

@@ -1,19 +1,14 @@
-.heroContainer {
-	padding: 10px;
-	color: white;
-	margin: 0 40px;
-}
 .heroImgContainer {
 	background-image: linear-gradient(
 			to bottom,
-			rgba(0, 0, 0, 0),
-			rgba(0, 0, 0, 100)
+			rgba(0, 0, 0, 0.5),
+			rgba(0, 0, 0, 0.5)
 		),
-		url("../../images//jpg/pexels-photo-1409999.jpeg");
+		url("../../images/home//pexels-pixabay-164634.jpg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	min-height: 60vh;
+	min-height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -29,10 +24,13 @@
 	border-radius: 5px;
 	padding: 10px;
 }
+.heroContainer form {
+	margin: 20px 0px;
+}
 .heroContainer select {
-	color: white;
-	background-color: black;
-	padding: 5px;
+	color: black;
+	background-color: white;
+	padding: 10px 25px;
 	margin-right: 20px;
 }
 .heroImg__content h1 {
@@ -40,4 +38,20 @@
 }
 .heroImg__content button {
 	padding: 10px 25px;
+	font-size: 22px;
+}
+
+@media screen and (max-width: 730px) {
+	.heroContainer form {
+		display: flex;
+		flex-direction: column;
+		padding: 15px;
+		justify-content: center;
+		align-items: center;
+	}
+	.heroContainer form button,
+	.heroContainer form select {
+		margin: 10px 0px;
+		width: 80%;
+	}
 }

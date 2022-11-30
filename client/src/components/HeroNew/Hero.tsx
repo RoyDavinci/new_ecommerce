@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Footer } from "../footer/Footer";
-import { Header } from "../Header/Header";
 import { Link } from "react-router-dom";
 import "./header.css";
 import images from "../../images";
@@ -32,11 +31,10 @@ export const Hero = () => {
 	}, [index]);
 	return (
 		<div>
-			<Header />
 			<div
 				className=''
 				style={{
-					backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${image})`,
+					backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${image})`,
 					backgroundPosition: "center",
 					backgroundSize: "cover",
 					height: "100vh",
@@ -45,7 +43,7 @@ export const Hero = () => {
 			>
 				<header>
 					<nav className='flex justify-between items-center new__header__nav text-white'>
-						<ul className='fkex items-center justify-center'>
+						<ul className='flex items-center justify-center'>
 							<li>
 								<Link to='/'>
 									<img
@@ -68,7 +66,7 @@ export const Hero = () => {
 								<Link to='/'> Contact</Link>
 							</li>
 						</ul>
-						<ul className='flex items-center justify-center'>
+						<ul className='flex items-center  justify-end'>
 							<li>
 								<i
 									className={

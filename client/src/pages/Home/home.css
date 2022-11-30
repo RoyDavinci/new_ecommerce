@@ -4,8 +4,6 @@
 	color: white;
 }
 .home__newsletterContainer {
-	display: flex;
-	justify-content: center;
 	background-color: black;
 	color: white;
 	padding: 30px;
@@ -20,7 +18,6 @@
 	padding: 10px 20px;
 	color: white;
 	border: 0.5px solid #ccc;
-	margin: 0px 10px;
 	font-size: 20px;
 }
 .home__newsletterContainer form button {
@@ -28,4 +25,48 @@
 }
 .home__newsletterContainer form input::placeholder {
 	color: white;
+}
+.section__category__home__container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	padding: 10px;
+	gap: 20px;
+}
+.section__category__home__container .div__category__home__container {
+	border: 0.5px solid #ccc;
+	margin: 0 auto;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+.div__category__home__container h2 {
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+.section__category__home__container .div__category__home__container:hover {
+	border: 0.5px solid red;
+}
+.section__category__home__container .div__category__home__container:hover h2 {
+	background-color: red;
+	color: white;
+}
+.home__categoryContainer {
+	padding: 10px;
+}
+@media screen and (max-width: 760px) {
+	.home__newsletterContainer {
+		display: grid;
+		place-items: center;
+		text-align: center;
+	}
+	.home__newsletterContainer input,
+	.home__newsletterContainer button {
+		width: 90%;
+		margin: 10px 0px;
+	}
+}
+@media screen and (min-width: 761px) {
+	.home__newsletterContainer form button,
+	.home__newsletterContainer form input {
+		margin: 0px 10px;
+	}
 }

@@ -6,7 +6,7 @@ export interface categoryItems {
 	image: string;
 	title: string;
 	link: string;
-	children: React.ReactNode;
+	children?: React.ReactNode;
 }
 
 export const CategoryItem: React.FC<categoryItems> = ({
@@ -27,13 +27,14 @@ export const CategoryItem: React.FC<categoryItems> = ({
 				backgroundRepeat: "no-repeat",
 				backgroundSize: "cover",
 				backgroundPosition: "center",
-				height: "150px",
+				height: "200px",
 				display: "flex",
 				justifyContent: "space-between",
 				alignItems: "center",
 				padding: "15px",
 				color: "white",
 				margin: "10px 0px",
+				width: "360px",
 			}}
 		>
 			<h2 style={{ width: "60%" }}>{title}</h2>
