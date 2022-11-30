@@ -5,6 +5,10 @@
 	color: white;
 	border-radius: 10px;
 }
+.grid-container-cart {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
 .__secondSection input,
 .__secondSection label,
 .__secondSection select {
@@ -79,4 +83,12 @@
 	.no__itemInCart a {
 		font-size: 20px;
 	}
+}
+@media screen and (min-width: 741px) {
+	.griditem__container__cart {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+}
+.griditem__container__cart {
+	display: grid;
 }

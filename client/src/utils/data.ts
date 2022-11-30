@@ -1,11 +1,11 @@
 import carTyre from "../images/jpg/pexels-photo-3806249.jpeg";
 import carBattery from "../images/jpg/pexels-photo-8556051.jpeg";
-import carSeat from "../images/jpg/pexels-photo-7708639.jpeg";
 import carEngine from "../images/jpg/carEngine.jpeg";
 import carWiper from "../images/jpg/carWiper.jpeg";
 import windShield from "../images/jpg/windShield.jpeg";
 import sideMirror from "../images/jpg/sideMirror.jpeg";
 import carDoors from "../images/jpg/carDoors.jpeg";
+import seat from "../images/jpg/seat-cushion-g8cfbff1d9_1280.jpg";
 
 export const linksData = ["Home", "About", "Products", "Contact"];
 
@@ -16,7 +16,7 @@ export const blogData: {
 }[] = [
 	{
 		title: "8 things to consider when choosing a car seat",
-		image: carSeat,
+		image: seat,
 		description:
 			"Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, voluptate odit distinctio corporis quisquam quidem nemo tempora illum suscipit, id at fuga necessitatibus voluptatibus excepturi harum sunt molestiae ad recusandae.",
 	},
@@ -80,6 +80,6 @@ export const categoryData: {
 		name: "Seat",
 		description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
 		button: "fa-solid fa-arrow-right",
-		image: carSeat,
+		image: seat,
 	},
 ];

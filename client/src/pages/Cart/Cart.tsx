@@ -132,22 +132,23 @@ export const Cart = () => {
 
 			{data.length > 0 && (
 				<>
-					<h1>Shopping Cart</h1>
-					<p>
-						You have {data.length} {data.length > 1 ? "items" : "item"} in your
-						cart
-					</p>
-
-					<main className='grid grid-cols-2 gap-10 main_Cart__container p-8'>
+					<main className='grid-container-cart  gap-10 main_Cart__container p-4'>
 						<section className='main_Cart__container__section __firstSection'>
+							<div className=''>
+								<h1>Shopping Cart</h1>
+								<p>
+									You have {data.length} {data.length > 1 ? "items" : "item"} in
+									your cart
+								</p>
+							</div>
 							<article className='item__container__cart'>
 								{data.map((item) => {
 									return (
 										<div
 											key={item.id}
-											className='grid grid-cols-3 gap-10 items-center item__container__cart__div'
+											className='grid grid-cols-3 lg:gap-10  items-center item__container__cart__div'
 										>
-											<div className='cart__itemsImg__container flex items-center'>
+											<div className='cart__itemsImg__container lg:flex items-center'>
 												<img src={item.images[0]} alt='' />
 												<p>{item.name}</p>
 											</div>
@@ -160,12 +161,13 @@ export const Cart = () => {
 												<p>{item.quantity}</p>
 												<button
 													onClick={() => dispatch(decreaseQuantity(item))}
+													disabled={item.quantity === 1 && true}
 												>
 													<i className='fa-solid fa-minus'></i>
 												</button>
 											</div>
 											<div className='flex items-center justify-center'>
-												<p className='mx-4 inline-flex items-center justify-center'>
+												<p className=' mx-2 lg:mx-4 inline-flex items-center justify-center'>
 													₦{item.price}
 												</p>
 												<i
@@ -290,7 +292,7 @@ export const Cart = () => {
 											onChange={onHandleChange}
 											required
 										>
-											<option value='Select A Payment Type' selected>
+											<option value='Select A Payment Type'>
 												Select A Payment Type
 											</option>
 											<option value='flutterwave'>Flutterwave</option>
@@ -298,7 +300,6 @@ export const Cart = () => {
 										</select>
 									</div>
 									<button className='bg-[#4285F4] text-white p-4 rounded my-4'>
-										{" "}
 										Submit
 									</button>
 								</form>

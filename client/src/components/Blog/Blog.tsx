@@ -5,7 +5,7 @@ import { BlogItemContainer } from "./BlogItemContainer/BlogItemContainer";
 
 export const Blog = () => {
 	return (
-		<div className='blogContainer'>
+		<div className='blogContainer p-4'>
 			<h1>Tips and Tricks</h1>
 			<div className='blogContainer__blogContent'>
 				{blogData.map((item, index) => {

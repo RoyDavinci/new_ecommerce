@@ -28,13 +28,13 @@ export const Home = () => {
 		}
 	}, [status, dispatch, categoryData, error]);
 
-	console.log(categoryData);
 	return (
 		<div>
 			<div className='app__header'>
 				<Header></Header>
 				<Hero></Hero>
 			</div>
+
 			<section>
 				{errors && <Link to='/categories'>Categories</Link>}
 				<section>

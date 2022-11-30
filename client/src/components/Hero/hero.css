@@ -55,3 +55,15 @@
 		width: 80%;
 	}
 }
+.grid__Section__hero {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 20px;
+	padding: 40px 20px;
+	background-color: #ccc;
+}
+.hero__img__container__products {
+	background-color: white;
+	color: black;
+	padding: 10px;
+}

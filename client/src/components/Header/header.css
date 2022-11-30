@@ -23,7 +23,7 @@
 .headerUser img {
 	width: 20px;
 	height: 20px;
-	border-radius: 50%;
+	/* border-radius: 50%; */
 }
 .headerUser i,
 .headerLinks ul li {
@@ -37,7 +37,11 @@
 	color: white;
 	font-size: 22px;
 }
-.headerUser i span {
+.headerUser i,
+.headerUser_link {
+	position: relative;
+}
+.headerUser_link i span {
 	position: absolute;
 	color: white;
 	background: red;

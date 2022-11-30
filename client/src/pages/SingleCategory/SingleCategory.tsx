@@ -1,5 +1,5 @@
 import React, { BaseSyntheticEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Footer, Header } from "../../components";
 import LoadingComponent from "../../components/Loading";
 import { getCategoryByName } from "../../features/categories/cateorySlice";
@@ -54,39 +54,52 @@ export const SingleCategory: React.FC = () => {
 	return (
 		<div>
 			<Header></Header>
-			<div className='products__categoryContainer'>
+			<div>
 				{loading && <LoadingComponent card={true}>{}</LoadingComponent>}
 				{error && <p>{error}</p>}
-				{!loading &&
-					singleCategory.map((item) => {
-						return (
-							<div
-								className='products__categoryContainer__coontent'
-								key={item.id}
-							>
-								<img src={item.images && item?.images[0]} alt='' />
-								<h4>{item.name}</h4>
-								<p>{item.description}</p>
-								<div className='star__categoryContainer'>
-									<i className='fa-solid fa-star'></i>
-									<i className='fa-solid fa-star'></i>
-									<i className='fa-solid fa-star'></i>
-									<i className='fa-solid fa-star'></i>
-									<i className='fa-solid fa-star'></i>
-									<span>(85)</span>
+				{!loading && singleCategory.length < 1 ? (
+					<div className='h-screen text-center flex justify-center items-center flex-col w-full'>
+						<h1>No Products for this category</h1>
+						<Link
+							to='/products'
+							className='bg-[#4285f4] text-white px-8 py-4 rounded'
+						>
+							Continue Shopping
+						</Link>
+					</div>
+				) : (
+					<div className='products__categoryContainer'>
+						{singleCategory.map((item) => {
+							return (
+								<div
+									className='products__categoryContainer__coontent'
+									key={item.id}
+								>
+									<img src={item.images && item?.images[0]} alt='' />
+									<h4>{item.name}</h4>
+									<p>{item.description}</p>
+									<div className='star__categoryContainer'>
+										<i className='fa-solid fa-star'></i>
+										<i className='fa-solid fa-star'></i>
+										<i className='fa-solid fa-star'></i>
+										<i className='fa-solid fa-star'></i>
+										<i className='fa-solid fa-star'></i>
+										<span>(85)</span>
+									</div>
+									<div className='cart__singlePRoduct'>
+										<p>
+											<span></span>
+											<span style={{ display: "block" }}>₦{item.price}</span>
+										</p>
+										<button onClick={(e) => addItemToCart(e, item.id)}>
+											Add To Cart
+										</button>
+									</div>
 								</div>
-								<div className='cart__singlePRoduct'>
-									<p>
-										<span></span>
-										<span style={{ display: "block" }}>₦{item.price}</span>
-									</p>
-									<button onClick={(e) => addItemToCart(e, item.id)}>
-										Add To Cart
-									</button>
-								</div>
-							</div>
-						);
-					})}
+							);
+						})}
+					</div>
+				)}
 			</div>
 			<Footer></Footer>
 		</div>

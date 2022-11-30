@@ -52,7 +52,10 @@ export const cartSlice = createSlice({
 		},
 		decreaseQuantity: (state, action) => {
 			let items = state.data.filter((data) => data.id === action.payload.id);
-			if (items[0].quantity <= 0) return;
+			if (items[0].quantity <= 0) {
+				let item = state.data.filter((item) => item.id !== items[0].id);
+				state.data = item;
+			}
 			items[0].quantity--;
 
 			// item?.quantity && item.quantity--;
