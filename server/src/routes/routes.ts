@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminRouter, categoryRouter, orderRouter, productRatingRouter, productRouter, sellerRouter, shipperRouter, ssubscriberRouter, subCategoryRouter, userRouter } from "../controllers";
+import { adminRouter, categoryRouter, orderRouter, productRatingRouter, productRouter, sellerRouter, shipperRouter, ssubscriberRouter, subCategoryRouter, userRouter, transactionRouter } from "../controllers";
 
 const apiV1Router: Router = Router();
 
@@ -13,5 +13,6 @@ apiV1Router.use("/subscriber", ssubscriberRouter);
 apiV1Router.use("/shipper", shipperRouter);
 apiV1Router.use("/order", orderRouter);
 apiV1Router.use("/rating", productRatingRouter);
+apiV1Router.use("/transaction", transactionRouter);
 
 export default apiV1Router;

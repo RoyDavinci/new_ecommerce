@@ -1,13 +1,11 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import HTTP_STATUS_CODE from "../../constant/httpCodes";
 import { NextFunction, Request, Response } from "express";
-import { generateHash } from "../../common/generateHash";
-import { generateToken } from "../../common/generateToken";
 import config from "../../config";
 import { logger } from "../../common/logger";
 import { RedisClient } from "../../db/class";
 import { paginatorCleaner } from "../../common/paginatorCleaner";
-import { selectList, selectObject } from "../../common/selectList";
+import { selectList } from "../../common/selectList";
 import { IUser } from "../auth/auth.interface";
 
 const prisma = new PrismaClient();

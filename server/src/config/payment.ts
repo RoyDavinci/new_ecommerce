@@ -5,8 +5,8 @@ import joi from "joi";
  */
 
 const envSchema = joi.object({
-    PAYSTACK_SECRET: joi.string(),
-    PAYSTACK_PUBLIC: joi.string(),
+    PAYSTACK_SECRET: joi.string().optional(),
+    PAYSTACK_PUBLIC: joi.string().optional(),
 });
 
 /**
@@ -19,8 +19,8 @@ if (error) {
 
 const config = {
     payment: {
-        PAYSTACK_SECRET: envVars.PAYSTACK_SECRET,
-        PAYSTACK_PUBLIC: envVars.PAYSTACK_PUBLIC,
+        PAYSTACK_SECRET_KEY: envVars.PAYSTACK_SECRET,
+        PAYSTACK_PUBLIC_KEY: envVars.PAYSTACK_PUBLIC,
     },
 };
 

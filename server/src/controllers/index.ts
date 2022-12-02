@@ -9,3 +9,4 @@ export { ssubscriberRouter } from "./subscribers/subscribers.service";
 export { shipperRouter } from "./shippers/shippers.service";
 export { orderRouter } from "./orders/order.service";
 export { productRatingRouter } from "./productRatings/productRating.service";
+export { transactionRouter } from "./transactions/transactions.service";

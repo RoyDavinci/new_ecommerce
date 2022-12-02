@@ -34,6 +34,11 @@ const envSchema = joi
         DEFAULT_PAGE_SIZE: joi.number().required(),
         DEFAULT_ADMIN_PASSWORD: joi.string().required(),
         REFERAL_REWARD_POINT: joi.number().required(),
+        PAYSTACK_SECRET: joi.string().required(),
+        PAYSTACK_PUBLIC: joi.string().required(),
+        FLUTTERWAVE_SECRET: joi.string().required(),
+        FLUTTERWAVE_PUBLIC: joi.string().required(),
+        FLUTTERWAVE_KEY: joi.string().required(),
     })
     .unknown();
 
@@ -79,6 +84,11 @@ const config = {
         DEFAULT_PAGE_SIZE: envVars.DEFAULT_PAGE_SIZE,
         DEFAULT_ADMIN_PASSWORD: envVars.DEFAULT_ADMIN_PASSWORD,
         REFERAL_REWARD_POINT: envVars.REFERAL_REWARD_POINT,
+        PAYSTACK_SECRET_KEY: envVars.PAYSTACK_SECRET,
+        PAYSTACK_PUBLIC_KEY: envVars.PAYSTACK_PUBLIC,
+        FLUTTERWAVE_SECRET_KEY: envVars.FLUTTERWAVE_SECRET,
+        FLUTTERWAVE_PUBLIC_KEY: envVars.FLUTTERWAVE_PUBLIC,
+        FLUTTERWAVEKEY_KEY: envVars.FLUTTERWAVE_KEY,
     },
 };
 
