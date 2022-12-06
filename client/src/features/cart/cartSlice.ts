@@ -74,6 +74,13 @@ export const cartSlice = createSlice({
 			});
 			state.total_quantity = sum;
 		},
+		clearCart: (state) => {
+			state.data = [];
+			state.status = "loading";
+			state.error = {};
+			state.total_amount = 0;
+			state.total_quantity = 0;
+		},
 	},
 });
 

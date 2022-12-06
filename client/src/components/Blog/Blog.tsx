@@ -15,6 +15,7 @@ export const Blog = () => {
 								image={item.image}
 								description={item.description}
 								title={item.title}
+								id={index}
 							></BlogItemContainer>
 						</div>
 					);

@@ -1,9 +1,9 @@
 .__secondSection {
-	background-color: #9ea0e1;
-	padding: 10px 30px;
+	padding: 10px;
 	border: 5px;
 	color: white;
 	border-radius: 10px;
+	width: auto;
 }
 .grid-container-cart {
 	display: grid;
@@ -13,7 +13,8 @@
 .__secondSection label,
 .__secondSection select {
 	display: block;
-	margin: 10px 0px;
+	margin: 15px 0px;
+	color: black;
 }
 .__secondSection input,
 .__secondSection select,
@@ -22,7 +23,7 @@
 	border: 0.5px solid #ccc;
 	padding: 10px;
 	border-radius: 5px;
-	width: 60%;
+	width: 80%;
 }
 .__secondSection select {
 	color: black;
@@ -34,14 +35,13 @@
 	width: 10%;
 }
 .cart__itemsImg__container img {
-	width: 100px;
-	height: 100px;
 	padding: 10px;
 }
 .cart__itemsBtn__container button {
 	padding: 10px;
 	border: 0.5px solid #ccc;
 	margin: 0px 15px;
+	width: 80%;
 }
 .cart__itemsBtn__container p {
 	font-weight: 600;
@@ -49,15 +49,15 @@
 }
 .item__container__cart__div {
 	padding: 10px;
-	border: 1px solid #ccc;
-	margin: 15px 0px;
+	margin: 5px 0px;
 	border-radius: 5px;
+	border-bottom: 1px solid #ccc;
 }
 .item__container__cart__div .fa-trash {
 	color: red;
 }
 .main_Cart__container__section form button {
-	width: 60%;
+	width: 80%;
 }
 .no__itemInCart {
 	display: flex;

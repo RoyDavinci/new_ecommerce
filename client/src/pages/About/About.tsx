@@ -1,5 +1,11 @@
 import React from "react";
+import { Footer, Header } from "../../components";
 
 export const About = () => {
-	return <div>About</div>;
+	return (
+		<div>
+			<Header />
+			<Footer />
+		</div>
+	);
 };

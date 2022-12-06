@@ -1,15 +1,18 @@
 import { Hero } from "../components/HeroNew/Hero";
 import IRoute from "../interfaces/route";
-import { Cart, Categories } from "../pages";
+import { About, Cart, Categories } from "../pages";
 import { SignUp } from "../pages";
 import { Home } from "../pages";
 import { Login } from "../pages";
 import { Admin } from "../pages/Admin/Admin";
 import { Cataglog } from "../pages/Catalogue/Cataglg";
+import { Checkout } from "../pages/Checkout/Checkout";
 import { Orders } from "../pages/Orders/Orders";
+import { Payment } from "../pages/Payment/Payment";
 import { Products } from "../pages/Products/Products";
 import { SingleCategory } from "../pages/SingleCategory/SingleCategory";
 import { SingleProduct } from "../pages/SingleProduct/SingleProduct";
+import { Transaction } from "../pages/Transaction/Transaction";
 
 const authRoutes: IRoute[] = [
 	{
@@ -37,6 +40,12 @@ const mainRoutes: IRoute[] = [
 		path: "/categories/:name",
 		component: SingleCategory,
 		name: "singleCategory",
+		auth: false,
+	},
+	{
+		path: "/about",
+		component: About,
+		name: "about",
 		auth: false,
 	},
 	{
@@ -68,6 +77,24 @@ const mainRoutes: IRoute[] = [
 		component: Hero,
 		auth: false,
 		name: "single-product",
+	},
+	{
+		path: "/checkout",
+		component: Checkout,
+		auth: false,
+		name: "checkout",
+	},
+	{
+		path: "/payment",
+		component: Payment,
+		auth: false,
+		name: "payment",
+	},
+	{
+		path: "/transaction",
+		component: Transaction,
+		auth: false,
+		name: "transaction",
 	},
 ];
 

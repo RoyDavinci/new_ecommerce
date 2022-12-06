@@ -2,7 +2,7 @@ import { check } from "express-validator";
 import { validationErrorHandler } from "../../common/validationErrorHandler";
 
 export const validateCreateOrder = [
-    check("product_details").isArray().withMessage("product_etails must be an array").notEmpty(),
+    check("product_details").isArray().withMessage("product_details must be an array").notEmpty(),
     check("phone").stripLow().notEmpty().withMessage("phone is required").bail().isMobilePhone(["en-NG"]).withMessage("invalid nigerian mobile").trim(),
     check("name").stripLow().notEmpty().withMessage("name is required").bail().isString().withMessage("name should be string").trim(),
     check("address").stripLow().notEmpty().withMessage("address is required").bail().isString().withMessage("address should be string").trim(),

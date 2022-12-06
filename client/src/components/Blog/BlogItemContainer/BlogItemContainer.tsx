@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./blogItemContainer.css";
 
 export interface BlogItemContainers {
@@ -6,12 +7,14 @@ export interface BlogItemContainers {
 	title: string;
 	description: string;
 	children?: React.ReactNode;
+	id: number;
 }
 
 export const BlogItemContainer: React.FC<BlogItemContainers> = ({
 	image,
 	title,
 	description,
+	id,
 }) => {
 	return (
 		<section className='blogItemContainer'>
@@ -31,6 +34,9 @@ export const BlogItemContainer: React.FC<BlogItemContainers> = ({
 			</article>
 			<h3>{title}</h3>
 			<p>{description}</p>
+			<Link to={`/blog/${id}`} className='text-sky-500 text-lg'>
+				Read More...
+			</Link>
 		</section>
 	);
 };

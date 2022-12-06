@@ -1,0 +1,13 @@
+.article__transaction__container {
+	border: 1px solid #ccc;
+}
+.section__transaction__container {
+	min-height: 80vh;
+}
+.article__transaction__container i {
+	padding: 20px;
+	border-radius: 50%;
+	border: 1px solid #0f9d58;
+	font-size: 30px;
+	color: #0f9d58;
+}

@@ -5,7 +5,7 @@ import config from "../../config";
 import { logger } from "../../common/logger";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
-import { flutterWaveResponse, paystackResponse } from "./transactions.interface";
+import { flutterWaveResponse, paystackResponse, paystackResponseVerification } from "./transactions.interface";
 
 const prisma = new PrismaClient();
 
@@ -37,6 +37,7 @@ export const startTransaction = async (req: Request, res: Response, next: NextFu
                         phone: checkOrder.phone,
                         status: "pending",
                         transaction_reference: uuid(),
+                        channel: checkOrder.payment_type,
                     },
                 });
                 return res.status(200).json({ link: response.data.authorization_url, transactionId: createTransaction.id });
@@ -71,6 +72,7 @@ export const startTransaction = async (req: Request, res: Response, next: NextFu
                 phone: checkOrder.phone,
                 status: "pending",
                 transaction_reference: uuid(),
+                channel: checkOrder.payment_type,
             },
         });
 
@@ -82,8 +84,22 @@ export const startTransaction = async (req: Request, res: Response, next: NextFu
 };
 
 export const verifyTransaction = async (req: Request, res: Response, next: NextFunction) => {
-    const { requestId } = req.body;
+    const { transactionId } = req.params;
 
     try {
-    } catch (error) {}
+        const getTransaction = await prisma.transaction.findUnique({ where: { id: Number(transactionId) } });
+        if (!getTransaction) return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({ message: "transaction does not exist" });
+        if (getTransaction.payment_type?.toLowerCase() === "paystack") {
+            const { data } = await axios.get(`https://api.paystack.co/transaction/verify/${getTransaction.biller_Reference}`, { headers: { Authorization: `Bearer ${config.server.PAYSTACK_SECRET_KEY}` } });
+
+            const response = data as paystackResponseVerification;
+            if (response.status) {
+                return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ status: response.status, message: response.message });
+            }
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ status: response.status, message: response.message });
+        }
+    } catch (error) {
+        logger.error(error);
+        return next({ message: "error processing your data at this time", error });
+    }
 };
