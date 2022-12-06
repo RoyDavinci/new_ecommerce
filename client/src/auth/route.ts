@@ -1,6 +1,6 @@
 import { Hero } from "../components/HeroNew/Hero";
 import IRoute from "../interfaces/route";
-import { About, Cart, Categories } from "../pages";
+import { About, Cart, Categories, Contact } from "../pages";
 import { SignUp } from "../pages";
 import { Home } from "../pages";
 import { Login } from "../pages";
@@ -95,6 +95,12 @@ const mainRoutes: IRoute[] = [
 		component: Transaction,
 		auth: false,
 		name: "transaction",
+	},
+	{
+		path: "/contact",
+		component: Contact,
+		auth: false,
+		name: "contact",
 	},
 ];
 

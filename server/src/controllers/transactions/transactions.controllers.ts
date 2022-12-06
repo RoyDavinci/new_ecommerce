@@ -5,7 +5,9 @@ import config from "../../config";
 import { logger } from "../../common/logger";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
+import { sendEmail } from "../../common/sendMail";
 import { flutterWaveResponse, paystackResponse, paystackResponseVerification } from "./transactions.interface";
+import { stubObject } from "lodash";
 
 const prisma = new PrismaClient();
 
@@ -93,10 +95,54 @@ export const verifyTransaction = async (req: Request, res: Response, next: NextF
             const { data } = await axios.get(`https://api.paystack.co/transaction/verify/${getTransaction.biller_Reference}`, { headers: { Authorization: `Bearer ${config.server.PAYSTACK_SECRET_KEY}` } });
 
             const response = data as paystackResponseVerification;
-            if (response.status) {
-                return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ status: response.status, message: response.message });
+            if (response.data.status === "success") {
+                try {
+                    const updateTransaction = await prisma.transaction.update({ where: { id: Number(transactionId) }, data: { status: "successful" } });
+                    const updateOrder = await prisma.orders.update({ where: { id: getTransaction.orderId }, data: { status: "successful" } });
+                    Promise.all([updateTransaction, updateOrder]);
+                    const details = {
+                        name: updateOrder.name,
+                        email: updateOrder.email,
+                        amount: updateOrder.total_amount,
+                        status: updateOrder.status,
+                    };
+                    try {
+                        const checkProductDetails = await prisma.orderDetails.findMany({ where: { orderId: updateOrder.id } });
+                        checkProductDetails.forEach(async (item) => {
+                            const findProduct = await prisma.product.findUnique({ where: { id: item.productId } });
+                            if (findProduct && item.quantity) await prisma.product.update({ where: { id: findProduct.id }, data: { quantity: { decrement: item.quantity } } });
+                        });
+                    } catch (error) {
+                        logger.error(error);
+                        return next({ message: "error processing your data at this time", error });
+                    }
+                    const sendMail = await sendEmail(
+                        "emsthias33@gmail.com",
+                        "Transaction Details",
+                        `<html>
+                        <body>
+                            <p>name: ${details.name}</p>
+                            <p>email: ${details.email}</p>
+                            <p>Total Amount: ${details.amount}</p>
+                            <p>Status: ${details.status}</p>
+                        </body>
+                    
+                    </html>`,
+                    );
+                    return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ status: response.status, message: response.message, sendMail });
+                } catch (error) {
+                    logger.error(error);
+                    return next({ message: "error processing your data at this time", error });
+                }
             }
-            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ status: response.status, message: response.message });
+
+            const updateTransaction = await prisma.transaction.update({ where: { id: Number(transactionId) }, data: { status: "failed" } });
+
+            const updateOrder = await prisma.orders.update({ where: { id: getTransaction.orderId }, data: { status: "failed" } });
+
+            Promise.all([updateTransaction, updateOrder]);
+
+            return res.status(HTTP_STATUS_CODE.ACCEPTED).json({ status: false, message: response.message });
         }
     } catch (error) {
         logger.error(error);

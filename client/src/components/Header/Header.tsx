@@ -17,7 +17,7 @@ export const Header: React.FunctionComponent = () => {
 		return () => {
 			console.log("cleaning useeffect");
 		};
-	}, [data.length]);
+	}, [data]);
 
 	useEffect(() => {
 		if (user) setUserState(true);

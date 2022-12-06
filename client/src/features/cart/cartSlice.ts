@@ -91,6 +91,7 @@ export const {
 	decreaseQuantity,
 	calculateTotal,
 	calculateTotalQuantity,
+	clearCart,
 } = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;
